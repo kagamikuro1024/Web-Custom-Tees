@@ -30,7 +30,7 @@ const AdminOrderDetail = () => {
     try {
       setLoading(true);
       const { data } = await api.get(`/admin/orders/${orderId}`);
-      setOrder(data.order);
+      setOrder(data.data || data.order);
     } catch (error) {
       console.error('Error fetching order detail:', error);
       toast.error('Failed to load order details');
@@ -42,7 +42,7 @@ const AdminOrderDetail = () => {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      await api.put(`/admin/orders/${orderId}`, { status: newStatus });
+      await api.put(`/admin/orders/${orderId}/status`, { status: newStatus });
       toast.success('Order status updated');
       fetchOrderDetail();
     } catch (error) {
@@ -134,8 +134,8 @@ const AdminOrderDetail = () => {
     return null;
   }
 
-  const hasCustomDesigns = order.items?.some(item => item.customDesign);
-  const designCount = order.items?.filter(item => item.customDesign).length || 0;
+  const hasCustomDesigns = order.items?.some(item => item.customDesign?.imageUrl);
+  const designCount = order.items?.filter(item => item.customDesign?.imageUrl).length || 0;
 
   return (
     <div className="container-custom py-8">
@@ -188,8 +188,8 @@ const AdminOrderDetail = () => {
                     {/* Product Image */}
                     <div className="w-24 h-24 flex-shrink-0">
                       <img
-                        src={item.productId?.images?.[0]?.url || '/placeholder.png'}
-                        alt={item.productId?.name}
+                        src={item.productImage || '/placeholder.png'}
+                        alt={item.productName}
                         className="w-full h-full object-cover rounded-lg"
                       />
                     </div>
@@ -197,7 +197,7 @@ const AdminOrderDetail = () => {
                     {/* Product Info */}
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900">
-                        {item.productId?.name || 'Product Deleted'}
+                        {item.productName || 'Product Deleted'}
                       </h3>
                       <div className="mt-2 space-y-1 text-sm text-gray-600">
                         <p>Size: <span className="font-medium">{item.selectedSize}</span></p>
@@ -210,8 +210,8 @@ const AdminOrderDetail = () => {
                     </div>
                   </div>
 
-                  {/* Custom Design Section */}
-                  {item.customDesign && (
+                  {/* Custom Design Section - Only show for products with custom designs */}
+                  {item.customDesign?.imageUrl && (
                     <div className="mt-4 p-4 bg-purple-50 border-2 border-purple-200 rounded-lg">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="font-semibold text-purple-900 flex items-center gap-2">
@@ -326,9 +326,9 @@ const AdminOrderDetail = () => {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Order Status</h2>
             <select
-              value={order.status}
+              value={order.orderStatus}
               onChange={(e) => handleStatusChange(e.target.value)}
-              className={`w-full px-4 py-2 text-sm font-semibold rounded-lg border-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${getStatusColor(order.status)}`}
+              className={`w-full px-4 py-2 text-sm font-semibold rounded-lg border-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${getStatusColor(order.orderStatus)}`}
             >
               <option value="pending">Pending</option>
               <option value="confirmed">Confirmed</option>
@@ -353,7 +353,7 @@ const AdminOrderDetail = () => {
                 <p className="text-gray-600 mb-1 flex items-center gap-1">
                   <FiPhone className="text-xs" /> Phone:
                 </p>
-                <p className="font-medium">{order.shippingAddress?.phoneNumber}</p>
+                <p className="font-medium">{order.shippingAddress?.phone}</p>
               </div>
               {order.userId?.email && (
                 <div>
@@ -373,13 +373,26 @@ const AdminOrderDetail = () => {
             </h2>
             <div className="space-y-2 text-sm">
               <p className="font-medium">{order.shippingAddress?.fullName}</p>
-              <p className="text-gray-600">{order.shippingAddress?.addressLine}</p>
+              <p className="text-gray-600">{order.shippingAddress?.addressLine1}</p>
+              {order.shippingAddress?.addressLine2 && (
+                <p className="text-gray-600">{order.shippingAddress.addressLine2}</p>
+              )}
               <p className="text-gray-600">
-                {order.shippingAddress?.ward}, {order.shippingAddress?.district}
+                {order.shippingAddress?.city}, {order.shippingAddress?.state}
               </p>
-              <p className="text-gray-600">{order.shippingAddress?.province}</p>
+              <p className="text-gray-600">
+                {order.shippingAddress?.postalCode}, {order.shippingAddress?.country}
+              </p>
             </div>
           </div>
+
+          {/* Order Notes */}
+          {order.notes && (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-4">Order Notes</h2>
+              <p className="text-sm text-gray-600 italic">"{order.notes}"</p>
+            </div>
+          )}
 
           {/* Payment Info */}
           <div className="bg-white rounded-lg shadow-md p-6">

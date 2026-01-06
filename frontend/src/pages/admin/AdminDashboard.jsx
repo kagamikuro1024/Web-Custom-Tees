@@ -85,9 +85,29 @@ const AdminDashboard = () => {
   return (
     <div className="container-custom py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-gray-600 mt-2">Welcome back! Here's what's happening with your store today.</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="text-gray-600 mt-2">Welcome back! Here's what's happening with your store today.</p>
+        </div>
+        
+        {/* Quick Actions */}
+        <div className="flex gap-3">
+          <Link
+            to="/admin/orders"
+            className="btn btn-secondary flex items-center gap-2"
+          >
+            <FiShoppingCart />
+            Manage Orders
+          </Link>
+          <Link
+            to="/admin/products"
+            className="btn btn-primary flex items-center gap-2"
+          >
+            <FiPackage />
+            Manage Products
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -246,8 +266,8 @@ const AdminDashboard = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                          {order.status}
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.orderStatus)}`}>
+                          {order.orderStatus}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

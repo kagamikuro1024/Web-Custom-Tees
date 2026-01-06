@@ -16,8 +16,15 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      await login(formData);
-      navigate('/');
+      const response = await login(formData);
+      const userRole = response.data.user.role;
+      
+      // Redirect based on role
+      if (userRole === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       console.error('Login error:', error);
     }

@@ -51,11 +51,14 @@ const AdminProducts = () => {
 
       const { data } = await api.get('/admin/products', { params });
 
-      setProducts(data.products);
+      // Handle response structure: {success: true, data: {products: [], pagination: {}}}
+      const responseData = data.data || data;
+      setProducts(responseData.products || []);
       setPagination({
         ...pagination,
-        totalPages: data.totalPages,
-        totalProducts: data.totalProducts
+        page: responseData.pagination?.page || pagination.page,
+        totalPages: responseData.pagination?.totalPages || 1,
+        totalProducts: responseData.pagination?.totalProducts || 0
       });
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -217,7 +220,11 @@ const AdminProducts = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {products.map((product) => (
+                  {products.map((product) => {
+                    // Calculate total stock from sizes
+                    const totalStock = product.sizes?.reduce((sum, size) => sum + (size.stock || 0), 0) || 0;
+                    
+                    return (
                     <tr key={product._id} className="hover:bg-gray-50 transition">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
@@ -228,7 +235,7 @@ const AdminProducts = () => {
                           />
                           <div>
                             <div className="font-medium text-gray-900">{product.name}</div>
-                            <div className="text-sm text-gray-500">{product.category}</div>
+                            <div className="text-sm text-gray-500">{product.category?.name || 'Uncategorized'}</div>
                           </div>
                         </div>
                       </td>
@@ -239,11 +246,11 @@ const AdminProducts = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`text-sm font-medium ${
-                          product.stock > 10 ? 'text-green-600' : 
-                          product.stock > 0 ? 'text-yellow-600' : 
+                          totalStock > 10 ? 'text-green-600' : 
+                          totalStock > 0 ? 'text-yellow-600' : 
                           'text-red-600'
                         }`}>
-                          {product.stock} units
+                          {totalStock} units
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -298,7 +305,8 @@ const AdminProducts = () => {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

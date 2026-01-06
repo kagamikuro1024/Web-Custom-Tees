@@ -85,6 +85,41 @@ class AdminController {
     }
   }
 
+  // Get order custom designs
+  async getOrderDesigns(req, res, next) {
+    try {
+      const { orderId } = req.params;
+      const order = await orderService.getOrderById(orderId);
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: 'Order not found'
+        });
+      }
+
+      // Extract all custom designs from order items
+      const designs = order.items
+        .filter(item => item.customDesign?.imageUrl)
+        .map(item => ({
+          imageUrl: item.customDesign.imageUrl,
+          publicId: item.customDesign.publicId,
+          productName: item.productName,
+          placement: item.customDesign.placement
+        }));
+
+      res.json({
+        success: true,
+        data: {
+          orderNumber: order.orderNumber,
+          designs
+        }
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // Get all products (Admin)
   async getAllProducts(req, res, next) {
     try {

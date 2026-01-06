@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
+import AdminLayout from './components/layout/AdminLayout';
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
 import CustomizePage from './pages/CustomizePage';
@@ -18,6 +19,7 @@ import ProfilePage from './pages/user/ProfilePage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminProducts from './pages/admin/AdminProducts';
+import AdminProductCreate from './pages/admin/AdminProductCreate';
 import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
@@ -69,28 +71,23 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Admin Routes */}
-        <Route path="admin" element={
-          <AdminRoute>
-            <AdminDashboard />
-          </AdminRoute>
-        } />
-        <Route path="admin/orders" element={
-          <AdminRoute>
-            <AdminOrders />
-          </AdminRoute>
-        } />
-        <Route path="admin/orders/:orderId" element={
-          <AdminRoute>
-            <AdminOrderDetail />
-          </AdminRoute>
-        } />
-        <Route path="admin/products" element={
-          <AdminRoute>
-            <AdminProducts />
-          </AdminRoute>
-        } />
+        {/* Admin Routes - Use separate AdminLayout */}
       </Route>
+
+      {/* Admin Routes with AdminLayout */}
+      <Route path="/admin/*" element={
+        <AdminRoute>
+          <AdminLayout>
+            <Routes>
+              <Route index element={<AdminDashboard />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="orders/:orderId" element={<AdminOrderDetail />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="products/create" element={<AdminProductCreate />} />
+            </Routes>
+          </AdminLayout>
+        </AdminRoute>
+      } />
     </Routes>
   );
 }

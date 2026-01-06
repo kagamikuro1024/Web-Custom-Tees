@@ -16,6 +16,7 @@ router.get('/stats', adminController.getOrderStatistics);
 router.get('/orders', adminController.getAllOrders);
 router.get('/orders/statistics', adminController.getOrderStatistics);
 router.get('/orders/:orderId', adminController.getOrderById);
+router.get('/orders/:orderId/designs', adminController.getOrderDesigns);
 router.put('/orders/:orderId/status', updateOrderStatusValidation, validate, adminController.updateOrderStatus);
 router.put('/orders/:orderId/tracking', adminController.updateTrackingInfo);
 

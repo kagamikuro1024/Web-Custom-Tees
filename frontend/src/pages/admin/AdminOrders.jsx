@@ -23,7 +23,7 @@ const AdminOrders = () => {
   
   const [filters, setFilters] = useState({
     search: '',
-    status: '',
+    orderStatus: '',
     hasCustomDesign: '',
     sortBy: '-createdAt'
   });
@@ -42,16 +42,19 @@ const AdminOrders = () => {
       };
 
       if (filters.search) params.search = filters.search;
-      if (filters.status) params.status = filters.status;
+      if (filters.orderStatus) params.status = filters.orderStatus;
       if (filters.hasCustomDesign) params.hasCustomDesign = filters.hasCustomDesign;
 
       const { data } = await api.get('/admin/orders', { params });
 
-      setOrders(data.orders);
+      // Handle response structure: {success: true, data: {orders: [], pagination: {}}}
+      const responseData = data.data || data;
+      setOrders(responseData.orders || []);
       setPagination({
         ...pagination,
-        totalPages: data.totalPages,
-        totalOrders: data.totalOrders
+        page: responseData.pagination?.page || pagination.page,
+        totalPages: responseData.pagination?.totalPages || 1,
+        totalOrders: responseData.pagination?.total || 0
       });
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -63,7 +66,7 @@ const AdminOrders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await api.put(`/admin/orders/${orderId}`, { status: newStatus });
+      await api.put(`/admin/orders/${orderId}/status`, { status: newStatus });
       toast.success('Order status updated');
       fetchOrders();
     } catch (error) {
@@ -106,12 +109,14 @@ const AdminOrders = () => {
       toast.loading('Preparing designs for download...');
       const { data } = await api.get(`/admin/orders/${orderId}/designs`);
       
-      if (data.designs && data.designs.length > 0) {
+      const designs = data.data?.designs || [];
+      
+      if (designs.length > 0) {
         // Download each design
-        data.designs.forEach((design, index) => {
+        designs.forEach((design, index) => {
           const link = document.createElement('a');
           link.href = design.imageUrl;
-          link.download = `order-${orderId}-design-${index + 1}.png`;
+          link.download = `order-${data.data.orderNumber}-${design.productName}-${index + 1}.png`;
           link.target = '_blank';
           document.body.appendChild(link);
           link.click();
@@ -119,10 +124,10 @@ const AdminOrders = () => {
         });
         
         toast.dismiss();
-        toast.success(`Downloaded ${data.designs.length} design(s)`);
+        toast.success(`Downloaded ${designs.length} design(s)`);
       } else {
         toast.dismiss();
-        toast.error('No designs found for this order');
+        toast.info('No custom designs in this order');
       }
     } catch (error) {
       toast.dismiss();
@@ -158,8 +163,8 @@ const AdminOrders = () => {
 
           {/* Status Filter */}
           <select
-            value={filters.status}
-            onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+            value={filters.orderStatus}
+            onChange={(e) => setFilters({ ...filters, orderStatus: e.target.value })}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">All Status</option>
@@ -210,10 +215,10 @@ const AdminOrders = () => {
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-max">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                       Order ID
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -241,8 +246,8 @@ const AdminOrders = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {orders.map((order) => {
-                    const hasCustomDesign = order.items?.some(item => item.customDesign);
-                    const designCount = order.items?.filter(item => item.customDesign).length || 0;
+                    const hasCustomDesign = order.items?.some(item => item.customDesign?.imageUrl);
+                    const designCount = order.items?.filter(item => item.customDesign?.imageUrl).length || 0;
                     
                     return (
                       <tr key={order._id} className="hover:bg-gray-50 transition">
@@ -257,7 +262,7 @@ const AdminOrders = () => {
                               {order.shippingAddress?.fullName || 'N/A'}
                             </div>
                             <div className="text-gray-500">
-                              {order.shippingAddress?.phoneNumber || ''}
+                              {order.shippingAddress?.phone || ''}
                             </div>
                           </div>
                         </td>
@@ -271,9 +276,9 @@ const AdminOrders = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <select
-                            value={order.status}
+                            value={order.orderStatus}
                             onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                            className={`px-3 py-1 text-xs font-semibold rounded-full border cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${getStatusColor(order.status)}`}
+                            className={`px-3 py-1 text-xs font-semibold rounded-full border cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${getStatusColor(order.orderStatus)}`}
                           >
                             <option value="pending">Pending</option>
                             <option value="confirmed">Confirmed</option>

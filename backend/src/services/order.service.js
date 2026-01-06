@@ -240,20 +240,35 @@ class OrderService {
 
   // Get order statistics (Admin)
   async getOrderStatistics() {
+    const Product = (await import('../models/Product.model.js')).default;
+    const User = (await import('../models/User.model.js')).default;
+    
     const [
       totalOrders,
       pendingOrders,
       processingOrders,
       deliveredOrders,
       cancelledOrders,
-      customOrders
+      customOrders,
+      totalProducts,
+      customizableProducts,
+      totalUsers,
+      newUsersThisMonth
     ] = await Promise.all([
       Order.countDocuments(),
       Order.countDocuments({ orderStatus: 'pending' }),
       Order.countDocuments({ orderStatus: { $in: ['confirmed', 'processing', 'printing', 'shipped'] } }),
       Order.countDocuments({ orderStatus: 'delivered' }),
       Order.countDocuments({ orderStatus: 'cancelled' }),
-      Order.countDocuments({ hasCustomItems: true })
+      Order.countDocuments({ hasCustomItems: true }),
+      Product.countDocuments(),
+      Product.countDocuments({ isCustomizable: true }),
+      User.countDocuments(),
+      User.countDocuments({ 
+        createdAt: { 
+          $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1) 
+        } 
+      })
     ]);
 
     const revenue = await Order.aggregate([
@@ -268,7 +283,11 @@ class OrderService {
       deliveredOrders,
       cancelledOrders,
       customOrders,
-      totalRevenue: revenue[0]?.total || 0
+      totalRevenue: revenue[0]?.total || 0,
+      totalProducts,
+      customizableProducts,
+      totalUsers,
+      newUsersThisMonth
     };
   }
 }
