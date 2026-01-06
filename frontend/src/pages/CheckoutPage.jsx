@@ -305,18 +305,18 @@ const CheckoutPage = () => {
                 {cart.items.map((item) => (
                   <div key={item._id} className="flex gap-3 text-sm">
                     <img
-                      src={item.product?.images?.[0]}
+                      src={item.product?.images?.[0]?.url || 'https://via.placeholder.com/150'}
                       alt={item.product?.name}
                       className="w-12 h-12 object-cover rounded"
                     />
                     <div className="flex-grow">
                       <p className="font-medium line-clamp-1">{item.product?.name}</p>
                       <p className="text-xs text-gray-500">
-                        {item.size} / {item.color} × {item.quantity}
+                        {item.selectedSize} / {item.selectedColor?.name} × {item.quantity}
                       </p>
                     </div>
                     <p className="font-medium">
-                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price * item.quantity)}
+                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.priceAtAdd * item.quantity)}
                     </p>
                   </div>
                 ))}

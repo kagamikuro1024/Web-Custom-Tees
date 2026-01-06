@@ -12,7 +12,11 @@ const CartPage = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchCart().catch(() => {});
+      fetchCart()
+        .then((cartData) => {
+          console.log('Cart data loaded:', cartData);
+        })
+        .catch(() => {});
     }
   }, [isAuthenticated, fetchCart]);
 
@@ -94,15 +98,23 @@ const CartPage = () => {
         {/* Cart Items */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-sm">
-            {cart.items.map((item) => (
+            {cart.items.map((item) => {
+              console.log('Cart item:', item);
+              const productImage = item.product?.images?.[0]?.url || 'https://via.placeholder.com/150?text=No+Image';
+              
+              return (
               <div key={item._id} className="p-6 border-b last:border-b-0">
                 <div className="flex gap-6">
                   {/* Product Image */}
                   <div className="flex-shrink-0">
                     <img
-                      src={item.product?.images?.[0] || 'https://via.placeholder.com/150'}
-                      alt={item.product?.name}
+                      src={productImage}
+                      alt={item.product?.name || 'Product'}
                       className="w-24 h-24 object-cover rounded-lg"
+                      onError={(e) => {
+                        console.error('Image load error for:', productImage);
+                        e.target.src = 'https://via.placeholder.com/150?text=Image+Error';
+                      }}
                     />
                   </div>
 
@@ -112,8 +124,8 @@ const CartPage = () => {
                       <div>
                         <h3 className="font-semibold text-lg">{item.product?.name}</h3>
                         <div className="flex gap-4 mt-2 text-sm text-gray-600">
-                          <span>Size: <span className="font-medium">{item.size}</span></span>
-                          <span>Color: <span className="font-medium">{item.color}</span></span>
+                          <span>Size: <span className="font-medium">{item.selectedSize}</span></span>
+                          <span>Color: <span className="font-medium">{item.selectedColor?.name}</span></span>
                         </div>
                         
                         {/* Custom Design Preview */}
@@ -167,17 +179,18 @@ const CartPage = () => {
                       {/* Price */}
                       <div className="text-right">
                         <p className="text-lg font-bold text-primary-600">
-                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price * item.quantity)}
+                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.priceAtAdd * item.quantity)}
                         </p>
                         <p className="text-xs text-gray-500">
-                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)} each
+                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.priceAtAdd)} each
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
