@@ -15,12 +15,11 @@ const seedDatabase = async () => {
     // Connect to database
     await connectDB();
 
-    // Clear existing data
-    console.log('🗑️  Clearing existing data...');
-    await User.deleteMany({});
+    // Clear existing data (only Products and Categories, preserve Users and Orders)
+    console.log('🗑️  Clearing existing products and categories...');
     await Product.deleteMany({});
     await Category.deleteMany({});
-    console.log('✅ Existing data cleared\n');
+    console.log('✅ Products and categories cleared\n');
 
     // Create Categories
     console.log('📂 Creating categories...');
@@ -41,18 +40,23 @@ const seedDatabase = async () => {
     });
     console.log('✅ Categories created\n');
 
-    // Create Admin User
-    console.log('👤 Creating admin user...');
-    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@12345', 10);
+    // Create Admin User (only if not exists)
+    console.log('👤 Checking admin user...');
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@customtshirt.com';
+    let adminUser = await User.findOne({ email: adminEmail });
     
-    const adminUser = await User.create({
-      firstName: 'Admin',
-      lastName: 'User',
-      email: process.env.ADMIN_EMAIL || 'admin@customtshirt.com',
-      password: hashedPassword,
-      role: 'admin'
-    });
-    console.log(`✅ Admin user created: ${adminUser.email}\n`);
+    if (!adminUser) {
+      adminUser = await User.create({
+        firstName: 'Admin',
+        lastName: 'User',
+        email: adminEmail,
+        password: process.env.ADMIN_PASSWORD || 'Admin@12345',
+        role: 'admin'
+      });
+      console.log(`✅ Admin user created: ${adminUser.email}\n`);
+    } else {
+      console.log(`ℹ️  Admin user already exists: ${adminUser.email}\n`);
+    }
 
     // Sample Products
     console.log('📦 Creating sample products...');

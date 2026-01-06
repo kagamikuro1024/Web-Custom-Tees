@@ -28,8 +28,8 @@ const AdminDashboard = () => {
         api.get('/admin/orders?page=1&limit=5&sort=-createdAt')
       ]);
 
-      setStats(statsRes.data.stats);
-      setRecentOrders(ordersRes.data.orders);
+      setStats(statsRes.data.data);
+      setRecentOrders(ordersRes.data.data.orders);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');

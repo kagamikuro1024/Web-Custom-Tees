@@ -9,6 +9,9 @@ const router = express.Router();
 // All routes are admin only
 router.use(protect, adminOnly);
 
+// Dashboard statistics
+router.get('/stats', adminController.getOrderStatistics);
+
 // Order management
 router.get('/orders', adminController.getAllOrders);
 router.get('/orders/statistics', adminController.getOrderStatistics);
