@@ -4,79 +4,48 @@ import productService from './product.service.js';
 import cartService from './cart.service.js';
 
 class OrderService {
+  // Generate unique order number
+  async generateOrderNumber() {
+    const prefix = 'ORD';
+    const timestamp = Date.now().toString().slice(-8); // Last 8 digits of timestamp
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    const orderNumber = `${prefix}${timestamp}${random}`;
+    
+    // Check if order number already exists (very unlikely)
+    const exists = await Order.findOne({ orderNumber });
+    if (exists) {
+      return this.generateOrderNumber(); // Recursively generate new number
+    }
+    
+    return orderNumber;
+  }
+
   // Create order from cart
   async createOrder(userId, orderData) {
-    const { shippingAddress, paymentMethod, customerNote } = orderData;
+    const { items, subtotal, shippingFee, totalAmount, shippingAddress, paymentMethod, notes } = orderData;
 
-    // Validate cart
-    const { cart } = await cartService.validateCart(userId);
-
-    // Prepare order items with custom design data
-    const orderItems = await Promise.all(
-      cart.items.map(async (item) => {
-        const product = item.product;
-
-        // Extract custom design information
-        const customDesign = product.isCustomizable && item.customDesign ? {
-          imageUrl: item.customDesign.imageUrl,
-          publicId: item.customDesign.publicId,
-          placement: item.customDesign.placement,
-          previewUrl: item.customDesign.previewUrl,
-          isCustomized: true,
-          // Store original file metadata if available
-          originalFileName: item.customDesign.originalFileName,
-          fileSize: item.customDesign.fileSize,
-          dimensions: item.customDesign.dimensions
-        } : {
-          isCustomized: false
-        };
-
-        return {
-          product: product._id,
-          productName: product.name,
-          productImage: product.images[0]?.url || '',
-          quantity: item.quantity,
-          price: item.priceAtAdd,
-          selectedSize: item.selectedSize,
-          selectedColor: item.selectedColor,
-          customDesign,
-          subtotal: item.priceAtAdd * item.quantity
-        };
-      })
-    );
-
-    // Calculate pricing
-    const subtotal = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
-    const shippingFee = this.calculateShippingFee(subtotal);
-    const tax = this.calculateTax(subtotal);
-    const totalAmount = subtotal + shippingFee + tax;
+    // Generate unique order number
+    const orderNumber = await this.generateOrderNumber();
 
     // Create order
     const order = await Order.create({
+      orderNumber,
       user: userId,
-      items: orderItems,
+      items,
       subtotal,
       shippingFee,
-      tax,
+      tax: 0, // No tax for now
       totalAmount,
       shippingAddress,
       paymentMethod,
       paymentStatus: paymentMethod === 'cod' ? 'pending' : 'pending',
-      customerNote,
+      customerNote: notes,
       statusHistory: [{
         status: 'pending',
-        timestamp: new Date()
+        timestamp: new Date(),
+        note: 'Order placed'
       }]
     });
-
-    // Update product stock
-    for (const item of orderItems) {
-      await productService.updateStock(
-        item.product,
-        item.selectedSize,
-        item.quantity
-      );
-    }
 
     // Clear cart
     await cartService.clearCart(userId);

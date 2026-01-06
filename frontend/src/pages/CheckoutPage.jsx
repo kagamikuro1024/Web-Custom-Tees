@@ -111,27 +111,47 @@ const CheckoutPage = () => {
 
     setIsSubmitting(true);
     try {
+      // Prepare order items from cart
+      const orderItems = cart.items.map(item => ({
+        product: item.product._id,
+        productName: item.product.name,
+        productImage: item.product.images?.[0]?.url || '',
+        quantity: item.quantity,
+        price: item.priceAtAdd,
+        selectedSize: item.selectedSize,
+        selectedColor: item.selectedColor,
+        customDesign: item.customDesign || undefined,
+        subtotal: item.priceAtAdd * item.quantity
+      }));
+
       const orderData = {
+        items: orderItems,
+        subtotal: cart.totalPrice,
+        shippingFee: Math.round(shippingCost),
+        totalAmount: cart.totalPrice + Math.round(shippingCost),
         shippingAddress: {
           fullName: formData.fullName,
           phone: formData.phone,
-          address: formData.address,
-          coordinates: {
-            latitude: deliveryLocation.lat,
-            longitude: deliveryLocation.lng
-          }
+          addressLine1: formData.address,
+          city: 'Hà Nội',
+          state: 'Hà Nội',
+          postalCode: '100000',
+          country: 'Vietnam'
         },
-        shippingCost: Math.round(shippingCost),
-        paymentMethod: 'COD',
+        paymentMethod: 'cod',
         notes: formData.notes
       };
 
+      console.log('Submitting order:', orderData);
+
       const { data } = await api.post('/orders', orderData);
-      toast.success('Order placed successfully!');
+      toast.success('Đặt hàng thành công!');
       navigate(`/order-success/${data.data.orderNumber}`);
     } catch (error) {
       console.error('Order error:', error);
-      toast.error(error.response?.data?.message || 'Failed to create order');
+      console.error('Error response:', error.response?.data);
+      const errorMessage = error.response?.data?.message || error.response?.data?.errors?.[0]?.message || 'Không thể tạo đơn hàng';
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
