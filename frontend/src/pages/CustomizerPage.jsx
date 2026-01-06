@@ -107,9 +107,8 @@ const CustomizerPage = () => {
       const formData = new FormData();
       formData.append('design', file);
 
-      const { data } = await api.post('/upload/design', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      // Don't set Content-Type header, let axios set it automatically
+      const { data } = await api.post('/upload/design', formData);
 
       setUploadedDesignUrl(data.data.url);
       setUploadedPublicId(data.data.publicId);

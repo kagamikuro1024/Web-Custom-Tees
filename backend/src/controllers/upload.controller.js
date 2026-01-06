@@ -4,12 +4,20 @@ class UploadController {
   // Upload custom design
   async uploadDesign(req, res, next) {
     try {
+      console.log('Upload request received');
+      console.log('Headers:', req.headers);
+      console.log('File:', req.file);
+      console.log('Body:', req.body);
+
       if (!req.file) {
+        console.error('No file uploaded');
         return res.status(400).json({
           success: false,
           message: 'No file uploaded'
         });
       }
+
+      console.log('File uploaded successfully:', req.file);
 
       res.json({
         success: true,
@@ -25,6 +33,8 @@ class UploadController {
         }
       });
     } catch (error) {
+      console.error('Upload error:', error);
+      console.error('Error stack:', error.stack);
       next(error);
     }
   }

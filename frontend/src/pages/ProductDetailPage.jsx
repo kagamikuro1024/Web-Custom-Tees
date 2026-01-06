@@ -111,11 +111,8 @@ const ProductDetailPage = () => {
 
     try {
       setUploading(true);
-      const { data } = await api.post('/upload/design', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // Don't set Content-Type header, let axios set it automatically with boundary
+      const { data } = await api.post('/upload/design', formData);
 
       setUploadedDesignUrl(data.data.url);
       setUploadedPublicId(data.data.publicId);

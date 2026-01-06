@@ -1,20 +1,35 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
+import dotenv from 'dotenv';
 
+// Load environment variables first
+dotenv.config();
+
+// Configure Cloudinary with explicit values
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// Log config for debugging (remove in production)
+console.log('Cloudinary Config:', {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Not set',
+  api_secret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not set'
+});
+
 // Storage for custom design uploads
 const designStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'custom-tshirt/designs',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'svg', 'webp'],
-    transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+  params: async (req, file) => {
+    return {
+      folder: 'custom-tshirt/designs',
+      allowed_formats: ['jpg', 'jpeg', 'png', 'svg', 'webp'],
+      transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+      public_id: `design_${Date.now()}`,
+    };
   },
 });
 
