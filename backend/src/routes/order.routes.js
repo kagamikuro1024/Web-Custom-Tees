@@ -9,8 +9,11 @@ const router = express.Router();
 router.use(protect);
 
 router.post('/', createOrderValidation, validate, orderController.createOrder);
+router.get('/stats', orderController.getUserOrderStats);
 router.get('/', orderController.getUserOrders);
 router.get('/:orderId', orderController.getOrderById);
 router.get('/number/:orderNumber', orderController.getOrderByNumber);
+router.put('/:orderId/cancel', orderController.cancelOrder);
+router.put('/:orderId/items/:itemIndex/design', orderController.updateCustomDesign);
 
 export default router;

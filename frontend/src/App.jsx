@@ -1,7 +1,8 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import AdminLayout from './components/layout/AdminLayout';
 import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
 import ShopPage from './pages/ShopPage';
 import CustomizePage from './pages/CustomizePage';
 import ProductsPage from './pages/ProductsPage';
@@ -30,6 +31,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         {/* Public Routes */}
         <Route index element={<HomePage />} />
+        <Route path="about" element={<AboutPage />} />
         <Route path="shop" element={<ShopPage />} />
         <Route path="customize" element={<CustomizePage />} />
         <Route path="products" element={<ProductsPage />} />

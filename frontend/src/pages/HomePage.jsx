@@ -31,22 +31,29 @@ const HomePage = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
-        <div className="container-custom">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl font-bold mb-6 fade-in">
-              Design Your Own Custom T-Shirts
-            </h1>
-            <p className="text-xl mb-8 text-primary-100">
-              Upload your design, customize it, and get high-quality printed t-shirts delivered to your door.
-            </p>
-            <div className="flex gap-4">
-              <Link to="/products?isCustomizable=true" className="btn bg-white text-primary-600 hover:bg-gray-100 px-8 py-3">
-                Start Designing
-              </Link>
-              <Link to="/products" className="btn btn-outline border-white text-white hover:bg-white hover:text-primary-600 px-8 py-3">
-                Browse Products
-              </Link>
+      <section className="relative h-[600px] bg-gray-900">
+        <img 
+          src="/assets/1.png" 
+          alt="Custom T-Shirts" 
+          className="w-full h-full object-cover opacity-60"
+        />
+        <div className="absolute inset-0 flex items-center">
+          <div className="container-custom">
+            <div className="max-w-3xl text-white">
+              <h1 className="text-5xl font-bold mb-6 fade-in">
+                Design Your Own Custom T-Shirts
+              </h1>
+              <p className="text-xl mb-8 text-gray-200">
+                Upload your design, customize it, and get high-quality printed t-shirts delivered to your door.
+              </p>
+              <div className="flex gap-4">
+                <Link to="/customize" className="btn bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium">
+                  Start Designing
+                </Link>
+                <Link to="/products" className="btn border-2 border-white text-white hover:bg-white hover:text-primary-600 px-8 py-3 rounded-lg font-medium">
+                  Browse Products
+                </Link>
+              </div>
             </div>
           </div>
         </div>

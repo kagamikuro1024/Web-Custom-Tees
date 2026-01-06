@@ -37,11 +37,22 @@ const Header = () => {
             <Link to="/" className="text-gray-700 hover:text-primary-600 transition">
               Home
             </Link>
-            <Link to="/shop" className="text-gray-700 hover:text-primary-600 transition">
-              Shop
-            </Link>
-            <Link to="/customize" className="text-gray-700 hover:text-primary-600 transition">
-              Customize
+            <div className="relative group">
+              <Link to="/products" className="text-gray-700 hover:text-primary-600 transition font-medium">
+                Products
+              </Link>
+              {/* Dropdown */}
+              <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                <Link to="/shop" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm">
+                  Shop
+                </Link>
+                <Link to="/customize" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm">
+                  Customize
+                </Link>
+              </div>
+            </div>
+            <Link to="/about" className="text-gray-700 hover:text-primary-600 transition">
+              About Us
             </Link>
           </nav>
 
@@ -131,18 +142,32 @@ const Header = () => {
               Home
             </Link>
             <Link
-              to="/shop"
-              className="block py-2 text-gray-700 hover:text-primary-600"
+              to="/products"
+              className="block py-2 text-gray-700 hover:text-primary-600 font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Shop
+              Products
+            </Link>
+            <Link
+              to="/shop"
+              className="block py-2 pl-4 text-gray-600 hover:text-primary-600 text-sm"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              → Shop
             </Link>
             <Link
               to="/customize"
+              className="block py-2 pl-4 text-gray-600 hover:text-primary-600 text-sm"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              → Customize
+            </Link>
+            <Link
+              to="/about"
               className="block py-2 text-gray-700 hover:text-primary-600"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Customize
+              About Us
             </Link>
           </div>
         )}

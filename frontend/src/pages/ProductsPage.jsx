@@ -85,10 +85,15 @@ const ProductsPage = () => {
     <div className="container-custom py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Our Products</h1>
-        <p className="text-gray-600">
-          {pagination && `Showing ${products.length} of ${pagination.totalProducts} products`}
+        <h1 className="text-4xl font-bold mb-2">All Products</h1>
+        <p className="text-gray-600 text-lg">
+          Explore our full collection of pre-designed and customizable t-shirts
         </p>
+        {pagination && (
+          <p className="text-sm text-gray-500 mt-2">
+            Showing {products.length} of {pagination.total} products
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -122,9 +127,9 @@ const ProductsPage = () => {
                   type="checkbox"
                   checked={showCustomizableOnly}
                   onChange={(e) => setShowCustomizableOnly(e.target.checked)}
-                  className="w-4 h-4 text-primary"
+                  className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                 />
-                <span className="text-sm font-medium">Customizable Only 🎨</span>
+                <span className="text-sm font-medium">Customizable Only</span>
               </label>
             </div>
 
@@ -156,7 +161,7 @@ const ProductsPage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="input-field text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="-createdAt">Newest</option>
                 <option value="createdAt">Oldest</option>
@@ -171,13 +176,13 @@ const ProductsPage = () => {
             <div className="space-y-2">
               <button
                 onClick={handleApplyFilters}
-                className="btn-primary w-full text-sm"
+                className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 transition text-sm font-medium"
               >
                 Apply Filters
               </button>
               <button
                 onClick={handleResetFilters}
-                className="btn-secondary w-full text-sm"
+                className="w-full border border-gray-300 py-2 rounded-md hover:bg-gray-50 transition text-sm font-medium"
               >
                 Reset Filters
               </button>

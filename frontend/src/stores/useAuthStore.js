@@ -94,6 +94,11 @@ const useAuthStore = create(
       isAdmin: () => {
         return get().user?.role === 'admin';
       },
+
+      // Update user data
+      setUser: (userData) => {
+        set({ user: userData });
+      },
     }),
     {
       name: 'auth-storage',

@@ -290,6 +290,100 @@ class OrderService {
       newUsersThisMonth
     };
   }
+
+  // User: Cancel order
+  async cancelOrder(orderId, userId, reason = '') {
+    const order = await Order.findOne({ _id: orderId, user: userId });
+    
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    // Only allow cancelling pending or confirmed orders
+    if (!['pending', 'confirmed'].includes(order.orderStatus)) {
+      throw new Error('Cannot cancel order at this stage');
+    }
+
+    order.orderStatus = 'cancelled';
+    order.statusHistory.push({
+      status: 'cancelled',
+      timestamp: new Date(),
+      note: reason || 'Cancelled by customer',
+      updatedBy: userId
+    });
+
+    await order.save();
+    return order;
+  }
+
+  // User: Update custom design (only for pending/confirmed orders)
+  async updateCustomDesign(orderId, userId, itemIndex, designData) {
+    const order = await Order.findOne({ _id: orderId, user: userId });
+    
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    // Only allow updating pending or confirmed orders
+    if (!['pending', 'confirmed'].includes(order.orderStatus)) {
+      throw new Error('Cannot update design at this stage');
+    }
+
+    if (!order.items[itemIndex]) {
+      throw new Error('Item not found');
+    }
+
+    // Update the custom design
+    order.items[itemIndex].customDesign = {
+      ...order.items[itemIndex].customDesign,
+      ...designData
+    };
+
+    // If order was confirmed, reset to pending for re-confirmation
+    if (order.orderStatus === 'confirmed') {
+      order.orderStatus = 'pending';
+      order.statusHistory.push({
+        status: 'pending',
+        timestamp: new Date(),
+        note: 'Design updated - awaiting re-confirmation',
+        updatedBy: userId
+      });
+    }
+
+    await order.save();
+    return order;
+  }
+
+  // User: Get order dashboard stats
+  async getUserOrderStats(userId) {
+    const [
+      totalOrders,
+      pendingOrders,
+      processingOrders,
+      deliveredOrders,
+      cancelledOrders
+    ] = await Promise.all([
+      Order.countDocuments({ user: userId }),
+      Order.countDocuments({ user: userId, orderStatus: 'pending' }),
+      Order.countDocuments({ user: userId, orderStatus: { $in: ['confirmed', 'processing', 'printing', 'shipped'] } }),
+      Order.countDocuments({ user: userId, orderStatus: 'delivered' }),
+      Order.countDocuments({ user: userId, orderStatus: 'cancelled' })
+    ]);
+
+    const totalSpent = await Order.aggregate([
+      { $match: { user: userId, orderStatus: 'delivered' } },
+      { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+    ]);
+
+    return {
+      totalOrders,
+      pendingOrders,
+      processingOrders,
+      deliveredOrders,
+      cancelledOrders,
+      totalSpent: totalSpent[0]?.total || 0
+    };
+  }
 }
 
 export default new OrderService();

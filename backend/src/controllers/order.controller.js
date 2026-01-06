@@ -59,6 +59,58 @@ class OrderController {
       next(error);
     }
   }
+
+  // Cancel order
+  async cancelOrder(req, res, next) {
+    try {
+      const { orderId } = req.params;
+      const { reason } = req.body;
+      const order = await orderService.cancelOrder(orderId, req.user.id, reason);
+
+      res.json({
+        success: true,
+        message: 'Order cancelled successfully',
+        data: order
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Update custom design
+  async updateCustomDesign(req, res, next) {
+    try {
+      const { orderId, itemIndex } = req.params;
+      const order = await orderService.updateCustomDesign(
+        orderId,
+        req.user.id,
+        parseInt(itemIndex),
+        req.body
+      );
+
+      res.json({
+        success: true,
+        message: 'Design updated successfully',
+        data: order
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Get user order stats
+  async getUserOrderStats(req, res, next) {
+    try {
+      const stats = await orderService.getUserOrderStats(req.user.id);
+
+      res.json({
+        success: true,
+        data: stats
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new OrderController();

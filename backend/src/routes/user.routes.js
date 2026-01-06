@@ -38,6 +38,35 @@ router.put('/profile', async (req, res, next) => {
   }
 });
 
+// Change password
+router.put('/password', async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    const user = await User.findById(req.user.id);
+    
+    // Verify current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+    
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Password changed successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Add address
 router.post('/addresses', async (req, res, next) => {
   try {
