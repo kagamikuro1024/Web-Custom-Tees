@@ -44,6 +44,9 @@ class ReviewService {
       isVerifiedPurchase
     });
 
+    // Update product rating
+    await Review.updateProductRating(productId);
+
     await review.populate('user', 'firstName lastName avatar');
     
     return review;
