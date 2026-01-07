@@ -24,10 +24,23 @@ const RegisterPage = () => {
     }
 
     try {
-      await register(formData);
-      navigate('/');
+      const response = await register(formData);
+      
+      // Show success message with email verification info
+      toast.success('Registration successful! Please check your email to verify your account.', {
+        duration: 5000
+      });
+      
+      // Don't auto-login, redirect to login page
+      navigate('/login', { 
+        state: { 
+          message: 'Please check your email and verify your account before logging in.',
+          email: formData.email
+        }
+      });
     } catch (error) {
       console.error('Registration error:', error);
+      toast.error(error.response?.data?.message || 'Registration failed');
     }
   };
 

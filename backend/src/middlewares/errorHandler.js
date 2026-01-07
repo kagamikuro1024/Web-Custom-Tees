@@ -51,6 +51,25 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
+  // Authentication/Authorization errors (from services)
+  const authErrorMessages = [
+    'verify your email',
+    'Invalid credentials',
+    'User not found',
+    'Email already registered',
+    'Invalid or expired verification token',
+    'Email is already verified',
+    'verification link has already been used'
+  ];
+  
+  if (authErrorMessages.some(msg => err.message?.toLowerCase().includes(msg.toLowerCase()))) {
+    const statusCode = err.message.includes('verify your email') ? 403 : 401;
+    return res.status(statusCode).json({
+      success: false,
+      message: err.message
+    });
+  }
+
   // Default error
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({

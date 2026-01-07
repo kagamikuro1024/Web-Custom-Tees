@@ -5,11 +5,18 @@ class MailService {
     // Cấu hình SMTP - Sử dụng Gmail hoặc Ethereal để test
     // Để test nhanh, dùng Ethereal (tạo tài khoản test tự động)
     this.transporter = null;
-    this.initializeTransporter();
+    this.initialized = false;
   }
 
   async initializeTransporter() {
+    if (this.initialized) return; // Chỉ initialize 1 lần
+    
     try {
+      // Debug: Kiểm tra biến môi trường
+      console.log('🔍 GMAIL_USER:', process.env.GMAIL_USER);
+      console.log('🔍 GMAIL_PASSWORD length:', process.env.GMAIL_PASSWORD?.length);
+      console.log('🔍 GMAIL_PASSWORD exists:', !!process.env.GMAIL_PASSWORD);
+      
       // Sử dụng Gmail để gửi mail thật
       this.transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -21,6 +28,7 @@ class MailService {
       
       // Verify connection
       await this.transporter.verify();
+      this.initialized = true;
       console.log('📧 Mail service initialized with Gmail');
       console.log('📧 Gmail account:', process.env.GMAIL_USER);
 
@@ -229,6 +237,136 @@ class MailService {
     } catch (error) {
       console.error('❌ Failed to send cancellation email:', error);
       throw new Error('Failed to send cancellation email');
+    }
+  }
+
+  /**
+   * Gửi email xác thực tài khoản
+   * @param {string} email - Email người nhận
+   * @param {string} firstName - Tên người dùng
+   * @param {string} verificationToken - Token xác thực
+   */
+  async sendVerificationEmail(email, firstName, verificationToken) {
+    try {
+      if (!this.transporter) {
+        await this.initializeTransporter();
+      }
+
+      const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+              color: #333;
+            }
+            .container {
+              max-width: 600px;
+              margin: 0 auto;
+              padding: 20px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+            }
+            .header {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              padding: 30px 20px;
+              text-align: center;
+              border-radius: 10px 10px 0 0;
+            }
+            .content {
+              padding: 30px 20px;
+              background: white;
+            }
+            .button {
+              display: inline-block;
+              padding: 15px 40px;
+              background: #667eea;
+              color: white !important;
+              text-decoration: none;
+              border-radius: 5px;
+              margin: 20px 0;
+              font-weight: bold;
+            }
+            .footer {
+              text-align: center;
+              padding: 20px;
+              color: #666;
+              font-size: 12px;
+            }
+            .warning {
+              background: #fff3cd;
+              border-left: 4px solid #ffc107;
+              padding: 15px;
+              margin: 20px 0;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🎉 Chào mừng đến với Custom T-Shirt Store!</h1>
+            </div>
+            
+            <div class="content">
+              <h2>Xin chào ${firstName},</h2>
+              <p>Cảm ơn bạn đã đăng ký tài khoản tại Custom T-Shirt Store! 🎨👕</p>
+              
+              <p>Để hoàn tất đăng ký và bắt đầu thiết kế áo thun độc đáo của riêng bạn, vui lòng xác thực địa chỉ email bằng cách click vào nút bên dưới:</p>
+              
+              <div style="text-align: center;">
+                <a href="${verificationUrl}" class="button">✉️ Xác thực Email</a>
+              </div>
+              
+              <div class="warning">
+                <strong>⚠️ Lưu ý:</strong> Link xác thực này chỉ có hiệu lực trong vòng <strong>24 giờ</strong>. Nếu link hết hạn, bạn có thể yêu cầu gửi lại email xác thực.
+              </div>
+              
+              <p>Hoặc copy link sau vào trình duyệt:</p>
+              <p style="word-break: break-all; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                <a href="${verificationUrl}">${verificationUrl}</a>
+              </p>
+              
+              <p><strong>Sau khi xác thực, bạn sẽ có thể:</strong></p>
+              <ul>
+                <li>✅ Đăng nhập vào tài khoản</li>
+                <li>🎨 Thiết kế áo thun độc đáo</li>
+                <li>🛒 Đặt hàng và thanh toán</li>
+                <li>📦 Theo dõi đơn hàng</li>
+              </ul>
+              
+              <p>Nếu bạn không tạo tài khoản này, vui lòng bỏ qua email này.</p>
+              
+              <p>Trân trọng,<br><strong>Custom T-Shirt Store Team</strong></p>
+            </div>
+            
+            <div class="footer">
+              <p>© 2026 Custom T-Shirt Store. All rights reserved.</p>
+              <p>Email này được gửi tự động, vui lòng không trả lời.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+
+      const mailOptions = {
+        from: `"Custom T-Shirt Store" <${process.env.GMAIL_USER}>`,
+        to: email,
+        subject: '✉️ Xác thực email - Custom T-Shirt Store',
+        html: htmlContent,
+      };
+
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log('📧 Verification email sent to:', email);
+
+      return { success: true, messageId: info.messageId };
+    } catch (error) {
+      console.error('❌ Failed to send verification email:', error);
+      throw new Error('Failed to send verification email');
     }
   }
 }

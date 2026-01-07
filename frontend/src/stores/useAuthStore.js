@@ -17,15 +17,9 @@ const useAuthStore = create(
         try {
           const { data } = await api.post('/auth/register', userData);
           
-          localStorage.setItem('accessToken', data.data.accessToken);
-          set({
-            user: data.data.user,
-            accessToken: data.data.accessToken,
-            isAuthenticated: true,
-            isLoading: false,
-          });
-
-          toast.success('Registration successful!');
+          // Don't auto-login after register - user needs to verify email first
+          set({ isLoading: false });
+          
           return data;
         } catch (error) {
           set({ isLoading: false });

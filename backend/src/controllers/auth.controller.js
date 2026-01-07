@@ -87,6 +87,53 @@ class AuthController {
       next(error);
     }
   }
+
+  // Verify email
+  async verifyEmail(req, res, next) {
+    try {
+      const { token } = req.query;
+      
+      if (!token) {
+        return res.status(400).json({
+          success: false,
+          message: 'Verification token is required'
+        });
+      }
+
+      const result = await authService.verifyEmail(token);
+
+      res.json({
+        success: true,
+        message: 'Email verified successfully! You can now login.',
+        data: result
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Resend verification email
+  async resendVerification(req, res, next) {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email is required'
+        });
+      }
+
+      await authService.resendVerificationEmail(email);
+
+      res.json({
+        success: true,
+        message: 'Verification email has been sent. Please check your inbox.'
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new AuthController();

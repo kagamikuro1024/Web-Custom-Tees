@@ -1,16 +1,27 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useAuthStore from '../stores/useAuthStore';
 import toast from 'react-hot-toast';
+import api from '../utils/api';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, isLoading } = useAuthStore();
 
   const [formData, setFormData] = useState({
-    email: '',
+    email: location.state?.email || '',
     password: '',
   });
+  const [showResendVerification, setShowResendVerification] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+
+  useEffect(() => {
+    // Show message from register page
+    if (location.state?.message) {
+      toast.success(location.state.message, { duration: 5000 });
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,6 +38,33 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
+      const errorMessage = error.response?.data?.message || 'Login failed';
+      
+      // Check if error is about email verification
+      if (errorMessage.includes('verify your email')) {
+        setShowResendVerification(true);
+        toast.error(errorMessage, { duration: 6000 });
+      }
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!formData.email) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    setIsResending(true);
+    try {
+      await api.post('/auth/resend-verification', { email: formData.email });
+      toast.success('Verification email has been sent! Please check your inbox.', {
+        duration: 5000
+      });
+      setShowResendVerification(false);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to resend verification email');
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -73,6 +111,27 @@ const LoginPage = () => {
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
+
+            {showResendVerification && (
+              <div className="mt-4">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-3">
+                  <p className="text-sm text-yellow-800 mb-2">
+                    ⚠️ Your email is not verified yet. Please check your inbox for the verification link.
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    Didn't receive the email? Click below to resend:
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleResendVerification}
+                  disabled={isResending}
+                  className="btn btn-outline w-full"
+                >
+                  {isResending ? 'Sending...' : '📧 Resend Verification Email'}
+                </button>
+              </div>
+            )}
           </form>
 
           <div className="mt-6 text-center">

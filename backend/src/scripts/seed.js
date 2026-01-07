@@ -51,7 +51,8 @@ const seedDatabase = async () => {
         lastName: 'User',
         email: adminEmail,
         password: process.env.ADMIN_PASSWORD || 'Admin@12345',
-        role: 'admin'
+        role: 'admin',
+        isEmailVerified: true // Admin không cần verify email
       });
       console.log(`✅ Admin user created: ${adminUser.email}\n`);
     } else {

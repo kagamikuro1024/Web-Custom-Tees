@@ -24,6 +24,7 @@ import AdminProductCreate from './pages/admin/AdminProductCreate';
 import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import AdminReviews from './pages/admin/AdminReviews';
 import CustomersPage from './pages/admin/CustomersPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 
@@ -42,6 +43,7 @@ function App() {
         <Route path="cart" element={<CartPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="verify-email" element={<VerifyEmailPage />} />
 
         {/* Protected User Routes */}
         <Route path="checkout" element={

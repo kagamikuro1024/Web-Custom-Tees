@@ -19,6 +19,7 @@ import adminRoutes from './routes/admin.routes.js';
 import reviewRoutes from './routes/review.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
+import mailService from './services/mail.service.js';
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +29,9 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to Database
 connectDB();
+
+// Initialize mail service
+mailService.initializeTransporter();
 
 // Middlewares
 app.use(helmet({
