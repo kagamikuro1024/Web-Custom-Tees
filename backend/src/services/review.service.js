@@ -49,6 +49,14 @@ class ReviewService {
 
     await review.populate('user', 'firstName lastName avatar');
     
+    // Notify admins about new review
+    const productData = await Product.findById(productId);
+    if (productData) {
+      const User = (await import('../models/User.model.js')).default;
+      const userData = await User.findById(userId);
+      await notificationService.notifyAdminNewReview(review, productData, userData);
+    }
+    
     return review;
   }
 

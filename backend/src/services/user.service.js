@@ -48,7 +48,7 @@ class UserService {
                   }
                 },
                 as: 'order',
-                in: '$$order.totalPrice'
+                in: '$$order.totalAmount'
               }
             }
           }
@@ -101,7 +101,7 @@ class UserService {
         $group: {
           _id: null,
           orderCount: { $sum: 1 },
-          totalSpent: { $sum: '$totalPrice' }
+          totalSpent: { $sum: '$totalAmount' }
         }
       }
     ]);

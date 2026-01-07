@@ -192,6 +192,30 @@ class NotificationService {
 
     return { count };
   }
+
+  // Notify all admins about new review
+  async notifyAdminNewReview(review, product, user) {
+    const admins = await User.find({ role: 'admin', isActive: true });
+    
+    const notifications = admins.map(admin => ({
+      recipient: admin._id,
+      type: 'new_review_admin',
+      title: '⭐ Đánh giá mới',
+      message: `${user.firstName} ${user.lastName} đã đánh giá ${product.name} (${review.rating}⭐)`,
+      relatedProduct: product._id,
+      relatedReview: review._id,
+      link: `/admin/reviews`,
+      data: {
+        reviewId: review._id,
+        productId: product._id,
+        productName: product.name,
+        userName: `${user.firstName} ${user.lastName}`,
+        rating: review.rating
+      }
+    }));
+
+    await Notification.insertMany(notifications);
+  }
 }
 
 export default new NotificationService();

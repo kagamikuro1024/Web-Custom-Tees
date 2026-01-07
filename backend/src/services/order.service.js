@@ -211,8 +211,13 @@ class OrderService {
 
     // Update user tier if order is delivered
     if (status === 'delivered') {
-      const User = (await import('../models/User.model.js')).default;
-      await User.calculateUserTier(order.user);
+      try {
+        const User = (await import('../models/User.model.js')).default;
+        const userId = order.user._id || order.user;
+        await User.calculateUserTier(userId);
+      } catch (error) {
+        console.error('Error updating user tier:', error);
+      }
     }
 
     // Send notification to user
