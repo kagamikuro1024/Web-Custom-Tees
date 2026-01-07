@@ -1,57 +1,12 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 class MailService {
   constructor() {
-    // Cấu hình SMTP - Sử dụng Gmail hoặc Ethereal để test
-    // Để test nhanh, dùng Ethereal (tạo tài khoản test tự động)
-    this.transporter = null;
-    this.initialized = false;
-  }
-
-  async initializeTransporter() {
-    if (this.initialized) return; // Chỉ initialize 1 lần
-    
-    try {
-      // Debug: Kiểm tra biến môi trường
-      console.log('🔍 GMAIL_USER:', process.env.GMAIL_USER);
-      console.log('🔍 GMAIL_PASSWORD length:', process.env.GMAIL_PASSWORD?.length);
-      console.log('🔍 GMAIL_PASSWORD exists:', !!process.env.GMAIL_PASSWORD);
-      
-      // Sử dụng Gmail để gửi mail thật
-      this.transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.GMAIL_USER,
-          pass: process.env.GMAIL_PASSWORD,
-        },
-      });
-      
-      // Verify connection
-      await this.transporter.verify();
-      this.initialized = true;
-      console.log('📧 Mail service initialized with Gmail');
-      console.log('📧 Gmail account:', process.env.GMAIL_USER);
-
-      // Option: Sử dụng Ethereal (Test mode - không gửi thật)
-      /*
-      const testAccount = await nodemailer.createTestAccount();
-      
-      this.transporter = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        secure: false,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass,
-        },
-      });
-
-      console.log('📧 Mail service initialized with Ethereal (Test mode)');
-      console.log('📧 Test account:', testAccount.user);
-      */
-    } catch (error) {
-      console.error('❌ Failed to initialize mail service:', error);
-    }
+    // Use Resend for production (Railway blocks SMTP)
+    this.resend = new Resend(process.env.RESEND_API_KEY);
+    this.fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    this.initialized = true;
+    console.log('📧 Mail service initialized with Resend');
   }
 
   /**
@@ -61,10 +16,6 @@ class MailService {
    */
   async sendOrderSuccessEmail(email, orderData) {
     try {
-      if (!this.transporter) {
-        await this.initializeTransporter();
-      }
-
       const { orderNumber, totalAmount, items, shippingAddress } = orderData;
 
       // Tạo HTML email content
@@ -168,21 +119,24 @@ class MailService {
         </html>
       `;
 
-      const mailOptions = {
-        from: '"Custom T-Shirt Shop" <noreply@customtshirt.com>',
+      const { data, error } = await this.resend.emails.send({
+        from: this.fromEmail,
         to: email,
         subject: `✅ Xác nhận đơn hàng #${orderNumber} - Thanh toán thành công`,
         html: htmlContent,
-      };
+      });
 
-      const info = await this.transporter.sendMail(mailOptions);
+      if (error) {
+        console.error('❌ Resend error:', error);
+        throw error;
+      }
 
       console.log('📧 Email sent successfully to:', email);
-      console.log('📧 Message ID:', info.messageId);
+      console.log('📧 Message ID:', data.id);
 
       return {
         success: true,
-        messageId: info.messageId,
+        messageId: data.id,
         recipient: email
       };
     } catch (error) {
@@ -251,10 +205,6 @@ class MailService {
    */
   async sendVerificationEmail(email, firstName, verificationToken) {
     try {
-      if (!this.transporter) {
-        await this.initializeTransporter();
-      }
-
       const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
 
       const htmlContent = `
@@ -356,17 +306,18 @@ class MailService {
         </html>
       `;
 
-      const mailOptions = {
-        from: `"Custom T-Shirt Store" <${process.env.GMAIL_USER}>`,
+      const { data, error } = await this.resend.emails.send({
+        from: this.fromEmail,
         to: email,
         subject: '✉️ Xác thực email - Custom T-Shirt Store',
         html: htmlContent,
-      };
+      });
 
-      const info = await this.transporter.sendMail(mailOptions);
+      if (error) throw error;
+
       console.log('📧 Verification email sent to:', email);
 
-      return { success: true, messageId: info.messageId };
+      return { success: true, messageId: data.id };
     } catch (error) {
       console.error('❌ Failed to send verification email:', error);
       throw new Error('Failed to send verification email');
