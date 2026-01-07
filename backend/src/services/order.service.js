@@ -83,7 +83,7 @@ class OrderService {
         page: Number(page),
         limit: Number(limit),
         total,
-        pages: Math.ceil(total / limit)
+        totalPages: Math.ceil(total / limit)
       }
     };
   }
@@ -173,7 +173,7 @@ class OrderService {
         page: Number(page),
         limit: Number(limit),
         total,
-        pages: Math.ceil(total / limit)
+        totalPages: Math.ceil(total / limit)
       }
     };
   }

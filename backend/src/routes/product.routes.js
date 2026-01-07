@@ -12,6 +12,7 @@ router.get('/customizable', productController.getCustomizableProducts);
 router.get('/:slug', productController.getProductBySlug);
 
 // Admin routes
+router.get('/admin/products', protect, adminOnly, productController.getAllProductsAdmin);
 router.post('/', protect, adminOnly, productValidation, validate, productController.createProduct);
 router.put('/:id', protect, adminOnly, productController.updateProduct);
 router.delete('/:id', protect, adminOnly, productController.deleteProduct);

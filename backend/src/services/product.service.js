@@ -1,7 +1,7 @@
 import Product from '../models/Product.model.js';
 
 class ProductService {
-  // Get all products with filters
+  // Get all products with filters (Public - only active products)
   async getAllProducts(filters = {}) {
     const {
       category,
@@ -60,7 +60,7 @@ class ProductService {
         page: Number(page),
         limit: Number(limit),
         total,
-        pages: Math.ceil(total / limit)
+        totalPages: Math.ceil(total / limit)
       }
     };
   }
@@ -129,6 +129,56 @@ class ProductService {
       .lean();
 
     return products;
+  }
+
+  // Get all products for admin (no status filter)
+  async getAllProductsAdmin(filters = {}) {
+    const {
+      isCustomizable,
+      search,
+      sortBy = '-createdAt',
+      page = 1,
+      limit = 10
+    } = filters;
+
+    const query = {};
+
+    // Filter by customizable
+    if (isCustomizable !== undefined && isCustomizable !== '') {
+      query.isCustomizable = isCustomizable === 'true';
+    }
+
+    // Search by name or description
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { tags: { $in: [new RegExp(search, 'i')] } }
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      Product.find(query)
+        .populate('category', 'name slug')
+        .sort(sortBy)
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Product.countDocuments(query)
+    ]);
+
+    return {
+      products,
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        totalPages: Math.ceil(total / limit),
+        totalProducts: total
+      }
+    };
   }
 
   // Get customizable products

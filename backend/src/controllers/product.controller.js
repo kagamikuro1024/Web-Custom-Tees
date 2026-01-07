@@ -44,6 +44,20 @@ class ProductController {
     }
   }
 
+  // Get all products for admin
+  async getAllProductsAdmin(req, res, next) {
+    try {
+      const result = await productService.getAllProductsAdmin(req.query);
+
+      res.json({
+        success: true,
+        data: result
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // Get customizable products
   async getCustomizableProducts(req, res, next) {
     try {
