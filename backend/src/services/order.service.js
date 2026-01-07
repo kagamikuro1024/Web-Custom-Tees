@@ -3,6 +3,7 @@ import Cart from '../models/Cart.model.js';
 import productService from './product.service.js';
 import cartService from './cart.service.js';
 import notificationService from './notification.service.js';
+import mailService from './mail.service.js';
 
 class OrderService {
   // Generate unique order number
@@ -24,6 +25,20 @@ class OrderService {
   // Create order from cart
   async createOrder(userId, orderData) {
     const { items, subtotal, shippingFee, totalAmount, shippingAddress, paymentMethod, notes } = orderData;
+
+    // Clean up pending VNPAY orders before creating new one
+    // (User might have cancelled previous payment attempt)
+    if (paymentMethod === 'vnpay') {
+      const deletedCount = await Order.deleteMany({
+        user: userId,
+        paymentMethod: 'vnpay',
+        paymentStatus: 'pending',
+        createdAt: { $gte: new Date(Date.now() - 30 * 60 * 1000) } // Only delete recent ones (< 30 mins)
+      });
+      if (deletedCount.deletedCount > 0) {
+        console.log(`🗑️ Cleaned up ${deletedCount.deletedCount} pending VNPAY order(s) for user ${userId}`);
+      }
+    }
 
     // Generate unique order number
     const orderNumber = await this.generateOrderNumber();
@@ -53,6 +68,21 @@ class OrderService {
 
     // Notify admins about new order
     await notificationService.notifyAdminNewOrder(order);
+
+    // Send order confirmation email ONLY for COD orders
+    // VNPAY orders will send email after successful payment callback
+    if (paymentMethod === 'cod') {
+      const populatedOrder = await Order.findById(order._id).populate('user', 'firstName lastName email');
+      if (populatedOrder?.user?.email) {
+        await mailService.sendOrderSuccessEmail(populatedOrder.user.email, {
+          orderNumber: populatedOrder.orderNumber,
+          totalAmount: populatedOrder.totalAmount,
+          items: populatedOrder.items,
+          shippingAddress: populatedOrder.shippingAddress,
+          paymentMethod: populatedOrder.paymentMethod
+        });
+      }
+    }
 
     return order;
   }

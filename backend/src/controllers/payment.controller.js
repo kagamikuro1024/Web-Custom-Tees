@@ -115,7 +115,13 @@ class PaymentController {
 
             // Gửi email xác nhận
             try {
-              await mailService.sendOrderSuccessEmail(order);
+              await mailService.sendOrderSuccessEmail(order.user.email, {
+                orderNumber: order.orderNumber,
+                totalAmount: order.totalAmount,
+                items: order.items,
+                shippingAddress: order.shippingAddress,
+                paymentMethod: order.paymentMethod
+              });
               console.log('📧 Confirmation email sent to:', order.user.email);
             } catch (emailError) {
               console.error('Email error:', emailError);

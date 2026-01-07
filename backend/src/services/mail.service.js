@@ -136,8 +136,11 @@ class MailService {
                 <p><strong>Mã đơn hàng:</strong> #${orderNumber}</p>
                 <p><strong>Ngày đặt:</strong> ${new Date().toLocaleDateString('vi-VN')}</p>
                 <p><strong>Địa chỉ giao hàng:</strong></p>
-                <p>${shippingAddress?.address}, ${shippingAddress?.ward}, ${shippingAddress?.district}, ${shippingAddress?.province}</p>
-                <p><strong>Số điện thoại:</strong> ${shippingAddress?.phone}</p>
+                <p>${shippingAddress?.addressLine1 || ''}</p>
+                ${shippingAddress?.addressLine2 ? `<p>${shippingAddress.addressLine2}</p>` : ''}
+                <p>${shippingAddress?.city || ''}, ${shippingAddress?.state || ''} ${shippingAddress?.postalCode || ''}</p>
+                <p>${shippingAddress?.country || ''}</p>
+                <p><strong>Số điện thoại:</strong> ${shippingAddress?.phone || ''}</p>
               </div>
 
               <h3>🛍️ Chi tiết đơn hàng</h3>
