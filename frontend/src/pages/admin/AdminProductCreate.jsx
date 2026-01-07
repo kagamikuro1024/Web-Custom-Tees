@@ -67,8 +67,8 @@ const AdminProductCreate = () => {
     e.preventDefault();
 
     // Validation
-    if (!formData.name || !formData.price || !formData.category || !formData.imageUrl) {
-      toast.error('Please fill in all required fields');
+    if (!formData.name || !formData.description || !formData.price || !formData.category || !formData.imageUrl) {
+      toast.error('Please fill in all required fields (name, description, price, category, image)');
       return;
     }
 
@@ -162,7 +162,7 @@ const AdminProductCreate = () => {
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
+                  Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   name="description"
@@ -171,6 +171,7 @@ const AdminProductCreate = () => {
                   placeholder="Describe your product..."
                   rows="4"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 

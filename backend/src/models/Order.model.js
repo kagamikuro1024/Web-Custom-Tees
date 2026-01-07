@@ -135,7 +135,7 @@ const orderSchema = new mongoose.Schema({
   // Payment Information
   paymentMethod: {
     type: String,
-    enum: ['cod', 'stripe', 'zalopay', 'momo'],
+    enum: ['cod', 'stripe', 'zalopay', 'momo', 'vnpay'],
     required: true
   },
   paymentStatus: {
@@ -147,6 +147,15 @@ const orderSchema = new mongoose.Schema({
     transactionId: String,
     paidAt: Date,
     paymentIntent: String
+  },
+  paidAt: Date,
+  
+  // VNPAY Transaction Info
+  vnpayTransaction: {
+    transactionNo: String,
+    bankCode: String,
+    cardType: String,
+    payDate: String
   },
   
   // Order Status

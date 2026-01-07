@@ -69,7 +69,8 @@ const CheckoutPage = () => {
     email: user?.email || '',
     phone: user?.phone || '',
     address: '',
-    notes: ''
+    notes: '',
+    paymentMethod: 'cod' // Default payment method
   });
 
   useEffect(() => {
@@ -112,17 +113,27 @@ const CheckoutPage = () => {
     setIsSubmitting(true);
     try {
       // Prepare order items from cart
-      const orderItems = cart.items.map(item => ({
-        product: item.product._id,
-        productName: item.product.name,
-        productImage: item.product.images?.[0]?.url || '',
-        quantity: item.quantity,
-        price: item.priceAtAdd,
-        selectedSize: item.selectedSize,
-        selectedColor: item.selectedColor,
-        customDesign: item.customDesign || undefined,
-        subtotal: item.priceAtAdd * item.quantity
-      }));
+      const orderItems = cart.items.map(item => {
+        // Ensure selectedColor is always an object with name and hexCode
+        let colorData = item.selectedColor;
+        if (typeof colorData === 'string') {
+          colorData = { name: colorData, hexCode: '' };
+        } else if (!colorData || typeof colorData !== 'object') {
+          colorData = { name: 'Default', hexCode: '' };
+        }
+
+        return {
+          product: item.product._id,
+          productName: item.product.name,
+          productImage: item.product.images?.[0]?.url || '',
+          quantity: item.quantity,
+          price: item.priceAtAdd,
+          selectedSize: item.selectedSize,
+          selectedColor: colorData,
+          customDesign: item.customDesign || undefined,
+          subtotal: item.priceAtAdd * item.quantity
+        };
+      });
 
       const orderData = {
         items: orderItems,
@@ -138,18 +149,56 @@ const CheckoutPage = () => {
           postalCode: '100000',
           country: 'Vietnam'
         },
-        paymentMethod: 'cod',
+        paymentMethod: formData.paymentMethod,
         notes: formData.notes
       };
 
-      console.log('Submitting order:', orderData);
+      console.log('=== ORDER DATA DEBUG ===');
+      console.log('Payment Method:', formData.paymentMethod);
+      console.log('Payment Method Type:', typeof formData.paymentMethod);
+      console.log('Full orderData:', JSON.stringify(orderData, null, 2));
+      console.log('========================');
 
+      // Create order
       const { data } = await api.post('/orders', orderData);
-      toast.success('Đặt hàng thành công!');
-      navigate(`/order-success/${data.data.orderNumber}`);
+      const order = data.data;
+      
+      // If VNPAY payment, create payment URL
+      if (formData.paymentMethod === 'vnpay') {
+        console.log('Creating VNPAY payment URL...');
+        
+        const paymentData = {
+          orderId: order.orderNumber,
+          amount: order.totalAmount,
+          orderInfo: `Thanh toan don hang ${order.orderNumber}`, // Khong dau
+          bankCode: '' // Empty = show all banks
+        };
+
+        const paymentResponse = await api.post('/payment/create-payment-url', paymentData);
+        
+        if (paymentResponse.data.success) {
+          // Redirect to VNPAY
+          window.location.href = paymentResponse.data.data.paymentUrl;
+        } else {
+          throw new Error('Failed to create payment URL');
+        }
+      } else {
+        // COD payment - go to success page
+        toast.success('Đặt hàng thành công!');
+        navigate(`/order-success/${order.orderNumber}`);
+      }
     } catch (error) {
       console.error('Order error:', error);
       console.error('Error response:', error.response?.data);
+      console.error('Full errors array:', error.response?.data?.errors);
+      
+      // Show detailed validation errors
+      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+        error.response.data.errors.forEach((err, index) => {
+          console.error(`Validation Error ${index + 1}:`, err);
+        });
+      }
+      
       const errorMessage = error.response?.data?.message || error.response?.data?.errors?.[0]?.message || 'Không thể tạo đơn hàng';
       toast.error(errorMessage);
     } finally {
@@ -370,10 +419,40 @@ const CheckoutPage = () => {
 
               {/* Payment Method */}
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm font-medium mb-2">Payment Method</p>
-                <div className="flex items-center gap-2">
-                  <input type="radio" checked readOnly />
-                  <span className="text-sm">Cash on Delivery (COD)</span>
+                <p className="text-sm font-medium mb-3">Payment Method</p>
+                
+                <div className="space-y-3">
+                  {/* COD Option */}
+                  <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-white transition">
+                    <input 
+                      type="radio" 
+                      name="paymentMethod"
+                      value="cod"
+                      checked={formData.paymentMethod === 'cod'}
+                      onChange={handleInputChange}
+                      className="text-primary-600 focus:ring-primary-500"
+                    />
+                    <div className="flex-grow">
+                      <span className="text-sm font-medium">💵 Cash on Delivery (COD)</span>
+                      <p className="text-xs text-gray-500">Pay when you receive the order</p>
+                    </div>
+                  </label>
+
+                  {/* VNPAY Option */}
+                  <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-white transition">
+                    <input 
+                      type="radio" 
+                      name="paymentMethod"
+                      value="vnpay"
+                      checked={formData.paymentMethod === 'vnpay'}
+                      onChange={handleInputChange}
+                      className="text-primary-600 focus:ring-primary-500"
+                    />
+                    <div className="flex-grow">
+                      <span className="text-sm font-medium">🏦 VNPAY</span>
+                      <p className="text-xs text-gray-500">Pay online via VNPAY gateway</p>
+                    </div>
+                  </label>
                 </div>
               </div>
 
@@ -382,7 +461,7 @@ const CheckoutPage = () => {
                 disabled={isSubmitting || !deliveryLocation}
                 className="btn btn-primary w-full py-4 text-lg font-bold mt-6 rounded-xl shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Processing...' : 'Place Order'}
+                {isSubmitting ? 'Processing...' : formData.paymentMethod === 'vnpay' ? 'Pay with VNPAY' : 'Place Order'}
               </button>
 
               <p className="text-xs text-gray-500 text-center mt-4">

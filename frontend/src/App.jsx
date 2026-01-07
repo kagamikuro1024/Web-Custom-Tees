@@ -49,7 +49,8 @@ function App() {
             <CheckoutPage />
           </ProtectedRoute>
         } />
-        <Route path="order-success/:orderNumber" element={
+        {/* Order success - both with and without orderNumber param */}
+        <Route path="order-success/:orderNumber?" element={
           <ProtectedRoute>
             <OrderSuccessPage />
           </ProtectedRoute>

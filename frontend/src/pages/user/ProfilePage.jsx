@@ -25,7 +25,8 @@ const ProfilePage = () => {
   });
   const [showPasswordSection, setShowPasswordSection] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [orderCount, setOrderCount] = useState(0);
+  const [deliveredOrders, setDeliveredOrders] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
 
   const getTierThresholds = () => ({
     bronze: { min: 0, max: 4, next: 'silver' },
@@ -44,8 +45,8 @@ const ProfilePage = () => {
       return { progress: 100, remaining: 0, nextTier: null };
     }
 
-    const progress = ((orderCount - threshold.min) / (threshold.max - threshold.min + 1)) * 100;
-    const remaining = threshold.max - orderCount + 1;
+    const progress = ((deliveredOrders - threshold.min) / (threshold.max - threshold.min + 1)) * 100;
+    const remaining = threshold.max - deliveredOrders + 1;
     
     return {
       progress: Math.min(progress, 100),
@@ -55,18 +56,20 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    const fetchOrderCount = async () => {
+    const fetchOrderStats = async () => {
       try {
-        const { data } = await api.get('/orders/user/me');
-        const delivered = data.data.filter(o => o.orderStatus === 'delivered').length;
-        setOrderCount(delivered);
+        const { data } = await api.get('/orders');
+        const orders = data.data?.orders || [];
+        setTotalOrders(orders.length);
+        const delivered = orders.filter(o => o.orderStatus === 'delivered').length;
+        setDeliveredOrders(delivered);
       } catch (error) {
         console.error('Error fetching orders:', error);
       }
     };
 
     if (user) {
-      fetchOrderCount();
+      fetchOrderStats();
     }
   }, [user]);
 
@@ -184,7 +187,12 @@ const ProfilePage = () => {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between text-gray-600">
                     <span>Total Orders</span>
-                    <span className="font-semibold text-gray-900">{orderCount}</span>
+                    <span className="font-semibold text-gray-900">{totalOrders}</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-gray-600">
+                    <span>Completed Orders</span>
+                    <span className="font-semibold text-green-600">{deliveredOrders}</span>
                   </div>
 
                   {getTierProgress().nextTier && (
@@ -199,7 +207,7 @@ const ProfilePage = () => {
                       <div>
                         <div className="flex justify-between text-xs text-gray-500 mb-1">
                           <span>Progress</span>
-                          <span>{getTierProgress().remaining} orders to go</span>
+                          <span>{getTierProgress().remaining} completed orders to go</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <div 
@@ -226,6 +234,12 @@ const ProfilePage = () => {
                     <li>• Early access to new designs</li>
                     <li>• Exclusive promotions</li>
                   </ul>
+                </div>
+
+                {/* Info Note */}
+                <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+                  <p className="font-medium mb-1">💡 How tiers work:</p>
+                  <p>Tiers are calculated based on <strong>completed (delivered)</strong> orders only. Place more orders and wait for delivery to rank up!</p>
                 </div>
               </div>
             </div>

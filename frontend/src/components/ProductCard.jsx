@@ -61,7 +61,7 @@ const ProductCard = ({ product }) => {
         )}
 
         {/* Rating */}
-        {product.rating?.count > 0 && (
+        {product.rating && (
           <div className="flex items-center gap-1 mb-2">
             <div className="flex text-yellow-400">
               {[...Array(5)].map((_, i) => (
@@ -76,7 +76,7 @@ const ProductCard = ({ product }) => {
               ))}
             </div>
             <span className="text-xs text-gray-500">
-              ({product.rating.count})
+              ({product.rating.count || 0})
             </span>
           </div>
         )}

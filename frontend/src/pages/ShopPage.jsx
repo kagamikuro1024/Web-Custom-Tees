@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { FaSpinner, FaSearch, FaFilter } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
@@ -9,6 +9,7 @@ import useAuthStore from '../stores/useAuthStore';
 
 const ShopPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState(null);
@@ -49,7 +50,7 @@ const ShopPage = () => {
     };
 
     fetchProducts();
-  }, [searchParams, searchTerm, minPrice, maxPrice, sortBy]);
+  }, [searchParams, searchTerm, minPrice, maxPrice, sortBy, location.key]);
 
   // Apply filters
   const handleApplyFilters = () => {
@@ -198,7 +199,7 @@ const ShopPage = () => {
               </div>
 
               {/* Pagination */}
-              {pagination && pagination.pages > 1 && (
+              {pagination && pagination.totalPages > 1 && (
                 <div className="flex justify-center items-center gap-2 mt-8">
                   <button
                     onClick={() => handlePageChange(pagination.page - 1)}
@@ -208,12 +209,12 @@ const ShopPage = () => {
                     Previous
                   </button>
 
-                  {[...Array(pagination.pages)].map((_, index) => {
+                  {[...Array(pagination.totalPages)].map((_, index) => {
                     const page = index + 1;
                     // Show first, last, current, and neighbors
                     if (
                       page === 1 ||
-                      page === pagination.pages ||
+                      page === pagination.totalPages ||
                       Math.abs(page - pagination.page) <= 1
                     ) {
                       return (
@@ -240,7 +241,7 @@ const ShopPage = () => {
 
                   <button
                     onClick={() => handlePageChange(pagination.page + 1)}
-                    disabled={pagination.page === pagination.pages}
+                    disabled={pagination.page === pagination.totalPages}
                     className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
                   >
                     Next

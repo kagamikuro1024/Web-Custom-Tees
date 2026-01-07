@@ -246,8 +246,8 @@ const ProductsPage = () => {
               {pagination && pagination.totalPages > 1 && (
                 <div className="flex justify-center items-center gap-2 mt-8">
                   <button
-                    onClick={() => handlePageChange(pagination.currentPage - 1)}
-                    disabled={pagination.currentPage === 1}
+                    onClick={() => handlePageChange(pagination.page - 1)}
+                    disabled={pagination.page === 1}
                     className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
                   >
                     Previous
@@ -259,14 +259,14 @@ const ProductsPage = () => {
                     if (
                       page === 1 ||
                       page === pagination.totalPages ||
-                      Math.abs(page - pagination.currentPage) <= 1
+                      Math.abs(page - pagination.page) <= 1
                     ) {
                       return (
                         <button
                           key={page}
                           onClick={() => handlePageChange(page)}
                           className={`px-4 py-2 border rounded-lg ${
-                            page === pagination.currentPage
+                            page === pagination.page
                               ? 'bg-primary text-white'
                               : 'hover:bg-gray-100'
                           }`}
@@ -275,8 +275,8 @@ const ProductsPage = () => {
                         </button>
                       );
                     } else if (
-                      page === pagination.currentPage - 2 ||
-                      page === pagination.currentPage + 2
+                      page === pagination.page - 2 ||
+                      page === pagination.page + 2
                     ) {
                       return <span key={page}>...</span>;
                     }
@@ -284,8 +284,8 @@ const ProductsPage = () => {
                   })}
 
                   <button
-                    onClick={() => handlePageChange(pagination.currentPage + 1)}
-                    disabled={pagination.currentPage === pagination.totalPages}
+                    onClick={() => handlePageChange(pagination.page + 1)}
+                    disabled={pagination.page === pagination.totalPages}
                     className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
                   >
                     Next

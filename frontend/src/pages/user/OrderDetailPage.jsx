@@ -544,6 +544,8 @@ const OrderDetailPage = () => {
                   setShowReviewModal(false);
                   setReviewingProduct(null);
                   toast.success('Cảm ơn bạn đã đánh giá! 🌟');
+                  // Reload order data to refresh product ratings
+                  fetchOrderDetails();
                 }}
                 onCancel={() => {
                   setShowReviewModal(false);

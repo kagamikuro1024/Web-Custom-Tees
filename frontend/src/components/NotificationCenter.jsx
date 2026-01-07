@@ -105,6 +105,8 @@ const NotificationCenter = () => {
       case 'review_added':
       case 'review_replied':
         return <FiStar className="text-yellow-600" />;
+      case 'new_review_admin':
+        return <FiStar className="text-yellow-500" />;
       case 'product_low_stock':
         return <FiAlertCircle className="text-red-600" />;
       default:

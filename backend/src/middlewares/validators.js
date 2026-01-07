@@ -87,7 +87,7 @@ export const createOrderValidation = [
     .notEmpty().withMessage('Postal code is required'),
   body('paymentMethod')
     .notEmpty().withMessage('Payment method is required')
-    .isIn(['cod', 'stripe', 'zalopay', 'momo']).withMessage('Invalid payment method'),
+    .isIn(['cod', 'stripe', 'zalopay', 'momo', 'vnpay']).withMessage('Invalid payment method'),
 ];
 
 export const updateOrderStatusValidation = [

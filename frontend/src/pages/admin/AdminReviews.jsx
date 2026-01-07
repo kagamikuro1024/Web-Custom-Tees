@@ -11,7 +11,8 @@ const AdminReviews = () => {
   const [filters, setFilters] = useState({
     status: '',
     rating: '',
-    search: ''
+    search: '',
+    hasReply: '' // 'true', 'false', or ''
   });
   const [pagination, setPagination] = useState({
     page: 1,
@@ -33,7 +34,10 @@ const AdminReviews = () => {
       const params = {
         page: pagination.page,
         limit: pagination.limit,
-        ...filters
+        status: filters.status,
+        rating: filters.rating,
+        search: filters.search
+        // hasReply will be filtered client-side
       };
       
       const { data } = await api.get('/admin/reviews', { params });
@@ -41,7 +45,7 @@ const AdminReviews = () => {
       setPagination(prev => ({
         ...prev,
         total: data.data.pagination.total,
-        pages: data.data.pagination.pages
+        totalPages: data.data.pagination.totalPages
       }));
     } catch (error) {
       console.error('Error fetching reviews:', error);
@@ -50,6 +54,16 @@ const AdminReviews = () => {
       setLoading(false);
     }
   };
+
+  // Filter reviews client-side for hasReply
+  const getFilteredReviews = () => {
+    if (!filters.hasReply) return reviews;
+    
+    const hasReply = filters.hasReply === 'true';
+    return reviews.filter(review => hasReply ? !!review.reply : !review.reply);
+  };
+
+  const filteredReviews = getFilteredReviews();
 
   const handleStatusChange = async (reviewId, newStatus) => {
     try {
@@ -168,28 +182,67 @@ const AdminReviews = () => {
             <option value="1">1 sao</option>
           </select>
 
+          <select
+            value={filters.hasReply}
+            onChange={(e) => setFilters({ ...filters, hasReply: e.target.value })}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Tất cả</option>
+            <option value="false">Chưa trả lời</option>
+            <option value="true">Đã trả lời</option>
+          </select>
+
           <button
-            onClick={() => setFilters({ status: '', rating: '', search: '' })}
+            onClick={() => setFilters({ status: '', rating: '', search: '', hasReply: '' })}
             className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
           >
             Reset
           </button>
         </div>
+
+        {/* Stats */}
+        <div className="mt-4 flex gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-blue-500"></span>
+            <span className="text-gray-600">Chưa trả lời: <span className="font-semibold">{reviews.filter(r => !r.reply).length}</span></span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-green-500"></span>
+            <span className="text-gray-600">Đã trả lời: <span className="font-semibold">{reviews.filter(r => r.reply).length}</span></span>
+          </div>
+        </div>
       </div>
 
       {/* Reviews List */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        {reviews.length === 0 ? (
+        {filteredReviews.length === 0 ? (
           <div className="p-12 text-center">
             <FiStar className="text-6xl text-gray-300 mx-auto mb-4" />
             <p className="text-gray-600 text-lg">Chưa có đánh giá nào</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
-            {reviews.map((review) => (
-              <div key={review._id} className="p-6 hover:bg-gray-50 transition">
+            {filteredReviews.map((review) => (
+              <div 
+                key={review._id} 
+                className={`p-6 hover:bg-gray-50 transition ${!review.reply ? 'border-l-4 border-blue-500 bg-blue-50/30' : 'border-l-4 border-green-500'}`}
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start gap-4 flex-1">
+                    {/* Status Badge */}
+                    <div className="flex flex-col gap-2">
+                      {!review.reply && (
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                          🆕 Mới
+                        </span>
+                      )}
+                      {review.reply && (
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                          ✅ Đã trả lời
+                        </span>
+                      )}
+                    </div>
+
                     {/* Product Image */}
                     <Link to={`/products/${review.product?.slug || review.product?._id}`}>
                       <img
@@ -325,7 +378,7 @@ const AdminReviews = () => {
       </div>
 
       {/* Pagination */}
-      {pagination.pages > 1 && (
+      {pagination.totalPages > 1 && (
         <div className="mt-6 flex justify-center gap-2">
           <button
             onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
@@ -336,12 +389,12 @@ const AdminReviews = () => {
           </button>
           
           <span className="px-4 py-2 text-gray-600">
-            Page {pagination.page} of {pagination.pages}
+            Page {pagination.page} of {pagination.totalPages}
           </span>
           
           <button
             onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
-            disabled={pagination.page === pagination.pages}
+            disabled={pagination.page === pagination.totalPages}
             className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
