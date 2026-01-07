@@ -30,9 +30,6 @@ const PORT = process.env.PORT || 5000;
 // Connect to Database
 connectDB();
 
-// Initialize mail service
-mailService.initializeTransporter();
-
 // Middlewares
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
