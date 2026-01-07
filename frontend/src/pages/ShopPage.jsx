@@ -4,6 +4,8 @@ import { FaSpinner, FaSearch, FaFilter } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
+import SearchHistory from '../components/SearchHistory';
+import useAuthStore from '../stores/useAuthStore';
 
 const ShopPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();

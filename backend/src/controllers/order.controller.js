@@ -81,11 +81,23 @@ class OrderController {
   async updateCustomDesign(req, res, next) {
     try {
       const { orderId, itemIndex } = req.params;
+      
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'No image file provided'
+        });
+      }
+
+      const designData = {
+        imageUrl: req.file.path // Cloudinary URL
+      };
+
       const order = await orderService.updateCustomDesign(
         orderId,
         req.user.id,
         parseInt(itemIndex),
-        req.body
+        designData
       );
 
       res.json({

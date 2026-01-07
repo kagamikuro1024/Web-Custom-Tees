@@ -95,7 +95,7 @@ export const updateOrderStatusValidation = [
     .isMongoId().withMessage('Invalid order ID'),
   body('status')
     .notEmpty().withMessage('Status is required')
-    .isIn(['pending', 'confirmed', 'processing', 'printing', 'shipped', 'delivered', 'cancelled'])
+    .isIn(['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'])
     .withMessage('Invalid order status'),
 ];
 

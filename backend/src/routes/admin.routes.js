@@ -1,6 +1,7 @@
 import express from 'express';
 import adminController from '../controllers/admin.controller.js';
 import productController from '../controllers/product.controller.js';
+import statsController from '../controllers/stats.controller.js';
 import { protect, adminOnly } from '../middlewares/auth.middleware.js';
 import { updateOrderStatusValidation, validate } from '../middlewares/validators.js';
 
@@ -11,6 +12,13 @@ router.use(protect, adminOnly);
 
 // Dashboard statistics
 router.get('/stats', adminController.getOrderStatistics);
+router.get('/stats/dashboard', statsController.getDashboardStats);
+router.get('/stats/revenue-trend', statsController.getRevenueTrend);
+router.get('/stats/monthly-revenue', statsController.getMonthlyRevenue);
+router.get('/stats/top-products', statsController.getTopProducts);
+router.get('/stats/order-status', statsController.getOrderStatusDistribution);
+router.get('/stats/recent-activities', statsController.getRecentActivities);
+router.get('/stats/low-stock', statsController.getLowStockProducts);
 
 // Order management
 router.get('/orders', adminController.getAllOrders);

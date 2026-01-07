@@ -4,9 +4,12 @@ import { FaSpinner, FaSearch, FaFilter } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
+import SearchHistory from '../components/SearchHistory';
+import useAuthStore from '../stores/useAuthStore';
 
 const ProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { isAuthenticated } = useAuthStore();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState(null);
@@ -51,7 +54,7 @@ const ProductsPage = () => {
   }, [searchParams]);
 
   // Apply filters
-  const handleApplyFilters = () => {
+  const handleApplyFilters = async () => {
     const params = new URLSearchParams();
     if (searchTerm) params.set('search', searchTerm);
     if (showCustomizableOnly) params.set('isCustomizable', 'true');
@@ -60,6 +63,28 @@ const ProductsPage = () => {
     params.set('sortBy', sortBy);
     params.set('page', '1');
     
+    setSearchParams(params);
+    
+    // Save to search history if authenticated and searchTerm exists
+    if (isAuthenticated && searchTerm.trim()) {
+      try {
+        await api.post('/users/search-history', { query: searchTerm.trim() });
+      } catch (error) {
+        console.error('Failed to save search history:', error);
+      }
+    }
+  };
+
+  // Handle search from history
+  const handleSearchFromHistory = (query) => {
+    setSearchTerm(query);
+    const params = new URLSearchParams();
+    params.set('search', query);
+    if (showCustomizableOnly) params.set('isCustomizable', 'true');
+    if (minPrice) params.set('minPrice', minPrice);
+    if (maxPrice) params.set('maxPrice', maxPrice);
+    params.set('sortBy', sortBy);
+    params.set('page', '1');
     setSearchParams(params);
   };
 
@@ -112,12 +137,18 @@ const ProductsPage = () => {
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleApplyFilters()}
                   placeholder="Search products..."
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  onKeyPress={(e) => e.key === 'Enter' && handleApplyFilters()}
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
+              
+              {/* Search History */}
+              <SearchHistory 
+                onSearchClick={handleSearchFromHistory}
+                className="mt-2"
+              />
             </div>
 
             {/* Customizable Only */}

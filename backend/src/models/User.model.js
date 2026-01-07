@@ -60,7 +60,11 @@ const userSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
-  }
+  },
+  searchHistory: [{
+    query: { type: String, required: true },
+    timestamp: { type: Date, default: Date.now }
+  }]
 }, {
   timestamps: true
 });

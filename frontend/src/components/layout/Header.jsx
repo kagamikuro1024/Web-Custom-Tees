@@ -3,6 +3,7 @@ import { FiShoppingCart, FiUser, FiLogOut, FiMenu } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 import useAuthStore from '../../stores/useAuthStore';
 import useCartStore from '../../stores/useCartStore';
+import NotificationCenter from '../NotificationCenter';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -58,6 +59,9 @@ const Header = () => {
 
           {/* Right Actions */}
           <div className="flex items-center space-x-4">
+            {/* Notifications */}
+            <NotificationCenter />
+
             {/* Cart */}
             <Link to="/cart" className="relative text-gray-700 hover:text-primary-600 transition">
               <FiShoppingCart size={24} />

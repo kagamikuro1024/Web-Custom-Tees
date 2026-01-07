@@ -5,18 +5,24 @@ const AboutPage = () => {
   return (
     <div>
       {/* Hero Section with Image */}
-      <section className="relative h-[500px] bg-gray-900">
+      <section className="relative h-[500px] bg-gray-900 overflow-hidden">
         <img 
           src="/assets/2.png" 
           alt="About CustomTees" 
-          className="w-full h-full object-cover opacity-70"
+          className="w-full h-full object-cover scale-105 animate-subtle-zoom"
         />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="container-custom text-center text-white">
-            <h1 className="text-5xl font-bold mb-4">About CustomTees</h1>
-            <p className="text-xl text-gray-200 max-w-2xl mx-auto">
-              Bringing your creative vision to life, one t-shirt at a time
-            </p>
+            <div className="backdrop-blur-sm bg-white/5 rounded-3xl p-12 border border-white/10 shadow-2xl animate-fade-in-up">
+              <h1 className="text-6xl font-extrabold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                About CustomTees
+              </h1>
+              <p className="text-xl text-gray-100 max-w-2xl mx-auto leading-relaxed">
+                Bringing your creative vision to life, one t-shirt at a time
+              </p>
+            </div>
           </div>
         </div>
       </section>

@@ -90,7 +90,6 @@ const OrderDetailPage = () => {
       pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
       confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
       processing: 'bg-purple-100 text-purple-800 border-purple-200',
-      printing: 'bg-indigo-100 text-indigo-800 border-indigo-200',
       shipped: 'bg-cyan-100 text-cyan-800 border-cyan-200',
       delivered: 'bg-green-100 text-green-800 border-green-200',
       cancelled: 'bg-red-100 text-red-800 border-red-200'
@@ -478,7 +477,7 @@ const OrderDetailPage = () => {
         </div>
       )}
 
-      {/* Cancel Order Modal */}}
+      {/* Cancel Order Modal */}
       {showCancelModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
@@ -491,7 +490,6 @@ const OrderDetailPage = () => {
                 <p className="text-sm text-gray-600">Order #{order.orderNumber}</p>
               </div>
             </div>
-            
             <p className="text-gray-700 mb-4">
               Are you sure you want to cancel this order? This action cannot be undone.
             </p>

@@ -31,26 +31,29 @@ const HomePage = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative h-[600px] bg-gray-900">
+      <section className="relative h-[600px] bg-gray-900 overflow-hidden">
         <img 
           src="/assets/1.png" 
           alt="Custom T-Shirts" 
-          className="w-full h-full object-cover opacity-60"
+          className="w-full h-full object-cover scale-105 animate-subtle-zoom"
         />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
         <div className="absolute inset-0 flex items-center">
           <div className="container-custom">
             <div className="max-w-3xl text-white">
-              <h1 className="text-5xl font-bold mb-6 fade-in">
-                Design Your Own Custom T-Shirts
+              <h1 className="text-6xl font-extrabold mb-6 leading-tight animate-fade-in-up">
+                Design Your Own
+                <span className="block text-primary-400 mt-2">Custom T-Shirts</span>
               </h1>
-              <p className="text-xl mb-8 text-gray-200">
+              <p className="text-xl mb-8 text-gray-100 leading-relaxed animate-fade-in-up animation-delay-200">
                 Upload your design, customize it, and get high-quality printed t-shirts delivered to your door.
               </p>
-              <div className="flex gap-4">
-                <Link to="/customize" className="btn bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium">
+              <div className="flex gap-4 animate-fade-in-up animation-delay-400">
+                <Link to="/customize" className="btn bg-primary-500 text-white hover:bg-primary-600 hover:scale-105 transform transition-all duration-300 px-8 py-3 rounded-lg font-medium shadow-lg">
                   Start Designing
                 </Link>
-                <Link to="/products" className="btn border-2 border-white text-white hover:bg-white hover:text-primary-600 px-8 py-3 rounded-lg font-medium">
+                <Link to="/products" className="btn border-2 border-white backdrop-blur-sm bg-white/10 text-white hover:bg-white hover:text-primary-600 px-8 py-3 rounded-lg font-medium shadow-lg transition-all duration-300 hover:scale-105 transform">
                   Browse Products
                 </Link>
               </div>

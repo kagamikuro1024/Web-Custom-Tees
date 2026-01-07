@@ -2,6 +2,7 @@ import Order from '../models/Order.model.js';
 import Cart from '../models/Cart.model.js';
 import productService from './product.service.js';
 import cartService from './cart.service.js';
+import notificationService from './notification.service.js';
 
 class OrderService {
   // Generate unique order number
@@ -49,6 +50,9 @@ class OrderService {
 
     // Clear cart
     await cartService.clearCart(userId);
+
+    // Notify admins about new order
+    await notificationService.notifyAdminNewOrder(order);
 
     return order;
   }
@@ -181,6 +185,9 @@ class OrderService {
       throw new Error('Order not found');
     }
 
+    // Save old status BEFORE updating
+    const oldStatus = order.orderStatus;
+
     order.orderStatus = status;
     order.statusHistory.push({
       status,
@@ -201,6 +208,11 @@ class OrderService {
     }
 
     await order.save();
+
+    // Send notification to user
+    if (oldStatus !== status) {
+      await notificationService.notifyUserOrderStatusUpdate(order, oldStatus, status);
+    }
 
     return order;
   }
@@ -257,7 +269,7 @@ class OrderService {
     ] = await Promise.all([
       Order.countDocuments(),
       Order.countDocuments({ orderStatus: 'pending' }),
-      Order.countDocuments({ orderStatus: { $in: ['confirmed', 'processing', 'printing', 'shipped'] } }),
+      Order.countDocuments({ orderStatus: { $in: ['confirmed', 'processing', 'shipped'] } }),
       Order.countDocuments({ orderStatus: 'delivered' }),
       Order.countDocuments({ orderStatus: 'cancelled' }),
       Order.countDocuments({ hasCustomItems: true }),
@@ -313,6 +325,10 @@ class OrderService {
     });
 
     await order.save();
+
+    // Notify user about cancellation
+    await notificationService.notifyUserOrderCancelled(order, reason);
+
     return order;
   }
 
@@ -333,11 +349,12 @@ class OrderService {
       throw new Error('Item not found');
     }
 
-    // Update the custom design
-    order.items[itemIndex].customDesign = {
-      ...order.items[itemIndex].customDesign,
-      ...designData
-    };
+    // Update only the imageUrl, keep existing dimensions and placement
+    if (!order.items[itemIndex].customDesign) {
+      order.items[itemIndex].customDesign = {};
+    }
+    
+    order.items[itemIndex].customDesign.imageUrl = designData.imageUrl;
 
     // If order was confirmed, reset to pending for re-confirmation
     if (order.orderStatus === 'confirmed') {
@@ -365,7 +382,7 @@ class OrderService {
     ] = await Promise.all([
       Order.countDocuments({ user: userId }),
       Order.countDocuments({ user: userId, orderStatus: 'pending' }),
-      Order.countDocuments({ user: userId, orderStatus: { $in: ['confirmed', 'processing', 'printing', 'shipped'] } }),
+      Order.countDocuments({ user: userId, orderStatus: { $in: ['confirmed', 'processing', 'shipped'] } }),
       Order.countDocuments({ user: userId, orderStatus: 'delivered' }),
       Order.countDocuments({ user: userId, orderStatus: 'cancelled' })
     ]);

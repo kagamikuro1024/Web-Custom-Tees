@@ -63,7 +63,6 @@ const DashboardPage = () => {
       pending: 'bg-yellow-100 text-yellow-800',
       confirmed: 'bg-blue-100 text-blue-800',
       processing: 'bg-purple-100 text-purple-800',
-      printing: 'bg-indigo-100 text-indigo-800',
       shipped: 'bg-cyan-100 text-cyan-800',
       delivered: 'bg-green-100 text-green-800',
       cancelled: 'bg-red-100 text-red-800'
@@ -76,7 +75,6 @@ const DashboardPage = () => {
       case 'pending': return <FiClock />;
       case 'confirmed': return <FiCheckCircle />;
       case 'processing': return <FiPackage />;
-      case 'printing': return <FiPackage />;
       case 'shipped': return <FiTruck />;
       case 'delivered': return <FiCheckCircle />;
       case 'cancelled': return <FiXCircle />;
