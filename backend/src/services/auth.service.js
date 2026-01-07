@@ -53,7 +53,9 @@ class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        role: user.role
+        phone: user.phone,
+        role: user.role,
+        tier: user.tier
       },
       accessToken,
       refreshToken
@@ -93,8 +95,10 @@ class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        phone: user.phone,
         role: user.role,
-        avatar: user.avatar
+        avatar: user.avatar,
+        tier: user.tier
       },
       accessToken,
       refreshToken

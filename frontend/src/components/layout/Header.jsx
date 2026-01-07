@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import useAuthStore from '../../stores/useAuthStore';
 import useCartStore from '../../stores/useCartStore';
 import NotificationCenter from '../NotificationCenter';
+import TierBadge from '../TierBadge';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -77,7 +78,10 @@ const Header = () => {
               <div className="relative group">
                 <button className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition">
                   <FiUser size={24} />
-                  <span className="hidden md:block">{user?.firstName}</span>
+                  <div className="hidden md:flex items-center gap-2">
+                    <span>{user?.firstName}</span>
+                    {user?.tier && <TierBadge tier={user.tier} size="xs" showLabel={false} />}
+                  </div>
                 </button>
                 
                 {/* Dropdown */}

@@ -23,6 +23,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminProductCreate from './pages/admin/AdminProductCreate';
 import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import AdminReviews from './pages/admin/AdminReviews';
+import CustomersPage from './pages/admin/CustomersPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 
@@ -88,6 +89,7 @@ function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="products/create" element={<AdminProductCreate />} />
               <Route path="reviews" element={<AdminReviews />} />
+              <Route path="customers" element={<CustomersPage />} />
             </Routes>
           </AdminLayout>
         </AdminRoute>

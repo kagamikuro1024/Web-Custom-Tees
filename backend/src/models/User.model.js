@@ -64,7 +64,12 @@ const userSchema = new mongoose.Schema({
   searchHistory: [{
     query: { type: String, required: true },
     timestamp: { type: Date, default: Date.now }
-  }]
+  }],
+  tier: {
+    type: String,
+    enum: ['bronze', 'silver', 'gold', 'platinum', 'diamond'],
+    default: 'bronze'
+  }
 }, {
   timestamps: true
 });
@@ -81,6 +86,34 @@ userSchema.pre('save', async function(next) {
 // Method to compare password
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
+};
+
+// Static method to calculate and update user tier based on order count
+userSchema.statics.calculateUserTier = async function(userId) {
+  const Order = mongoose.model('Order');
+  
+  // Count delivered orders for user
+  const orderCount = await Order.countDocuments({
+    user: userId,
+    orderStatus: 'delivered'
+  });
+
+  // Determine tier based on order count
+  let tier = 'bronze'; // 0-4 orders
+  if (orderCount >= 50) {
+    tier = 'diamond';
+  } else if (orderCount >= 20) {
+    tier = 'platinum';
+  } else if (orderCount >= 10) {
+    tier = 'gold';
+  } else if (orderCount >= 5) {
+    tier = 'silver';
+  }
+
+  // Update user tier
+  await this.findByIdAndUpdate(userId, { tier }, { new: true });
+  
+  return { tier, orderCount };
 };
 
 // Virtual for full name

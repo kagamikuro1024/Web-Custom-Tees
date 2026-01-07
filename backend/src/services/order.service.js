@@ -209,6 +209,12 @@ class OrderService {
 
     await order.save();
 
+    // Update user tier if order is delivered
+    if (status === 'delivered') {
+      const User = (await import('../models/User.model.js')).default;
+      await User.calculateUserTier(order.user);
+    }
+
     // Send notification to user
     if (oldStatus !== status) {
       await notificationService.notifyUserOrderStatusUpdate(order, oldStatus, status);

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { FiHome, FiShoppingCart, FiPackage, FiStar, FiLogOut } from 'react-icons/fi';
+import { FiHome, FiShoppingCart, FiPackage, FiStar, FiUsers, FiLogOut } from 'react-icons/fi';
 import useAuthStore from '../../stores/useAuthStore';
 
 const AdminLayout = ({ children }) => {
@@ -10,7 +10,8 @@ const AdminLayout = ({ children }) => {
     { path: '/admin', label: 'Dashboard', icon: FiHome },
     { path: '/admin/orders', label: 'Orders', icon: FiShoppingCart },
     { path: '/admin/products', label: 'Products', icon: FiPackage },
-    { path: '/admin/reviews', label: 'Reviews', icon: FiStar }
+    { path: '/admin/reviews', label: 'Reviews', icon: FiStar },
+    { path: '/admin/customers', label: 'Customers', icon: FiUsers }
   ];
 
   const isActive = (path) => {

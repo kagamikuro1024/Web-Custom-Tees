@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import api from '../../utils/api';
-import { FiUser, FiMail, FiPhone, FiSave, FiEye, FiEyeOff, FiLock, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiUser, FiMail, FiPhone, FiSave, FiEye, FiEyeOff, FiLock, FiChevronDown, FiChevronUp, FiAward } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import useAuthStore from '../../stores/useAuthStore';
+import TierBadge from '../../components/TierBadge';
 
 const ProfilePage = () => {
   const { user, setUser } = useAuthStore();
@@ -24,6 +25,50 @@ const ProfilePage = () => {
   });
   const [showPasswordSection, setShowPasswordSection] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [orderCount, setOrderCount] = useState(0);
+
+  const getTierThresholds = () => ({
+    bronze: { min: 0, max: 4, next: 'silver' },
+    silver: { min: 5, max: 9, next: 'gold' },
+    gold: { min: 10, max: 19, next: 'platinum' },
+    platinum: { min: 20, max: 49, next: 'diamond' },
+    diamond: { min: 50, max: Infinity, next: null }
+  });
+
+  const getTierProgress = () => {
+    const thresholds = getTierThresholds();
+    const currentTier = user?.tier || 'bronze';
+    const threshold = thresholds[currentTier];
+    
+    if (!threshold.next) {
+      return { progress: 100, remaining: 0, nextTier: null };
+    }
+
+    const progress = ((orderCount - threshold.min) / (threshold.max - threshold.min + 1)) * 100;
+    const remaining = threshold.max - orderCount + 1;
+    
+    return {
+      progress: Math.min(progress, 100),
+      remaining: Math.max(remaining, 0),
+      nextTier: threshold.next
+    };
+  };
+
+  useEffect(() => {
+    const fetchOrderCount = async () => {
+      try {
+        const { data } = await api.get('/orders/user/me');
+        const delivered = data.data.filter(o => o.orderStatus === 'delivered').length;
+        setOrderCount(delivered);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    };
+
+    if (user) {
+      fetchOrderCount();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -122,6 +167,65 @@ const ProfilePage = () => {
                 <div className="flex items-center justify-between py-2">
                   <span className="text-gray-600">Account type</span>
                   <span className="font-medium capitalize">{user?.role}</span>
+                </div>
+              </div>
+
+              {/* Tier Section */}
+              <div className="mt-6 pt-6 border-t">
+                <div className="flex items-center gap-2 mb-4">
+                  <FiAward className="text-blue-600" size={20} />
+                  <h3 className="text-lg font-semibold text-gray-900">Your Tier</h3>
+                </div>
+                
+                <div className="flex items-center justify-center mb-4">
+                  <TierBadge tier={user?.tier || 'bronze'} size="lg" />
+                </div>
+
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between text-gray-600">
+                    <span>Total Orders</span>
+                    <span className="font-semibold text-gray-900">{orderCount}</span>
+                  </div>
+
+                  {getTierProgress().nextTier && (
+                    <>
+                      <div className="flex justify-between text-gray-600">
+                        <span>Next Tier</span>
+                        <span className="font-semibold capitalize text-gray-900">
+                          {getTierProgress().nextTier}
+                        </span>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between text-xs text-gray-500 mb-1">
+                          <span>Progress</span>
+                          <span>{getTierProgress().remaining} orders to go</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${getTierProgress().progress}%` }}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {!getTierProgress().nextTier && (
+                    <div className="text-center py-2">
+                      <p className="text-blue-600 font-medium">🎉 Maximum tier achieved!</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Tier Benefits */}
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-xs font-medium text-blue-900 mb-2">Tier Benefits</p>
+                  <ul className="text-xs text-blue-700 space-y-1">
+                    <li>• Priority customer support</li>
+                    <li>• Early access to new designs</li>
+                    <li>• Exclusive promotions</li>
+                  </ul>
                 </div>
               </div>
             </div>

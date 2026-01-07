@@ -1,6 +1,7 @@
 import express from 'express';
 import User from '../models/User.model.js';
 import { protect } from '../middlewares/auth.middleware.js';
+import userService from '../services/user.service.js';
 
 const router = express.Router();
 
@@ -233,6 +234,77 @@ router.delete('/search-history/:index', async (req, res, next) => {
       success: true,
       message: 'Search history item deleted',
       data: user.searchHistory.slice(0, 20)
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ==================== ADMIN ROUTES ====================
+// Get all users with stats (Admin only)
+router.get('/admin/customers', async (req, res, next) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Admin only.'
+      });
+    }
+
+    const { tier, sortBy, sortOrder, page, limit } = req.query;
+    const result = await userService.getAllUsersWithStats({
+      tier,
+      sortBy,
+      sortOrder: sortOrder ? parseInt(sortOrder) : -1,
+      page: page ? parseInt(page) : 1,
+      limit: limit ? parseInt(limit) : 20
+    });
+
+    res.json({
+      success: true,
+      data: result.users,
+      pagination: result.pagination
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get single user with stats (Admin only)
+router.get('/admin/customers/:userId', async (req, res, next) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Admin only.'
+      });
+    }
+
+    const user = await userService.getUserWithStats(req.params.userId);
+    res.json({ success: true, data: user });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Update user tier manually (Admin only)
+router.patch('/admin/customers/:userId/tier', async (req, res, next) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Admin only.'
+      });
+    }
+
+    const { tier } = req.body;
+    const user = await userService.updateUserTier(req.params.userId, tier);
+
+    res.json({
+      success: true,
+      message: 'User tier updated successfully',
+      data: user
     });
   } catch (error) {
     next(error);
