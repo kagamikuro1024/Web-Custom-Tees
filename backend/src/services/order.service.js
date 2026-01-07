@@ -71,17 +71,19 @@ class OrderService {
 
     // Send order confirmation email ONLY for COD orders
     // VNPAY orders will send email after successful payment callback
+    // Send email async to not block order creation
     if (paymentMethod === 'cod') {
-      const populatedOrder = await Order.findById(order._id).populate('user', 'firstName lastName email');
-      if (populatedOrder?.user?.email) {
-        await mailService.sendOrderSuccessEmail(populatedOrder.user.email, {
-          orderNumber: populatedOrder.orderNumber,
-          totalAmount: populatedOrder.totalAmount,
-          items: populatedOrder.items,
-          shippingAddress: populatedOrder.shippingAddress,
-          paymentMethod: populatedOrder.paymentMethod
-        });
-      }
+      Order.findById(order._id).populate('user', 'firstName lastName email').then(populatedOrder => {
+        if (populatedOrder?.user?.email) {
+          mailService.sendOrderSuccessEmail(populatedOrder.user.email, {
+            orderNumber: populatedOrder.orderNumber,
+            totalAmount: populatedOrder.totalAmount,
+            items: populatedOrder.items,
+            shippingAddress: populatedOrder.shippingAddress,
+            paymentMethod: populatedOrder.paymentMethod
+          }).catch(err => console.error('Failed to send COD email (non-blocking):', err.message));
+        }
+      }).catch(err => console.error('Failed to populate order for email:', err.message));
     }
 
     return order;
