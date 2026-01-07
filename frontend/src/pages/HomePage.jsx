@@ -144,7 +144,7 @@ const ProductCard = ({ product, customizable = false }) => {
   const primaryImage = product.images.find(img => img.isPrimary) || product.images[0];
 
   return (
-    <Link to={customizable ? `/customize/${product.slug}` : `/products/${product.slug}`} className="card overflow-hidden group hover:shadow-lg transition">
+    <Link to={`/products/${product.slug}`} className="card overflow-hidden group hover:shadow-lg transition">
       <div className="aspect-square overflow-hidden bg-gray-100">
         <img
           src={primaryImage?.url}
