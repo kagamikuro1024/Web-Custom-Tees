@@ -103,6 +103,7 @@ const NotificationCenter = () => {
       case 'order_cancelled':
         return <FiPackage className="text-blue-600" />;
       case 'review_added':
+      case 'review_replied':
         return <FiStar className="text-yellow-600" />;
       case 'product_low_stock':
         return <FiAlertCircle className="text-red-600" />;
@@ -112,11 +113,17 @@ const NotificationCenter = () => {
   };
 
   const getNotificationLink = (notification) => {
-    if (notification.relatedOrder) {
-      return `/user/orders/${notification.relatedOrder._id}`;
+    // Use link field from backend if available
+    if (notification.link) {
+      return notification.link;
     }
-    if (notification.relatedProduct) {
-      return `/products/${notification.relatedProduct._id}`;
+    
+    // Fallback to old logic
+    if (notification.relatedOrder?.orderNumber) {
+      return `/orders/${notification.relatedOrder.orderNumber}`;
+    }
+    if (notification.relatedProduct?.slug) {
+      return `/products/${notification.relatedProduct.slug}`;
     }
     return null;
   };
@@ -201,7 +208,7 @@ const NotificationCenter = () => {
                       }}
                       className={`block px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
                         !notification.isRead ? 'bg-blue-50' : ''
-                      }`}
+                      } ${link ? 'cursor-pointer' : ''}`}
                     >
                       <div className="flex items-start gap-3">
                         <div className="mt-1 text-xl flex-shrink-0">
@@ -234,19 +241,6 @@ const NotificationCenter = () => {
                 })
               )}
             </div>
-
-            {/* View All */}
-            {notifications.length > 0 && (
-              <div className="px-4 py-3 border-t border-gray-200 bg-gray-50">
-                <Link
-                  to="/user/notifications"
-                  onClick={() => setShow(false)}
-                  className="text-sm text-primary-600 hover:text-primary-700 font-medium block text-center"
-                >
-                  Xem tất cả thông báo
-                </Link>
-              </div>
-            )}
           </div>
         </>
       )}

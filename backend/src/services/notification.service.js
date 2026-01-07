@@ -51,8 +51,10 @@ class NotificationService {
       title: 'Cập nhật đơn hàng',
       message: `Đơn hàng #${order._id.toString().slice(-6)} ${statusMessages[newStatus]}`,
       relatedOrder: order._id,
+      link: `/orders/${order.orderNumber}`,
       data: {
         orderId: order._id,
+        orderNumber: order.orderNumber,
         oldStatus,
         newStatus,
         total: order.totalPrice

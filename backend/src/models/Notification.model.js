@@ -8,7 +8,7 @@ const notificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['order_created', 'order_status_updated', 'order_cancelled', 'review_added', 'product_low_stock', 'system'],
+    enum: ['order_created', 'order_status_updated', 'order_cancelled', 'review_added', 'review_replied', 'product_low_stock', 'system'],
     required: true
   },
   title: {
@@ -36,6 +36,10 @@ const notificationSchema = new mongoose.Schema({
   data: {
     type: mongoose.Schema.Types.Mixed,
     default: {}
+  },
+  // Link to navigate when clicked
+  link: {
+    type: String
   },
   // Status
   isRead: {

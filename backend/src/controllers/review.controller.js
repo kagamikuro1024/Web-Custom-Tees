@@ -4,11 +4,17 @@ class ReviewController {
   // Create a new review
   async createReview(req, res, next) {
     try {
-      const review = await reviewService.createReview(req.user.id, req.body);
+      // Handle uploaded images
+      const images = req.files ? req.files.map(file => file.path) : [];
+      
+      const review = await reviewService.createReview(req.user.id, {
+        ...req.body,
+        images
+      });
       
       res.status(201).json({
         success: true,
-        message: 'Review created successfully',
+        message: 'Review submitted for approval',
         data: review
       });
     } catch (error) {

@@ -43,6 +43,16 @@ const productStorage = new CloudinaryStorage({
   },
 });
 
+// Storage for review images
+const reviewStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'custom-tshirt/reviews',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 800, height: 800, crop: 'limit', quality: 'auto' }],
+  },
+});
+
 export const uploadDesign = multer({ 
   storage: designStorage,
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB
@@ -52,5 +62,8 @@ export const uploadProduct = multer({
   storage: productStorage,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 });
-
+export const uploadReviewImages = multer({ 
+  storage: reviewStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB per image
+});
 export default cloudinary;

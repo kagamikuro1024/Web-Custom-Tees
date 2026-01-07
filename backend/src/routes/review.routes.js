@@ -1,6 +1,7 @@
 import express from 'express';
 import reviewController from '../controllers/review.controller.js';
 import { protect, adminOnly } from '../middlewares/auth.middleware.js';
+import { uploadReviewImages } from '../config/cloudinary.js';
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ router.get('/products/:productId/reviews/stats', reviewController.getReviewStats
 router.use(protect);
 
 router.get('/products/:productId/reviews/can-review', reviewController.checkEligibility);
-router.post('/reviews', reviewController.createReview);
+router.post('/reviews', uploadReviewImages.array('images', 3), reviewController.createReview); // Max 3 images
 router.get('/reviews/me', reviewController.getUserReviews);
 router.put('/reviews/:reviewId', reviewController.updateReview);
 router.delete('/reviews/:reviewId', reviewController.deleteReview);

@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Review from '../models/Review.model.js';
 import Product from '../models/Product.model.js';
 import Order from '../models/Order.model.js';
+import notificationService from './notification.service.js';
 
 class ReviewService {
   // Create a new review
@@ -145,7 +146,7 @@ class ReviewService {
 
   // Add admin reply to review
   async addReply(reviewId, adminId, replyComment) {
-    const review = await Review.findById(reviewId);
+    const review = await Review.findById(reviewId).populate('product', 'name slug');
     
     if (!review) {
       throw new Error('Review not found');
@@ -162,6 +163,23 @@ class ReviewService {
       { path: 'user', select: 'firstName lastName avatar' },
       { path: 'reply.repliedBy', select: 'firstName lastName' }
     ]);
+
+    // Send notification to review author
+    try {
+      await notificationService.createNotification(
+        review.user._id,
+        {
+          type: 'review_replied',
+          title: 'Your review received a reply',
+          message: `${review.product.name} - The store has responded to your review`,
+          relatedProduct: review.product._id,
+          relatedReview: review._id,
+          link: `/products/${review.product.slug}`
+        }
+      );
+    } catch (error) {
+      console.error('Failed to send review reply notification:', error);
+    }
 
     return review;
   }
