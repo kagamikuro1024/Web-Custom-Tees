@@ -22,6 +22,7 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminProductCreate from './pages/admin/AdminProductCreate';
 import AdminOrderDetail from './pages/admin/AdminOrderDetail';
+import AdminReviews from './pages/admin/AdminReviews';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 
@@ -86,6 +87,7 @@ function App() {
               <Route path="orders/:orderId" element={<AdminOrderDetail />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="products/create" element={<AdminProductCreate />} />
+              <Route path="reviews" element={<AdminReviews />} />
             </Routes>
           </AdminLayout>
         </AdminRoute>

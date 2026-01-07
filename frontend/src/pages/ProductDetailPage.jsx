@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import api from '../utils/api';
 import useCartStore from '../stores/useCartStore';
 import useAuthStore from '../stores/useAuthStore';
+import ReviewList from '../components/ReviewList';
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -607,6 +608,13 @@ const ProductDetailPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Reviews Section */}
+        {product && (
+          <div className="mt-8">
+            <ReviewList productId={product._id} />
+          </div>
+        )}
       </div>
     </div>
   );

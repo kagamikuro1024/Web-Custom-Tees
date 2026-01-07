@@ -156,6 +156,43 @@ class ReviewController {
       next(error);
     }
   }
+
+  // Check if user can review a product
+  async checkEligibility(req, res, next) {
+    try {
+      const { productId } = req.params;
+      const result = await reviewService.canUserReview(req.user.id, productId);
+      
+      res.json({
+        success: true,
+        data: result
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Admin: Get all reviews with filters
+  async getAllReviews(req, res, next) {
+    try {
+      const { page = 1, limit = 10, status, rating, search } = req.query;
+      
+      const result = await reviewService.getAllReviews({
+        page: parseInt(page),
+        limit: parseInt(limit),
+        status,
+        rating: rating ? parseInt(rating) : undefined,
+        search
+      });
+
+      res.json({
+        success: true,
+        data: result
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ReviewController();

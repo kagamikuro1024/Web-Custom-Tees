@@ -11,6 +11,7 @@ router.get('/products/:productId/reviews/stats', reviewController.getReviewStats
 // Protected routes (require authentication)
 router.use(protect);
 
+router.get('/products/:productId/reviews/can-review', reviewController.checkEligibility);
 router.post('/reviews', reviewController.createReview);
 router.get('/reviews/me', reviewController.getUserReviews);
 router.put('/reviews/:reviewId', reviewController.updateReview);

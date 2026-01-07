@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaSpinner } from 'react-icons/fa';
+import { FaSpinner, FaStar } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import ReviewCard from './ReviewCard';
@@ -15,11 +15,15 @@ const ReviewList = ({ productId }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [pagination, setPagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [canReview, setCanReview] = useState(null);
 
   useEffect(() => {
     fetchReviews();
     fetchStats();
-  }, [productId, currentPage]);
+    if (isAuthenticated) {
+      checkEligibility();
+    }
+  }, [productId, currentPage, isAuthenticated]);
 
   const fetchReviews = async () => {
     try {
@@ -42,6 +46,16 @@ const ReviewList = ({ productId }) => {
       setStats(data.data);
     } catch (error) {
       console.error('Failed to fetch review stats:', error);
+    }
+  };
+
+  const checkEligibility = async () => {
+    try {
+      const { data } = await api.get(`/products/${productId}/reviews/can-review`);
+      setCanReview(data.data);
+    } catch (error) {
+      console.error('Failed to check eligibility:', error);
+      setCanReview({ canReview: false, reason: 'error' });
     }
   };
 
@@ -107,13 +121,26 @@ const ReviewList = ({ productId }) => {
       )}
 
       {/* Write Review Button */}
-      {isAuthenticated && !showReviewForm && (
-        <button
-          onClick={() => setShowReviewForm(true)}
-          className="mb-6 btn-primary"
-        >
-          Write a Review
-        </button>
+      {isAuthenticated && !showReviewForm && canReview && (
+        <>
+          {canReview.canReview ? (
+            <button
+              onClick={() => setShowReviewForm(true)}
+              className="mb-6 inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+            >
+              <FaStar className="text-lg" />
+              Write a Review
+            </button>
+          ) : (
+            <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+              <p className="text-gray-600 text-sm">
+                {canReview.reason === 'already_reviewed' && '✓ You have already reviewed this product'}
+                {canReview.reason === 'no_purchase' && 'Purchase and receive this product to write a review'}
+                {canReview.reason === 'error' && 'Unable to check review eligibility'}
+              </p>
+            </div>
+          )}
+        </>
       )}
 
       {/* Review Form */}

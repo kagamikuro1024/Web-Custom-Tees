@@ -115,7 +115,7 @@ class NotificationService {
         .skip(skip)
         .limit(limit)
         .populate('relatedOrder', '_id totalPrice orderStatus')
-        .populate('relatedProduct', 'name imageUrl'),
+        .populate('relatedProduct', 'name images'),
       Notification.countDocuments(query),
       Notification.countDocuments({ recipient: userId, isRead: false })
     ]);

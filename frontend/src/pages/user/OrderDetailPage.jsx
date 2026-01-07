@@ -12,9 +12,11 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiAlertTriangle,
-  FiUpload
+  FiUpload,
+  FiStar
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+import ReviewForm from '../../components/ReviewForm';
 
 const OrderDetailPage = () => {
   const { orderNumber } = useParams();
@@ -29,6 +31,8 @@ const OrderDetailPage = () => {
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewingProduct, setReviewingProduct] = useState(null);
 
   useEffect(() => {
     fetchOrderDetail();
@@ -269,6 +273,25 @@ const OrderDetailPage = () => {
                           )}
                         </div>
                       )}
+
+                      {/* Review Button - Show only for delivered orders */}
+                      {order.orderStatus === 'delivered' && (
+                        <div className="mt-4">
+                          <button
+                            onClick={() => {
+                              setReviewingProduct({
+                                productId: item.product,
+                                productName: item.productName,
+                                productImage: item.productImage
+                              });
+                              setShowReviewModal(true);
+                            }}
+                            className="text-sm bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition flex items-center gap-2"
+                          >
+                            <FiStar /> Đánh giá sản phẩm
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -472,6 +495,61 @@ const OrderDetailPage = () => {
               >
                 {uploading ? 'Uploading...' : 'Upload Design'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Review Modal */}
+      {showReviewModal && reviewingProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-fadeIn">
+            {/* Header with gradient */}
+            <div className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 p-6 text-white">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-2xl font-bold flex items-center gap-2">
+                  <FiStar className="text-blue-200" /> Đánh giá sản phẩm
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowReviewModal(false);
+                    setReviewingProduct(null);
+                  }}
+                  className="text-white hover:bg-white hover:bg-opacity-20 p-2 rounded-full transition"
+                >
+                  <FiXCircle className="text-2xl" />
+                </button>
+              </div>
+              
+              {/* Product Info */}
+              <div className="flex items-center gap-4 bg-white bg-opacity-20 rounded-xl p-4 backdrop-blur-sm">
+                <img 
+                  src={reviewingProduct.productImage} 
+                  alt={reviewingProduct.productName}
+                  className="w-20 h-20 rounded-lg object-cover border-2 border-white shadow-lg"
+                />
+                <div className="flex-1">
+                  <p className="font-semibold text-lg">{reviewingProduct.productName}</p>
+                  <p className="text-blue-100 text-sm">Chia sẻ trải nghiệm của bạn với sản phẩm này</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Review Form */}
+            <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 200px)' }}>
+              <ReviewForm
+                productId={reviewingProduct.productId}
+                orderId={order._id}
+                onSuccess={() => {
+                  setShowReviewModal(false);
+                  setReviewingProduct(null);
+                  toast.success('Cảm ơn bạn đã đánh giá! 🌟');
+                }}
+                onCancel={() => {
+                  setShowReviewModal(false);
+                  setReviewingProduct(null);
+                }}
+              />
             </div>
           </div>
         </div>

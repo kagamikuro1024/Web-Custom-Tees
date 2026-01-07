@@ -2,6 +2,7 @@ import express from 'express';
 import adminController from '../controllers/admin.controller.js';
 import productController from '../controllers/product.controller.js';
 import statsController from '../controllers/stats.controller.js';
+import reviewController from '../controllers/review.controller.js';
 import { protect, adminOnly } from '../middlewares/auth.middleware.js';
 import { updateOrderStatusValidation, validate } from '../middlewares/validators.js';
 
@@ -37,5 +38,10 @@ router.delete('/products/:id', productController.deleteProduct);
 // Category management
 router.post('/categories', adminController.createCategory);
 router.get('/categories', adminController.getAllCategories);
+
+// Review management
+router.get('/reviews', reviewController.getAllReviews);
+router.put('/reviews/:reviewId/status', reviewController.updateReviewStatus);
+router.delete('/reviews/:reviewId', reviewController.deleteReview);
 
 export default router;

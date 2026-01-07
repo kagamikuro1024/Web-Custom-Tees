@@ -87,7 +87,7 @@ class ReviewService {
 
     const [reviews, total] = await Promise.all([
       Review.find({ user: userId })
-        .populate('product', 'name imageUrl price')
+        .populate('product', 'name images price')
         .sort('-createdAt')
         .skip(skip)
         .limit(limit),
@@ -198,12 +198,34 @@ class ReviewService {
     return review;
   }
 
+  // Check if user can review a product (must have delivered order with product)
+  async canUserReview(userId, productId) {
+    // Check if user already reviewed this product
+    const existingReview = await Review.findOne({ product: productId, user: userId });
+    if (existingReview) {
+      return { canReview: false, reason: 'already_reviewed' };
+    }
+
+    // Check if user has a delivered order with this product
+    const deliveredOrder = await Order.findOne({
+      user: userId,
+      orderStatus: 'delivered',
+      'items.product': productId
+    });
+
+    if (!deliveredOrder) {
+      return { canReview: false, reason: 'no_purchase' };
+    }
+
+    return { canReview: true, orderId: deliveredOrder._id };
+  }
+
   // Get review statistics for a product
   async getReviewStats(productId) {
     const stats = await Review.aggregate([
       {
         $match: {
-          product: mongoose.Types.ObjectId(productId),
+          product: new mongoose.Types.ObjectId(productId),
           status: 'approved'
         }
       },
@@ -239,6 +261,101 @@ class ReviewService {
     return {
       total,
       distribution: ratingDistribution
+    };
+  }
+
+  // Admin: Get all reviews with filters
+  async getAllReviews(options) {
+    const { page = 1, limit = 10, status, rating, search } = options;
+    const skip = (page - 1) * limit;
+
+    // Build query
+    const query = {};
+    
+    if (status) {
+      query.status = status;
+    }
+    
+    if (rating) {
+      query.rating = rating;
+    }
+    
+    if (search) {
+      // Search in product name or user name
+      const searchRegex = new RegExp(search, 'i');
+      // We'll need to do this with aggregation
+    }
+
+    let reviews;
+    let total;
+
+    if (search) {
+      // Use aggregation for search
+      const pipeline = [
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'product',
+            foreignField: '_id',
+            as: 'product'
+          }
+        },
+        { $unwind: '$product' },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        { $unwind: '$user' },
+        {
+          $match: {
+            ...query,
+            $or: [
+              { 'product.name': { $regex: search, $options: 'i' } },
+              { 'user.name': { $regex: search, $options: 'i' } }
+            ]
+          }
+        },
+        { $sort: { createdAt: -1 } },
+        {
+          $facet: {
+            reviews: [
+              { $skip: skip },
+              { $limit: limit }
+            ],
+            total: [
+              { $count: 'count' }
+            ]
+          }
+        }
+      ];
+
+      const result = await Review.aggregate(pipeline);
+      reviews = result[0].reviews;
+      total = result[0].total[0]?.count || 0;
+    } else {
+      // Regular query
+      reviews = await Review.find(query)
+        .populate('product', 'name images slug')
+        .populate('user', 'name email')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+      
+      total = await Review.countDocuments(query);
+    }
+
+    return {
+      reviews,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
     };
   }
 }

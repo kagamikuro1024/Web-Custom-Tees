@@ -48,19 +48,8 @@ const ReviewForm = ({ productId, orderId = null, onSuccess, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold">Write a Review</h3>
-        {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <FiX className="text-xl" />
-          </button>
-        )}
-      </div>
+    <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6">
+      <h3 className="text-xl font-bold mb-4">Write a Review</h3>
 
       {/* Rating */}
       <div className="mb-4">
