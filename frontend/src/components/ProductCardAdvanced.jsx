@@ -1,15 +1,26 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaStar, FaPalette } from 'react-icons/fa';
+import { optimizeCloudinaryImage, IMAGE_PRESETS } from '../utils/imageOptimization';
+import { usePrefetch } from '../hooks/usePrefetch';
 
 /**
- * ⚡ OPTIMIZED ProductCard Component
- * - React.memo: Prevents re-render when parent updates
- * - useMemo: Caches formatted prices
- * - Cloudinary optimization: Auto format & quality
- * - Lazy loading images: Only load when visible
+ * ⚡ HIGHLY OPTIMIZED ProductCard Component (Advanced Version)
+ * 
+ * Optimizations Applied:
+ * - React.memo: Prevents unnecessary re-renders
+ * - useMemo: Caches expensive calculations
+ * - Cloudinary optimization: Auto format, quality & resize
+ * - Lazy loading images: Native browser lazy loading
+ * - Prefetching: Pre-load product detail page on hover
+ * - Proper key usage: Stable keys for list rendering
  */
-const ProductCard = React.memo(({ product }) => {
+const ProductCardAdvanced = React.memo(({ product }) => {
+  const productUrl = `/products/${product.slug}`;
+  
+  // 🚀 Prefetch product detail page on hover
+  const prefetchHandlers = usePrefetch(productUrl);
+
   // 🎯 Memoize expensive calculations
   const primaryImage = useMemo(() => 
     product.images?.find(img => img.isPrimary) || product.images?.[0],
@@ -34,22 +45,25 @@ const ProductCard = React.memo(({ product }) => {
     [product.compareAtPrice, product.price]
   );
 
-  // 🖼️ Cloudinary Image Optimization
+  // 🖼️ Cloudinary Image Optimization với preset
   const optimizedImageUrl = useMemo(() => {
     const url = primaryImage?.url || 'https://via.placeholder.com/400';
-    // Nếu là Cloudinary URL, thêm transformations để giảm kích thước
-    if (url.includes('cloudinary.com') && url.includes('/upload/')) {
-      return url.replace('/upload/', '/upload/w_500,h_500,c_fill,q_auto,f_auto/');
-    }
-    return url;
+    return optimizeCloudinaryImage(url, IMAGE_PRESETS.CARD);
   }, [primaryImage?.url]);
+
+  // 💾 Calculate discount percentage
+  const discountPercentage = useMemo(() => {
+    if (!product.compareAtPrice || product.compareAtPrice <= product.price) return null;
+    return Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100);
+  }, [product.compareAtPrice, product.price]);
 
   return (
     <Link
-      to={`/products/${product.slug}`}
+      to={productUrl}
       className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+      {...prefetchHandlers} // 🚀 Apply prefetch on hover/touch
     >
-      {/* Image with Lazy Loading */}
+      {/* Image with Lazy Loading & Optimization */}
       <div className="relative aspect-square overflow-hidden bg-gray-100">
         <img
           src={optimizedImageUrl}
@@ -65,21 +79,21 @@ const ProductCard = React.memo(({ product }) => {
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {product.isCustomizable && (
-            <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+            <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 shadow-lg">
               <FaPalette className="text-xs" /> Customizable
             </span>
           )}
           {product.isFeatured && (
-            <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+            <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
               Featured
             </span>
           )}
         </div>
 
-        {/* Compare At Price Badge */}
-        {formattedComparePrice && (
-          <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold">
-            SALE
+        {/* Discount Badge */}
+        {discountPercentage && (
+          <div className="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg">
+            -{discountPercentage}%
           </div>
         )}
       </div>
@@ -87,7 +101,7 @@ const ProductCard = React.memo(({ product }) => {
       {/* Content */}
       <div className="p-4">
         {/* Title */}
-        <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors">
+        <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors min-h-[2.5rem]">
           {product.name}
         </h3>
 
@@ -99,7 +113,7 @@ const ProductCard = React.memo(({ product }) => {
         )}
 
         {/* Rating */}
-        {product.rating && (
+        {product.rating && product.rating.count > 0 && (
           <div className="flex items-center gap-1 mb-2">
             <div className="flex text-yellow-400">
               {[...Array(5)].map((_, i) => (
@@ -114,7 +128,7 @@ const ProductCard = React.memo(({ product }) => {
               ))}
             </div>
             <span className="text-xs text-gray-500">
-              ({product.rating.count || 0})
+              ({product.rating.count})
             </span>
           </div>
         )}
@@ -133,16 +147,16 @@ const ProductCard = React.memo(({ product }) => {
 
         {/* Stock & Colors */}
         <div className="flex items-center justify-between text-xs text-gray-500">
-          <span>
+          <span className={product.totalStock > 0 ? 'text-green-600 font-medium' : 'text-red-500 font-medium'}>
             {product.totalStock > 0 ? (
-              <>In stock ({product.totalStock})</>
+              <>Còn hàng ({product.totalStock})</>
             ) : (
-              <span className="text-red-500">Out of stock</span>
+              <>Hết hàng</>
             )}
           </span>
           {product.variantColors && product.variantColors.length > 0 && (
             <div className="flex items-center gap-1">
-              <span>{product.variantColors.length} colors</span>
+              <span className="text-gray-600">{product.variantColors.length} màu</span>
             </div>
           )}
         </div>
@@ -152,6 +166,6 @@ const ProductCard = React.memo(({ product }) => {
 });
 
 // Display name for debugging
-ProductCard.displayName = 'ProductCard';
+ProductCardAdvanced.displayName = 'ProductCardAdvanced';
 
-export default ProductCard;
+export default ProductCardAdvanced;
