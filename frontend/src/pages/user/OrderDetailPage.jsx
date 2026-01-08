@@ -34,6 +34,7 @@ const OrderDetailPage = () => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewingProduct, setReviewingProduct] = useState(null);
   const [retryLoading, setRetryLoading] = useState(false);
+  const [confirmingDelivery, setConfirmingDelivery] = useState(false);
   const hasShownError = useRef(false);
 
   useEffect(() => {
@@ -180,6 +181,24 @@ const OrderDetailPage = () => {
     }
   };
 
+  const handleConfirmDelivery = async () => {
+    if (!window.confirm('Xác nhận bạn đã nhận được hàng?')) {
+      return;
+    }
+
+    try {
+      setConfirmingDelivery(true);
+      await api.patch(`/orders/${order._id}/confirm-delivery`);
+      toast.success('Đã xác nhận nhận hàng thành công!');
+      fetchOrderDetail();
+    } catch (error) {
+      console.error('Error confirming delivery:', error);
+      toast.error(error.response?.data?.message || 'Không thể xác nhận. Vui lòng thử lại.');
+    } finally {
+      setConfirmingDelivery(false);
+    }
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -275,6 +294,16 @@ const OrderDetailPage = () => {
               >
                 <FiDollarSign />
                 {retryLoading ? 'Processing...' : 'Continue Payment'}
+              </button>
+            )}
+            {order.orderStatus === 'shipped' && (
+              <button
+                onClick={handleConfirmDelivery}
+                disabled={confirmingDelivery}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FiCheckCircle />
+                {confirmingDelivery ? 'Processing...' : 'Đã nhận hàng'}
               </button>
             )}
             {canCancelOrder() && (
