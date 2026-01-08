@@ -11,7 +11,8 @@ const productSchema = new mongoose.Schema({
   slug: {
     type: String,
     unique: true,
-    lowercase: true
+    lowercase: true,
+    index: true
   },
   description: {
     type: String,
@@ -161,7 +162,6 @@ productSchema.pre('save', function(next) {
 });
 
 // Indexes for performance
-productSchema.index({ slug: 1 });
 productSchema.index({ category: 1, status: 1 });
 productSchema.index({ isCustomizable: 1 });
 productSchema.index({ 'rating.average': -1 });
