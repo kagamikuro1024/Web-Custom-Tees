@@ -5,7 +5,6 @@ import ShopPage from './pages/ShopPage';
 import CustomizePage from './pages/CustomizePage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
-import CustomizerPage from './pages/CustomizerPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
@@ -32,7 +31,6 @@ function App() {
         <Route path="customize" element={<CustomizePage />} />
         <Route path="products" element={<ProductsPage />} />
         <Route path="products/:slug" element={<ProductDetailPage />} />
-        <Route path="customize/:slug" element={<CustomizerPage />} />
         <Route path="cart" element={<CartPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
