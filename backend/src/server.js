@@ -5,10 +5,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
-// Load environment variables FIRST (only in development)
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+// Load environment variables (Railway injects directly, fallback to .env for local dev)
+dotenv.config();
 
 import connectDB from './config/database.js';
 import redisClient from './config/redis.js';
