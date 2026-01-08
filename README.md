@@ -4,11 +4,6 @@
 
 Nền tảng thương mại điện tử chuyên về in áo phông tùy chỉnh, cho phép khách hàng thiết kế và đặt hàng áo với hình ảnh riêng của họ. Hệ thống bao gồm công cụ thiết kế canvas, quản lý đơn hàng tùy chỉnh, thanh toán đa cổng và dashboard quản trị toàn diện.
 
-## 📸 Screenshots
-
-![Homepage](https://via.placeholder.com/800x400?text=Homepage)
-![Customizer](https://via.placeholder.com/800x400?text=Design+Customizer)
-![Admin Dashboard](https://via.placeholder.com/800x400?text=Admin+Dashboard)
 
 ## ✨ Tính năng nổi bật
 
