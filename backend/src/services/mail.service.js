@@ -3,7 +3,20 @@ import { Resend } from 'resend';
 class MailService {
   constructor() {
     // Use Resend for production (Railway blocks SMTP)
-    this.resend = new Resend(process.env.RESEND_API_KEY);
+    console.log('🔍 Checking env vars:', {
+      hasResendKey: !!process.env.RESEND_API_KEY,
+      keyPrefix: process.env.RESEND_API_KEY?.substring(0, 10),
+      allEnvKeys: Object.keys(process.env).filter(k => k.includes('RESEND'))
+    });
+    // TEMPORARY: Hardcode for testing
+    const apiKey = process.env.RESEND_API_KEY || 're_c79WvVFS_DXjL8JUEXekja6ZNPHVuju7i';
+    if (!apiKey) {
+      console.warn('⚠️ RESEND_API_KEY not found in environment variables');
+      this.resend = null;
+      this.initialized = false;
+      return;
+    }
+    this.resend = new Resend(apiKey);
     this.fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
     this.initialized = true;
     console.log('📧 Mail service initialized with Resend');
@@ -16,6 +29,11 @@ class MailService {
    */
   async sendOrderSuccessEmail(email, orderData) {
     try {
+      if (!this.resend) {
+        console.log('⚠️ Email service not initialized, skipping email send');
+        return { success: false, message: 'Email service not initialized' };
+      }
+      
       const { orderNumber, totalAmount, items, shippingAddress } = orderData;
 
       // Tạo HTML email content
@@ -205,6 +223,11 @@ class MailService {
    */
   async sendVerificationEmail(email, firstName, verificationToken) {
     try {
+      if (!this.resend) {
+        console.log('⚠️ Email service not initialized, skipping email send');
+        return { success: false, message: 'Email service not initialized' };
+      }
+      
       const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
 
       const htmlContent = `

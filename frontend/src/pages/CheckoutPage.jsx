@@ -163,24 +163,37 @@ const CheckoutPage = () => {
       const { data } = await api.post('/orders', orderData);
       const order = data.data;
       
-      // If VNPAY payment, create payment URL
+      // Handle payment based on method
       if (formData.paymentMethod === 'vnpay') {
         console.log('Creating VNPAY payment URL...');
         
         const paymentData = {
           orderId: order.orderNumber,
           amount: order.totalAmount,
-          orderInfo: `Thanh toan don hang ${order.orderNumber}`, // Khong dau
-          bankCode: '' // Empty = show all banks
+          orderInfo: `Thanh toan don hang ${order.orderNumber}`,
+          bankCode: ''
         };
 
         const paymentResponse = await api.post('/payment/create-payment-url', paymentData);
         
         if (paymentResponse.data.success) {
-          // Redirect to VNPAY
           window.location.href = paymentResponse.data.data.paymentUrl;
         } else {
           throw new Error('Failed to create payment URL');
+        }
+      } else if (formData.paymentMethod === 'stripe') {
+        console.log('Creating Stripe checkout session...');
+        
+        const paymentResponse = await api.post('/stripe/create-checkout-session', {
+          orderNumber: order.orderNumber
+        });
+        
+        if (paymentResponse.data.success) {
+          console.log('✅ Stripe checkout session created');
+          // Redirect to Stripe checkout page
+          window.location.href = paymentResponse.data.data.checkoutUrl;
+        } else {
+          throw new Error('Failed to create Stripe checkout session');
         }
       } else {
         // COD payment - go to success page
@@ -453,6 +466,27 @@ const CheckoutPage = () => {
                       <p className="text-xs text-gray-500">Pay online via VNPAY gateway</p>
                     </div>
                   </label>
+
+                  {/* Stripe Option - International Payment */}
+                  <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-white transition">
+                    <input 
+                      type="radio" 
+                      name="paymentMethod"
+                      value="stripe"
+                      checked={formData.paymentMethod === 'stripe'}
+                      onChange={handleInputChange}
+                      className="text-primary-600 focus:ring-primary-500"
+                    />
+                    <div className="flex-grow">
+                      <span className="text-sm font-medium">💳 Credit/Debit Card</span>
+                      <p className="text-xs text-gray-500">International payment via Stripe</p>
+                      <div className="flex gap-1 mt-1">
+                        <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded">Visa</span>
+                        <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded">Mastercard</span>
+                        <span className="text-xs bg-green-600 text-white px-2 py-0.5 rounded">Secure</span>
+                      </div>
+                    </div>
+                  </label>
                 </div>
               </div>
 
@@ -461,7 +495,10 @@ const CheckoutPage = () => {
                 disabled={isSubmitting || !deliveryLocation}
                 className="btn btn-primary w-full py-4 text-lg font-bold mt-6 rounded-xl shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Processing...' : formData.paymentMethod === 'vnpay' ? 'Pay with VNPAY' : 'Place Order'}
+                {isSubmitting ? 'Processing...' : 
+                 formData.paymentMethod === 'stripe' ? '💳 Pay with Card' :
+                 formData.paymentMethod === 'vnpay' ? 'Pay with VNPAY' : 
+                 'Place Order'}
               </button>
 
               <p className="text-xs text-gray-500 text-center mt-4">

@@ -4,6 +4,10 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+
+// Load environment variables FIRST
+dotenv.config();
+
 import connectDB from './config/database.js';
 import logger from './config/logger.js';
 import errorHandler from './middlewares/errorHandler.js';
@@ -19,10 +23,8 @@ import adminRoutes from './routes/admin.routes.js';
 import reviewRoutes from './routes/review.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
+import stripeRoutes from './routes/stripe.routes.js';
 import mailService from './services/mail.service.js';
-
-// Load environment variables
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -64,6 +66,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/stripe', stripeRoutes);
 app.use('/api', reviewRoutes);
 app.use('/api', notificationRoutes);
 

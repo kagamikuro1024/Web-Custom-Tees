@@ -64,6 +64,30 @@ const OrderSuccessPage = () => {
             setPaymentStatus('failed');
             setOrderInfo({ orderNumber: vnpOrderId });
           }
+        } else if (searchParams.get('session_id') && searchParams.get('payment') === 'stripe_success') {
+          // Stripe payment - verify session
+          const sessionId = searchParams.get('session_id');
+          try {
+            console.log('Verifying Stripe payment:', sessionId, orderNumber);
+            const { data } = await api.get('/stripe/verify-payment', {
+              params: { sessionId, orderNumber }
+            });
+            
+            console.log('Stripe verification response:', data);
+            
+            if (data.success) {
+              setPaymentStatus('success');
+              // Fetch full order details
+              const orderResponse = await api.get(`/orders/number/${orderNumber}`);
+              setOrderInfo(orderResponse.data.data);
+            } else {
+              setPaymentStatus('failed');
+              setOrderInfo({ orderNumber });
+            }
+          } catch (err) {
+            console.error('Error verifying Stripe payment:', err);
+            setPaymentStatus('error');
+          }
         } else if (orderNumber) {
           // COD order - direct access
           setPaymentStatus('cod');
