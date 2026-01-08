@@ -43,18 +43,18 @@ const HomePage = () => {
           <div className="container-custom">
             <div className="max-w-3xl text-white">
               <h1 className="text-6xl font-extrabold mb-6 leading-tight animate-fade-in-up">
-                Design Your Own
-                <span className="block text-primary-400 mt-2">Custom T-Shirts</span>
+                Thiết kế áo phông
+                <span className="block text-primary-400 mt-2">Tùy chỉnh riêng của bạn</span>
               </h1>
               <p className="text-xl mb-8 text-gray-100 leading-relaxed animate-fade-in-up animation-delay-200">
-                Upload your design, customize it, and get high-quality printed t-shirts delivered to your door.
+                Tải lên thiết kế của bạn, tùy chỉnh và nhận áo phông in chất lượng cao giao tận nhà.
               </p>
               <div className="flex gap-4 animate-fade-in-up animation-delay-400">
                 <Link to="/customize" className="btn bg-primary-500 text-white hover:bg-primary-600 hover:scale-105 transform transition-all duration-300 px-8 py-3 rounded-lg font-medium shadow-lg">
-                  Start Designing
+                  Bắt đầu thiết kế
                 </Link>
                 <Link to="/products" className="btn border-2 border-white backdrop-blur-sm bg-white/10 text-white hover:bg-white hover:text-primary-600 px-8 py-3 rounded-lg font-medium shadow-lg transition-all duration-300 hover:scale-105 transform">
-                  Browse Products
+                  Xem sản phẩm
                 </Link>
               </div>
             </div>
@@ -70,18 +70,18 @@ const HomePage = () => {
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiEdit3 className="text-primary-600" size={32} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Easy Design Tool</h3>
+              <h3 className="text-xl font-semibold mb-2">Công cụ thiết kế dễ dàng</h3>
               <p className="text-gray-600">
-                Upload your image and customize it with our intuitive editor
+                Tải lên hình ảnh và tùy chỉnh với trình chỉnh sửa trực quan của chúng tôi
               </p>
             </div>
             <div className="text-center">
               <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiShoppingBag className="text-primary-600" size={32} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">High-Quality Printing</h3>
+              <h3 className="text-xl font-semibold mb-2">In ấn chất lượng cao</h3>
               <p className="text-gray-600">
-                Premium fabrics and professional printing technology
+                Vải cao cấp và công nghệ in ấn chuyên nghiệp
               </p>
             </div>
             <div className="text-center">
@@ -90,9 +90,9 @@ const HomePage = () => {
                   <path d="M12 2L3 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Fast Delivery</h3>
+              <h3 className="text-xl font-semibold mb-2">Giao hàng nhanh</h3>
               <p className="text-gray-600">
-                Quick turnaround time with tracked shipping
+                Thời gian xử lý nhanh với vận chuyển có theo dõi
               </p>
             </div>
           </div>
@@ -104,9 +104,9 @@ const HomePage = () => {
         <section className="py-16">
           <div className="container-custom">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-3xl font-bold">Customize Your Own</h2>
+              <h2 className="text-3xl font-bold">Tùy chỉnh riêng của bạn</h2>
               <Link to="/products?isCustomizable=true" className="text-primary-600 hover:underline">
-                View All →
+                Xem tất cả →
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -123,9 +123,9 @@ const HomePage = () => {
         <section className="py-16 bg-gray-50">
           <div className="container-custom">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-3xl font-bold">Featured Products</h2>
+              <h2 className="text-3xl font-bold">Sản phẩm nổi bật</h2>
               <Link to="/products" className="text-primary-600 hover:underline">
-                View All →
+                Xem tất cả →
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

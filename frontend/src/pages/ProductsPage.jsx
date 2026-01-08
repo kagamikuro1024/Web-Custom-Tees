@@ -110,13 +110,13 @@ const ProductsPage = () => {
     <div className="container-custom py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">All Products</h1>
+        <h1 className="text-4xl font-bold mb-2">Tất cả sản phẩm</h1>
         <p className="text-gray-600 text-lg">
-          Explore our full collection of pre-designed and customizable t-shirts
+          Khám phá bộ sưu tập đầy đủ các áo phông thiết kế sẵn và có thể tùy chỉnh
         </p>
         {pagination && (
           <p className="text-sm text-gray-500 mt-2">
-            Showing {products.length} of {pagination.total} products
+            Hiển thị {products.length} / {pagination.total} sản phẩm
           </p>
         )}
       </div>
@@ -126,12 +126,12 @@ const ProductsPage = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-              <FaFilter /> Filters
+              <FaFilter /> Bộ lọc
             </h3>
 
             {/* Search */}
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Search</label>
+              <label className="block text-sm font-medium mb-2">Tìm kiếm</label>
               <div className="relative">
                 <input
                   type="text"

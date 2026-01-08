@@ -97,12 +97,12 @@ const ReviewForm = ({ productId, orderId = null, onSuccess, onCancel }) => {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6">
-      <h3 className="text-xl font-bold mb-4">Write a Review</h3>
+      <h3 className="text-xl font-bold mb-4">Viết đánh giá</h3>
 
       {/* Rating */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">
-          Your Rating <span className="text-red-500">*</span>
+          Đánh giá của bạn <span className="text-red-500">*</span>
         </label>
         <StarRating
           rating={rating}
@@ -115,12 +115,12 @@ const ReviewForm = ({ productId, orderId = null, onSuccess, onCancel }) => {
       {/* Comment */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">
-          Your Review <span className="text-red-500">*</span>
+          Đánh giá của bạn <span className="text-red-500">*</span>
         </label>
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="Share your experience with this product..."
+          placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
           rows={5}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
           required
@@ -128,7 +128,7 @@ const ReviewForm = ({ productId, orderId = null, onSuccess, onCancel }) => {
           maxLength={1000}
         />
         <div className="flex justify-between text-xs text-gray-500 mt-1">
-          <span>Minimum 10 characters</span>
+          <span>Tối thiểu 10 ký tự</span>
           <span>{comment.length}/1000</span>
         </div>
       </div>
@@ -136,7 +136,7 @@ const ReviewForm = ({ productId, orderId = null, onSuccess, onCancel }) => {
       {/* Image Upload */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">
-          Photos (Optional)
+          Hình ảnh (Tùy chọn)
         </label>
         <div className="space-y-3">
           {/* Image Previews */}
@@ -166,7 +166,7 @@ const ReviewForm = ({ productId, orderId = null, onSuccess, onCancel }) => {
             <label className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition">
               <FiImage className="text-xl text-gray-400" />
               <span className="text-sm text-gray-600">
-                Add photos ({images.length}/3)
+                Thêm hình ảnh ({images.length}/3)
               </span>
               <input
                 type="file"
@@ -179,7 +179,7 @@ const ReviewForm = ({ productId, orderId = null, onSuccess, onCancel }) => {
             </label>
           )}
           <p className="text-xs text-gray-500">
-            Maximum 3 photos, 5MB each. Supported: JPG, PNG, WebP
+            Tối đa 3 ảnh, mỗi ảnh 5MB. Hỗ trợ: JPG, PNG, WebP
           </p>
         </div>
       </div>
@@ -193,7 +193,7 @@ const ReviewForm = ({ productId, orderId = null, onSuccess, onCancel }) => {
             className="flex-1 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             disabled={loading}
           >
-            Cancel
+            Hủy
           </button>
         )}
         <button
@@ -204,10 +204,10 @@ const ReviewForm = ({ productId, orderId = null, onSuccess, onCancel }) => {
           {loading ? (
             <span className="flex items-center justify-center gap-2">
               <span className="animate-spin">⏳</span>
-              Submitting...
+              Đang gửi...
             </span>
           ) : (
-            'Submit Review'
+            'Gửi đánh giá'
           )}
         </button>
       </div>

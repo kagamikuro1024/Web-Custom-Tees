@@ -76,7 +76,7 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Bảng điều khiển</h1>
           <p className="text-gray-600">Tổng quan hoạt động kinh doanh</p>
         </div>
 

@@ -114,8 +114,8 @@ const OrderSuccessPage = () => {
       <div className="container-custom py-16">
         <div className="max-w-2xl mx-auto text-center">
           <FaSpinner className="animate-spin text-6xl text-primary-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Processing...</h2>
-          <p className="text-gray-600">Please wait while we confirm your payment</p>
+          <h2 className="text-2xl font-bold mb-2">Đang xử lý...</h2>
+          <p className="text-gray-600">Vui lòng đợi trong khi chúng tôi xác nhận thanh toán của bạn</p>
         </div>
       </div>
     );
@@ -131,43 +131,43 @@ const OrderSuccessPage = () => {
             </div>
             
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              {paymentStatus === 'success' ? '🎉 Payment Successful!' : '✅ Order Placed!'}
+              {paymentStatus === 'success' ? '🎉 Thanh toán thành công!' : '✅ Đặt hàng thành công!'}
             </h1>
             
             <p className="text-gray-600 mb-6">
               {paymentStatus === 'success' 
-                ? 'Your payment has been processed successfully. Thank you for your order!'
-                : 'Your order has been placed successfully. You will pay upon delivery.'}
+                ? 'Thanh toán của bạn đã được xử lý thành công. Cảm ơn bạn đã đặt hàng!'
+                : 'Đơn hàng của bạn đã được đặt thành công. Bạn sẽ thanh toán khi nhận hàng.'}
             </p>
 
             {orderInfo && (
               <div className="bg-gray-50 rounded-xl p-6 mb-6 text-left">
-                <h3 className="font-bold text-lg mb-4">Order Details</h3>
+                <h3 className="font-bold text-lg mb-4">Chi tiết đơn hàng</h3>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Order Number:</span>
+                    <span className="text-gray-600">Mã đơn hàng:</span>
                     <span className="font-semibold">#{orderInfo.orderNumber || orderInfo.orderId}</span>
                   </div>
                   
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Payment Status:</span>
+                    <span className="text-gray-600">Trạng thái thanh toán:</span>
                     <span className={`font-semibold ${
                       orderInfo.paymentStatus === 'paid' ? 'text-green-600' : 'text-orange-600'
                     }`}>
-                      {orderInfo.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                      {orderInfo.paymentStatus === 'paid' ? 'Đã thanh toán' : 'Chờ thanh toán'}
                     </span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Order Status:</span>
+                    <span className="text-gray-600">Trạng thái đơn hàng:</span>
                     <span className="font-semibold capitalize">
                       {orderInfo.orderStatus || orderInfo.status || 'Pending'}
                     </span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Total Amount:</span>
+                    <span className="text-gray-600">Tổng tiền:</span>
                     <span className="font-semibold text-lg text-primary-600">
                       {(orderInfo.totalAmount || orderInfo.amount || 0).toLocaleString('vi-VN')} ₫
                     </span>
@@ -175,7 +175,7 @@ const OrderSuccessPage = () => {
 
                   {orderInfo.paidAt && (
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Payment Date:</span>
+                      <span className="text-gray-600">Ngày thanh toán:</span>
                       <span className="font-semibold">
                         {new Date(orderInfo.paidAt).toLocaleString('vi-VN')}
                       </span>
@@ -184,18 +184,18 @@ const OrderSuccessPage = () => {
 
                   {orderInfo.vnpayTransaction && (
                     <div className="pt-3 border-t">
-                      <p className="text-sm text-gray-500 mb-2">Transaction Details:</p>
+                      <p className="text-sm text-gray-500 mb-2">Chi tiết giao dịch:</p>
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Transaction No:</span>
+                          <span className="text-gray-600">Mã giao dịch:</span>
                           <span className="font-mono">{orderInfo.vnpayTransaction.transactionNo}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Bank:</span>
+                          <span className="text-gray-600">Ngân hàng:</span>
                           <span>{orderInfo.vnpayTransaction.bankCode}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Card Type:</span>
+                          <span className="text-gray-600">Loại thẻ:</span>
                           <span>{orderInfo.vnpayTransaction.cardType}</span>
                         </div>
                       </div>
@@ -207,7 +207,7 @@ const OrderSuccessPage = () => {
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
               <p className="text-sm text-blue-800">
-                📧 A confirmation email has been sent to your email address with order details.
+                📧 Email xác nhận đã được gửi đến địa chỉ email của bạn kèm theo thông tin đơn hàng.
               </p>
             </div>
 
@@ -217,7 +217,7 @@ const OrderSuccessPage = () => {
                 className="btn btn-primary flex items-center gap-2"
               >
                 <FaShoppingBag />
-                View Orders
+                Xem đơn hàng
               </button>
               
               <button
@@ -225,7 +225,7 @@ const OrderSuccessPage = () => {
                 className="btn btn-outline flex items-center gap-2"
               >
                 <FaHome />
-                Back to Home
+                Về trang chủ
               </button>
             </div>
           </div>
@@ -244,17 +244,17 @@ const OrderSuccessPage = () => {
             </div>
             
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Payment Failed
+              Thanh toán thất bại
             </h1>
             
             <p className="text-gray-600 mb-6">
-              Unfortunately, your payment could not be processed. Please try again or use a different payment method.
+              Rất tiếc, thanh toán của bạn không thể được xử lý. Vui lòng thử lại hoặc sử dụng phương thức thanh toán khác.
             </p>
 
             {orderInfo && (
               <div className="bg-gray-50 rounded-xl p-4 mb-6">
                 <p className="text-sm text-gray-600">
-                  Order: <span className="font-semibold">#{orderInfo.orderId}</span>
+                  Đơn hàng: <span className="font-semibold">#{orderInfo.orderId}</span>
                 </p>
               </div>
             )}
@@ -264,14 +264,14 @@ const OrderSuccessPage = () => {
                 onClick={() => navigate('/checkout')}
                 className="btn btn-primary"
               >
-                Try Again
+                Thử lại
               </button>
               
               <button
                 onClick={() => navigate('/')}
                 className="btn btn-outline"
               >
-                Back to Home
+                Về trang chủ
               </button>
             </div>
           </div>
@@ -284,13 +284,13 @@ const OrderSuccessPage = () => {
   return (
     <div className="container-custom py-16">
       <div className="max-w-2xl mx-auto text-center">
-        <h1 className="text-3xl font-bold mb-4">Something went wrong</h1>
-        <p className="text-gray-600 mb-6">Please contact support if you need assistance.</p>
+        <h1 className="text-3xl font-bold mb-4">Đã có lỗi xảy ra</h1>
+        <p className="text-gray-600 mb-6">Vui lòng liên hệ hỗ trợ nếu bạn cần trợ giúp.</p>
         <button
           onClick={() => navigate('/')}
           className="btn btn-primary"
         >
-          Back to Home
+          Về trang chủ
         </button>
       </div>
     </div>

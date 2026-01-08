@@ -66,12 +66,12 @@ const ProductCard = React.memo(({ product }) => {
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {product.isCustomizable && (
             <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-              <FaPalette className="text-xs" /> Customizable
+              <FaPalette className="text-xs" /> Customize
             </span>
           )}
           {product.isFeatured && (
             <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-              Featured
+              Nổi bật
             </span>
           )}
         </div>
@@ -135,14 +135,14 @@ const ProductCard = React.memo(({ product }) => {
         <div className="flex items-center justify-between text-xs text-gray-500">
           <span>
             {product.totalStock > 0 ? (
-              <>In stock ({product.totalStock})</>
+              <>Còn hàng ({product.totalStock})</>
             ) : (
-              <span className="text-red-500">Out of stock</span>
+              <span className="text-red-500">Hết hàng</span>
             )}
           </span>
           {product.variantColors && product.variantColors.length > 0 && (
             <div className="flex items-center gap-1">
-              <span>{product.variantColors.length} colors</span>
+              <span>{product.variantColors.length} màu</span>
             </div>
           )}
         </div>

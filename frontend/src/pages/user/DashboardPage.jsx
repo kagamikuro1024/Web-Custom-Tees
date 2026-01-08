@@ -104,10 +104,10 @@ const DashboardPage = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Welcome back, {user?.firstName}!
+              Chào mừng trở lại, {user?.firstName}!
             </h1>
             <p className="text-gray-600 mt-2">
-              Track your orders and manage your account
+              Theo dõi đơn hàng và quản lý tài khoản của bạn
             </p>
           </div>
           
@@ -117,14 +117,14 @@ const DashboardPage = () => {
               className="btn btn-secondary flex items-center gap-2"
             >
               <FiSettings />
-              Settings
+              Cài đặt
             </Link>
             <Link
               to="/products"
               className="btn btn-primary flex items-center gap-2"
             >
               <FiShoppingBag />
-              Shop Now
+              Mua sắm ngay
             </Link>
           </div>
         </div>
@@ -136,7 +136,7 @@ const DashboardPage = () => {
         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total Orders</p>
+              <p className="text-sm text-gray-600 mb-1">Tổng đơn hàng</p>
               <p className="text-3xl font-bold text-gray-900">
                 {stats?.totalOrders || 0}
               </p>
@@ -151,7 +151,7 @@ const DashboardPage = () => {
         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Pending</p>
+              <p className="text-sm text-gray-600 mb-1">Chờ xử lý</p>
               <p className="text-3xl font-bold text-gray-900">
                 {stats?.pendingOrders || 0}
               </p>
@@ -166,7 +166,7 @@ const DashboardPage = () => {
         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">In Progress</p>
+              <p className="text-sm text-gray-600 mb-1">Đang xử lý</p>
               <p className="text-3xl font-bold text-gray-900">
                 {stats?.processingOrders || 0}
               </p>
@@ -181,7 +181,7 @@ const DashboardPage = () => {
         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total Spent</p>
+              <p className="text-sm text-gray-600 mb-1">Tổng chi tiêu</p>
               <p className="text-2xl font-bold text-gray-900">
                 {formatCurrency(stats?.totalSpent || 0)}
               </p>
@@ -196,22 +196,22 @@ const DashboardPage = () => {
       {/* Recent Orders */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900">Recent Orders</h2>
+          <h2 className="text-xl font-bold text-gray-900">Đơn hàng gần đây</h2>
           <Link
             to="/orders"
             className="text-blue-600 hover:text-blue-700 font-medium text-sm"
           >
-            View All Orders →
+            Xem tất cả đơn hàng →
           </Link>
         </div>
         
         {recentOrders.length === 0 ? (
           <div className="p-12 text-center">
             <FiShoppingBag className="mx-auto text-6xl text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No orders yet</h3>
-            <p className="text-gray-500 mb-6">Start shopping to see your orders here</p>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có đơn hàng</h3>
+            <p className="text-gray-500 mb-6">Bắt đầu mua sắm để xem đơn hàng của bạn tại đây</p>
             <Link to="/products" className="btn btn-primary">
-              Browse Products
+              Duyệt sản phẩm
             </Link>
           </div>
         ) : (
@@ -260,7 +260,7 @@ const DashboardPage = () => {
                       </p>
                       {order.items.some(item => item.customDesign?.imageUrl) && (
                         <p className="text-xs text-purple-600 font-medium">
-                          ✨ Includes custom design
+                          ✨ Bao gồm thiết kế tùy chỉnh
                         </p>
                       )}
                     </div>
@@ -281,23 +281,23 @@ const DashboardPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
           <FiUser className="text-3xl mb-3" />
-          <h3 className="text-xl font-bold mb-2">Manage Profile</h3>
+          <h3 className="text-xl font-bold mb-2">Quản lý hồ sơ</h3>
           <p className="text-blue-100 mb-4">
-            Update your personal information and preferences
+            Cập nhật thông tin cá nhân và tùy chọn của bạn
           </p>
           <Link to="/profile" className="btn bg-white text-blue-600 hover:bg-blue-50">
-            Go to Profile
+            Đến hồ sơ
           </Link>
         </div>
 
         <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
           <FiPackage className="text-3xl mb-3" />
-          <h3 className="text-xl font-bold mb-2">Track Orders</h3>
+          <h3 className="text-xl font-bold mb-2">Theo dõi đơn hàng</h3>
           <p className="text-purple-100 mb-4">
-            View all your orders and track their status
+            Xem tất cả đơn hàng và theo dõi trạng thái của chúng
           </p>
           <Link to="/orders" className="btn bg-white text-purple-600 hover:bg-purple-50">
-            View Orders
+            Xem đơn hàng
           </Link>
         </div>
       </div>

@@ -1,83 +1,83 @@
-# 🎨 Custom T-Shirt E-Commerce Platform
+# 🎨 Nền tảng Thương mại Điện tử Áo Phông Tùy Chỉnh
 
-> ⚡ **Performance-Optimized** | 🚀 **Production-Ready** | 🎯 **Full-Stack MERN**
+> ⚡ **Tối ưu hiệu năng** | 🚀 **Sẵn sàng Production** | 🎯 **Full-Stack MERN**
 
-A blazing-fast, full-stack e-commerce application specialized for **custom t-shirt printing business**. Built with modern web technologies and optimized for exceptional user experience, this platform allows customers to upload their own designs, preview them in real-time, and place orders with complete customization details for printing.
+Ứng dụng thương mại điện tử full-stack siêu nhanh chuyên về **kinh doanh in áo phông tùy chỉnh**. Được xây dựng với công nghệ web hiện đại và tối ưu hóa để mang lại trải nghiệm người dùng xuất sắc, nền tảng này cho phép khách hàng tải lên thiết kế của riêng mình, xem trước theo thời gian thực và đặt hàng với đầy đủ chi tiết tùy chỉnh để in ấn.
 
 [![Deployment Status](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)](https://vercel.com)
 [![Backend Status](https://img.shields.io/badge/Backend-Railway-purple?logo=railway)](https://railway.app)
 [![Performance](https://img.shields.io/badge/Lighthouse-95%2B-success?logo=lighthouse)](https://web.dev/measure/)
 [![Bundle Size](https://img.shields.io/badge/Bundle-89KB%20(gzipped)-brightgreen)](https://bundlephobia.com)
 
-## ⚡ Performance Highlights
+## ⚡ Điểm nổi bật về hiệu năng
 
-- **🚀 Lightning Fast**: Initial load only **89 KB** (gzipped) - 74% smaller than typical React apps
-- **📱 Mobile Optimized**: 85% image size reduction with Cloudinary transformations
-- **⏱️ Quick Response**: Time to Interactive < 2.5s, First Contentful Paint < 1.1s
-- **🎯 Smart Loading**: Code splitting with React.lazy() for on-demand page loading
-- **🖼️ Image Optimization**: Auto WebP conversion, lazy loading, and responsive images
+- **🚀 Cực kỳ nhanh**: Tải ban đầu chỉ **89 KB** (gzipped) - nhỏ hơn 74% so với ứng dụng React thông thường
+- **📱 Tối ưu cho di động**: Giảm 85% kích thước hình ảnh với Cloudinary transformations
+- **⏱️ Phản hồi nhanh**: Time to Interactive < 2.5s, First Contentful Paint < 1.1s
+- **🎯 Tải thông minh**: Code splitting với React.lazy() để tải trang theo yêu cầu
+- **🖼️ Tối ưu hình ảnh**: Chuyển đổi WebP tự động, lazy loading và hình ảnh responsive
 
-## 🎯 Core Features
+## 🎯 Tính năng chính
 
-### 1. Product Customization System
-Unlike standard e-commerce platforms, this system includes:
+### 1. Hệ thống tùy chỉnh sản phẩm
+Khác với các nền tảng thương mại điện tử tiêu chuẩn, hệ thống này bao gồm:
 
-- **Interactive Design Tool**: Canvas-based customizer using Fabric.js
-- **Real-time Preview**: Customers see their design overlaid on the actual product
-- **Design Placement Control**: Drag, resize, rotate designs within printable areas
-- **Custom Order Processing**: Orders save design URLs and placement coordinates for printing
-- **Admin Design Access**: Admins can download high-quality design files for production
+- **Công cụ thiết kế tương tác**: Trình tùy chỉnh dựa trên Canvas sử dụng Fabric.js
+- **Xem trước theo thời gian thực**: Khách hàng xem thiết kế của mình trên sản phẩm thực tế
+- **Kiểm soát vị trí thiết kế**: Kéo, thay đổi kích thước, xoay thiết kế trong khu vực có thể in
+- **Xử lý đơn hàng tùy chỉnh**: Đơn hàng lưu URL thiết kế và tọa độ vị trí để in
+- **Truy cập thiết kế cho Admin**: Admin có thể tải xuống file thiết kế chất lượng cao để sản xuất
 
-### 2. Advanced Performance Features
-- **Code Splitting**: 20+ lazy-loaded routes for minimal initial bundle
-- **Image Optimization**: Cloudinary auto-optimization (w_auto, q_auto, f_auto)
-- **React Optimization**: Memoization with React.memo, useMemo, useCallback
-- **Prefetching**: Route and image prefetching on hover for instant navigation
-- **Caching**: Redis-powered caching with BullMQ job processing
+### 2. Tính năng hiệu năng nâng cao
+- **Code Splitting**: 20+ routes lazy-loaded để giảm thiểu bundle ban đầu
+- **Tối ưu hình ảnh**: Cloudinary tự động tối ưu (w_auto, q_auto, f_auto)
+- **Tối ưu React**: Memoization với React.memo, useMemo, useCallback
+- **Prefetching**: Prefetch route và hình ảnh khi hover để điều hướng tức thì
+- **Caching**: Caching được hỗ trợ bởi Redis với xử lý job BullMQ
 
-### 3. Enterprise-Grade Features
-- **Review System**: Star ratings, verified purchases, helpful votes
-- **Notification Center**: Real-time notifications with read/unread tracking
-- **Tier System**: Bronze/Silver/Gold/Platinum user tiers based on spending
-- **Stats Dashboard**: Real-time analytics with chart visualizations
-- **Search History**: Personalized search suggestions with recent queries
-- **Email Integration**: Resend API for transactional emails
-- **Payment Processing**: Stripe & VNPay integration
+### 3. Tính năng cấp doanh nghiệp
+- **Hệ thống đánh giá**: Xếp hạng sao, mua hàng đã xác minh, bình chọn hữu ích
+- **Trung tâm thông báo**: Thông báo thời gian thực với theo dõi đã đọc/chưa đọc
+- **Hệ thống cấp bậc**: Cấp bậc người dùng Đồng/Bạc/Vàng/Bạch kim dựa trên chi tiêu
+- **Dashboard thống kê**: Phân tích thời gian thực với trực quan hóa biểu đồ
+- **Lịch sử tìm kiếm**: Gợi ý tìm kiếm cá nhân hóa với truy vấn gần đây
+- **Tích hợp Email**: Resend API cho email giao dịch
+- **Xử lý thanh toán**: Tích hợp Stripe & VNPay
 
-## 📋 Tech Stack
+## 📋 Công nghệ sử dụng
 
 ### Backend
 - **Node.js 18+** + **Express.js** - RESTful API server
-- **MongoDB** + **Mongoose** - NoSQL database & ODM
-- **Redis** + **BullMQ** - Caching & job queue system
-- **JWT** - Authentication (Access/Refresh tokens with HTTP-only cookies)
-- **Cloudinary** - Image storage, CDN & transformations
-- **Stripe** + **VNPay** - Payment gateways
-- **Resend** - Transactional email service
-- **Multer** - File upload handling
-- **Bcrypt** - Password hashing
+- **MongoDB** + **Mongoose** - Cơ sở dữ liệu NoSQL & ODM
+- **Redis** + **BullMQ** - Hệ thống caching & job queue
+- **JWT** - Xác thực (Access/Refresh tokens với HTTP-only cookies)
+- **Cloudinary** - Lưu trữ hình ảnh, CDN & transformations
+- **Stripe** + **VNPay** - Cổng thanh toán
+- **Resend** - Dịch vụ email giao dịch
+- **Multer** - Xử lý upload file
+- **Bcrypt** - Mã hóa mật khẩu
 - **Winston** - Structured logging
 
 ### Frontend
-- **React 18** - UI Framework with concurrent features
-- **Vite** - Lightning-fast build tool & HMR
+- **React 18** - UI Framework với tính năng concurrent
+- **Vite** - Build tool siêu nhanh & HMR
 - **Tailwind CSS** - Utility-first styling
-- **Zustand** - Lightweight state management
-- **React Router v6** - Client-side routing with lazy loading
-- **Fabric.js** - Canvas manipulation for customizer
-- **html2canvas** - Preview capture & export
-- **Axios** - HTTP client with interceptors
-- **React Hot Toast** - Toast notifications
-- **Recharts** - Data visualization
+- **Zustand** - Quản lý state nhẹ
+- **React Router v6** - Client-side routing với lazy loading
+- **Fabric.js** - Thao tác Canvas cho customizer
+- **html2canvas** - Capture & export preview
+- **Axios** - HTTP client với interceptors
+- **React Hot Toast** - Thông báo toast
+- **Recharts** - Trực quan hóa dữ liệu
 
-### Performance Optimization
-- **Code Splitting**: React.lazy() + Suspense for route-based splitting
-- **Image Optimization**: Cloudinary transformations + lazy loading
-- **Memoization**: React.memo, useMemo, useCallback for render optimization
-- **Prefetching**: Custom hooks for route and data prefetching
-- **Caching**: Redis for API responses, product data, and user sessions
+### Tối ưu hiệu năng
+- **Code Splitting**: React.lazy() + Suspense cho route-based splitting
+- **Tối ưu hình ảnh**: Cloudinary transformations + lazy loading
+- **Memoization**: React.memo, useMemo, useCallback để tối ưu render
+- **Prefetching**: Custom hooks cho prefetching route và data
+- **Caching**: Redis cho API responses, dữ liệu sản phẩm và user sessions
 
-## 🏗️ Project Structure
+## 🏗️ Cấu trúc dự án
 
 ```
 Web_Ao_Custom/
@@ -316,31 +316,31 @@ VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
 }
 ```
 
-## 🚀 Installation & Setup
+## 🚀 Cài đặt & Thiết lập
 
-### Prerequisites
+### Yêu cầu
 - Node.js (v18+)
 - MongoDB (v6+)
-- Cloudinary account
+- Tài khoản Cloudinary
 
-### Backend Setup
+### Thiết lập Backend
 
-1. **Navigate to backend directory**
+1. **Di chuyển vào thư mục backend**
 ```bash
 cd backend
 ```
 
-2. **Install dependencies**
+2. **Cài đặt các dependencies**
 ```bash
 npm install
 ```
 
-3. **Configure environment variables**
+3. **Cấu hình biến môi trường**
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` file:
+Chỉnh sửa file `.env`:
 ```env
 NODE_ENV=development
 PORT=5000
@@ -368,17 +368,17 @@ MONGODB_URI=mongodb://localhost: (returns access token + refresh token in httpOn
 - `GET /api/admin/reviews` - Get all reviews (Admin)
 - `PUT /api/admin/reviews/:reviewId/status` - Approve/reject review
 
-4. **Start MongoDB**
+4. **Khởi động MongoDB**
 ```bash
 mongod
 ```
 
-5. **Run backend server**
+5. **Chạy backend server**
 ```bash
-# Development mode with auto-reload
+# Chế độ Development với auto-reload
 npm run dev
 
-# Production mode
+# Chế độ Production
 npm Payments (NEW)
 - `POST /api/payments/stripe/create-payment-intent` - Create Stripe payment
 - `POST /api/payments/stripe/webhook` - Stripe webhook handler
@@ -565,99 +565,99 @@ Main� Documentation
 - **[TESTING_PERFORMANCE.md](./TESTING_PERFORMANCE.md)** - Performance testing guide
 - **[OPTIMIZATION_USAGE_GUIDE.md](./OPTIMIZATION_USAGE_GUIDE.md)** - How to use optimization utilities
 
-## 🤝 Contributing
+## 🤝 Đóng góp
 
-This is an educational/portfolio project. Contributions are welcome!
+Đây là dự án học tập/portfolio. Rất hân hạnh nhận đóng góp!
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork repository
+2. Tạo nhánh tính năng của bạn (`git checkout -b feature/TinhNangTuyetVoi`)
+3. Commit thay đổi (`git commit -m 'Thêm tính năng tuyệt vời'`)
+4. Push lên nhánh (`git push origin feature/TinhNangTuyetVoi`)
+5. Mở Pull Request
 
-## 📄 License
+## 📄 Giấy phép
 
-MIT License - Feel free to use this project for learning or commercial purposes.
+Giấy phép MIT - Thoải mái sử dụng dự án này cho mục đích học tập hoặc thương mại.
 
-## 👨‍💻 Author
+## 👨‍💻 Tác giả
 
-Created as a demonstration of production-ready, full-stack MERN development with:
-- Advanced customization features
-- Enterprise-grade performance optimization
-- Modern web development best practices
-- Scalable architecture
+Được tạo ra như một minh chứng cho phát triển full-stack MERN sẵn sàng production với:
+- Tính năng tùy chỉnh nâng cao
+- Tối ưu hóa hiệu năng cấp doanh nghiệp
+- Thực hành tốt nhất trong phát triển web hiện đại
+- Kiến trúc có khả năng mở rộng
 
 ---
 
-## 🌟 Highlights
+## 🌟 Điểm nổi bật
 
-### Why This Project Stands Out
+### Tại sao dự án này nổi bật
 
-1. **⚡ Performance First**: 89 KB initial bundle with code splitting
-2. **🎨 Unique Features**: Real-time product customization with Fabric.js
-3. **🏢 Enterprise Ready**: Redis caching, job queues, email integration
-4. **📊 Analytics**: Comprehensive admin dashboard with charts
-5. **💳 Payment Ready**: Multiple payment gateways (Stripe, VNPay, COD)
-6. **🔒 Secure**: JWT auth, role-based access, secure payment handling
-7. **📱 Mobile Optimized**: Responsive design, touch controls, lazy loading
-8. **🚀 Production Deployed**: Live on Vercel + Railway
+1. **⚡ Hiệu năng đầu tiên**: Bundle ban đầu 89 KB với code splitting
+2. **🎨 Tính năng độc đáo**: Tùy chỉnh sản phẩm thời gian thực với Fabric.js
+3. **🏢 Sẵn sàng doanh nghiệp**: Redis caching, job queues, tích hợp email
+4. **📊 Phân tích**: Dashboard quản trị toàn diện với biểu đồ
+5. **💳 Sẵn sàng thanh toán**: Nhiều cổng thanh toán (Stripe, VNPay, COD)
+6. **🔒 Bảo mật**: JWT auth, phân quyền, xử lý thanh toán an toàn
+7. **📱 Tối ưu di động**: Thiết kế responsive, điều khiển chạm, lazy loading
+8. **🚀 Triển khai Production**: Live trên Vercel + Railway
 ├─ AdminDashboard:      368 KB (109 KB gzipped)
 ├─ CheckoutPage:        166 KB (49 KB gzipped)
 └─ Other Pages:         10-20 KB each
 ```
 
-## 🚀 Deployment
+## 🚀 Triển khai
 
 ### Frontend (Vercel)
-1. Connect GitHub repository to Vercel
-2. Configure build settings:
+1. Kết nối repository GitHub với Vercel
+2. Cấu hình build settings:
    - Framework: Vite
    - Build Command: `npm run build`
    - Output Directory: `dist`
-3. Add environment variables:
-   - `VITE_API_URL`: Backend API URL
-4. Deploy automatically on push to `main`
+3. Thêm biến môi trường:
+   - `VITE_API_URL`: URL Backend API
+4. Triển khai tự động khi push lên `main`
 
 ### Backend (Railway)
-1. Connect GitHub repository to Railway
-2. Configure start command: `npm start`
-3. Add environment variables (see .env.example)
-4. Enable Redis addon (optional but recommended)
-5. Deploy automatically on push to `main`
+1. Kết nối repository GitHub với Railway
+2. Cấu hình lệnh start: `npm start`
+3. Thêm biến môi trường (xem .env.example)
+4. Bật addon Redis (tùy chọn nhưng nên dùng)
+5. Triển khai tự động khi push lên `main`
 
-### Database (MongoDB Atlas)
-1. Create cluster on MongoDB Atlas
-2. Whitelist IP addresses or allow from anywhere (0.0.0.0/0)
-3. Create database user
-4. Get connection string
-5. Add to backend environment variables
+### Cơ sở dữ liệu (MongoDB Atlas)
+1. Tạo cluster trên MongoDB Atlas
+2. Whitelist địa chỉ IP hoặc cho phép từ bất kỳ đâu (0.0.0.0/0)
+3. Tạo người dùng database
+4. Lấy connection string
+5. Thêm vào biến môi trường backend
 
-## 🚧 Completed Features
+## 🚧 Tính năng đã hoàn thành
 
-### ✅ Implemented
-- ✅ Product customization system
-- ✅ Review & rating system
-- ✅ Payment integration (Stripe + VNPay)
-- ✅ Email notifications (Resend)
-- ✅ User tier system
-- ✅ Search history
-- ✅ Notification center
-- ✅ Admin dashboard with stats
-- ✅ Performance optimization (code splitting, image optimization)
-- ✅ Caching layer (Redis + BullMQ)
-- ✅ Real-time order tracking
+### ✅ Đã triển khai
+- ✅ Hệ thống tùy chỉnh sản phẩm
+- ✅ Hệ thống đánh giá & xếp hạng
+- ✅ Tích hợp thanh toán (Stripe + VNPay)
+- ✅ Thông báo email (Resend)
+- ✅ Hệ thống cấp bậc người dùng
+- ✅ Lịch sử tìm kiếm
+- ✅ Trung tâm thông báo
+- ✅ Dashboard quản trị với thống kê
+- ✅ Tối ưu hiệu năng (code splitting, tối ưu hình ảnh)
+- ✅ Lớp caching (Redis + BullMQ)
+- ✅ Theo dõi đơn hàng thời gian thực
 
-### 🔮 Future Enhancements
-- [ ] Design templates library
-- [ ] Text overlay tool in customizer
-- [ ] Multiple design layers
-- [ ] Design history/favorites
-- [ ] Bulk order discounts
-- [ ] AI-powered design suggestions
-- [ ] Social sharing features
-- [ ] Wishlist functionality
-- [ ] Live chat support
-- [ ] Mobile app (React Native)
+### 🔮 Cải tiến tương lai
+- [ ] Thư viện mẫu thiết kế
+- [ ] Công cụ thêm chữ trong customizer
+- [ ] Nhiều lớp thiết kế
+- [ ] Lịch sử/yêu thích thiết kế
+- [ ] Giảm giá đơn hàng số lượng lớn
+- [ ] Gợi ý thiết kế bằng AI
+- [ ] Tính năng chia sẻ xã hội
+- [ ] Danh sách yêu thích
+- [ ] Hỗ trợ chat trực tiếp
+- [ ] Ứng dụng di động (React Native)
 ### 6. Caching Strategy (Redis)
 
 ```javascript
@@ -695,145 +695,145 @@ npm install
 
 3. **Create environment file** (optional)
 ```bash
-# Create .env file in frontend directory
+# Tạo file .env trong thư mục frontend
 VITE_API_URL=http://localhost:5000/api
 ```
 
-4. **Run frontend development server**
+4. **Chạy frontend development server**
 ```bash
 npm run dev
 ```
 
-Frontend runs at: `http://localhost:5173`
+Frontend chạy tại: `http://localhost:5173`
 
-5. **Build for production**
+5. **Build cho production**
 ```bash
 npm run build
 npm run preview
 ```
 
-## 👤 User Roles & Access
+## 👤 Vai trò người dùng & Quyền truy cập
 
-### Customer Flow
-1. Browse products
-2. Select customizable product
-3. Upload design (PNG/JPG)
-4. Customize position, size, rotation
-5. Add to cart (saves design + placement)
-6. Checkout
-7. Track order
+### Luồng khách hàng
+1. Duyệt sản phẩm
+2. Chọn sản phẩm có thể tùy chỉnh
+3. Tải lên thiết kế (PNG/JPG)
+4. Tùy chỉnh vị trí, kích thước, xoay
+5. Thêm vào giỏ hàng (lưu thiết kế + vị trí)
+6. Thanh toán
+7. Theo dõi đơn hàng
 
-### Admin Flow
-1. Login with admin credentials
-2. View all orders (filter by custom items)
-3. **Download customer design files** for printing
-4. Update order status (pending → confirmed → printing → shipped)
-5. Manage products (CRUD)
-6. View statistics
+### Luồng Admin
+1. Đăng nhập với tài khoản admin
+2. Xem tất cả đơn hàng (lọc theo mục tùy chỉnh)
+3. **Tải xuống file thiết kế của khách hàng** để in
+4. Cập nhật trạng thái đơn hàng (pending → confirmed → printing → shipped)
+5. Quản lý sản phẩm (CRUD)
+6. Xem thống kê
 
 ## 🔐 API Endpoints
 
-### Authentication
-- `POST /api/auth/register` - Register user
-- `POST /api/auth/login` - Login
-- `POST /api/auth/logout` - Logout
-- `POST /api/auth/refresh-token` - Refresh access token
-- `GET /api/auth/me` - Get current user
+### Xác thực
+- `POST /api/auth/register` - Đăng ký người dùng
+- `POST /api/auth/login` - Đăng nhập
+- `POST /api/auth/logout` - Đăng xuất
+- `POST /api/auth/refresh-token` - Làm mới access token
+- `GET /api/auth/me` - Lấy thông tin người dùng hiện tại
 
-### Products
-- `GET /api/products` - Get all products (with filters)
-- `GET /api/products/featured` - Get featured products
-- `GET /api/products/customizable` - Get customizable products
-- `GET /api/products/:slug` - Get product by slug
-- `POST /api/products` - Create product (Admin)
-- `PUT /api/products/:id` - Update product (Admin)
-- `DELETE /api/products/:id` - Delete product (Admin)
+### Sản phẩm
+- `GET /api/products` - Lấy tất cả sản phẩm (với bộ lọc)
+- `GET /api/products/featured` - Lấy sản phẩm nổi bật
+- `GET /api/products/customizable` - Lấy sản phẩm tùy chỉnh
+- `GET /api/products/:slug` - Lấy sản phẩm theo slug
+- `POST /api/products` - Tạo sản phẩm (Admin)
+- `PUT /api/products/:id` - Cập nhật sản phẩm (Admin)
+- `DELETE /api/products/:id` - Xóa sản phẩm (Admin)
 
 ### Upload
-- `POST /api/upload/design` - Upload custom design
-- `POST /api/upload/product` - Upload product image (Admin)
-- `DELETE /api/upload/delete` - Delete file from Cloudinary
+- `POST /api/upload/design` - Tải lên thiết kế tùy chỉnh
+- `POST /api/upload/product` - Tải lên hình ảnh sản phẩm (Admin)
+- `DELETE /api/upload/delete` - Xóa file từ Cloudinary
 
-### Cart
-- `GET /api/cart` - Get user cart
-- `POST /api/cart/items` - Add item to cart (with custom design)
-- `PUT /api/cart/items/:itemId` - Update quantity
-- `DELETE /api/cart/items/:itemId` - Remove item
-- `DELETE /api/cart/clear` - Clear cart
+### Giỏ hàng
+- `GET /api/cart` - Lấy giỏ hàng người dùng
+- `POST /api/cart/items` - Thêm sản phẩm vào giỏ (với thiết kế tùy chỉnh)
+- `PUT /api/cart/items/:itemId` - Cập nhật số lượng
+- `DELETE /api/cart/items/:itemId` - Xóa sản phẩm
+- `DELETE /api/cart/clear` - Xóa giỏ hàng
 
-### Orders
-- `POST /api/orders` - Create order
-- `GET /api/orders` - Get user orders
-- `GET /api/orders/:orderId` - Get order details
-- `GET /api/orders/number/:orderNumber` - Get order by number
+### Đơn hàng
+- `POST /api/orders` - Tầo đơn hàng
+- `GET /api/orders` - Lấy đơn hàng của người dùng
+- `GET /api/orders/:orderId` - Lấy chi tiết đơn hàng
+- `GET /api/orders/number/:orderNumber` - Lấy đơn hàng theo số
 
 ### Admin
-- `GET /api/admin/orders` - Get all orders
-- `GET /api/admin/orders/:orderId` - Get order (with design URLs)
-- `PUT /api/admin/orders/:orderId/status` - Update order status
-- `PUT /api/admin/orders/:orderId/tracking` - Update tracking info
-- `GET /api/admin/orders/statistics` - Get order stats
+- `GET /api/admin/orders` - Lấy tất cả đơn hàng
+- `GET /api/admin/orders/:orderId` - Lấy đơn hàng (với URL thiết kế)
+- `PUT /api/admin/orders/:orderId/status` - Cập nhật trạng thái đơn hàng
+- `PUT /api/admin/orders/:orderId/tracking` - Cập nhật thông tin vận chuyển
+- `GET /api/admin/orders/statistics` - Lấy thống kê đơn hàng
 
-## 🎨 Customizer Component Features
+## 🎨 Tính năng của Component Customizer
 
-The `CustomizerPage.jsx` is the core innovation:
+`CustomizerPage.jsx` là đổi mới sáng tạo chính:
 
 ```javascript
-// Key Features:
-1. Fabric.js canvas for design manipulation
-2. Upload to Cloudinary with progress
-3. Drag, resize, rotate designs
-4. Real-time preview on product image
-5. Capture final preview with html2canvas
-6. Save placement coordinates for printing
-7. Color and size variant selection
+// Tính năng chính:
+1. Canvas Fabric.js để thao tác thiết kế
+2. Tải lên Cloudinary với tiến trình
+3. Kéo, thay đổi kích thước, xoay thiết kế
+4. Xem trước theo thời gian thực trên hình ảnh sản phẩm
+5. Capture preview cuối cùng với html2canvas
+6. Lưu tọa độ vị trí để in
+7. Chọn biến thể màu và kích thước
 ```
 
-## 📦 Order Processing Workflow
+## 📦 Quy trình xử lý đơn hàng
 
 ```
-Customer uploads design 
+Khách hàng tải lên thiết kế 
     ↓
-Cloudinary stores high-res image
+Cloudinary lưu trữ hình ảnh chất lượng cao
     ↓
-Frontend captures placement coordinates
+Frontend capture tọa độ vị trí
     ↓
-Cart stores: imageUrl + placement + preview
+Giỏ hàng lưu: imageUrl + vị trí + preview
     ↓
-Order created with custom design data
+Đơn hàng được tạo với dữ liệu thiết kế tùy chỉnh
     ↓
-Admin views order → Downloads design file
+Admin xem đơn hàng → Tải xuống file thiết kế
     ↓
-Print shop uses coordinates for accurate printing
+Xưởng in sử dụng tọa độ để in chính xác
     ↓
-Order shipped
+Đơn hàng được gửi đi
 ```
 
-## 🔒 Security Features
+## 🔒 Tính năng bảo mật
 
-- JWT-based authentication
-- Password hashing with bcrypt
-- HTTP-only cookies for refresh tokens
-- CORS protection
-- Helmet.js security headers
-- Input validation
-- File upload restrictions
-- Rate limiting (can be added)
+- Xác thực dựa trên JWT
+- Mã hóa mật khẩu với bcrypt
+- HTTP-only cookies cho refresh tokens
+- Bảo vệ CORS
+- Tiêu đề bảo mật Helmet.js
+- Xác thực đầu vào
+- Giới hạn upload file
+- Giới hạn tốc độ (có thể thêm)
 
-## 🧪 Testing
+## 🧪 Kiểm thử
 
-### Manual Testing Checklist
-- [ ] Register new user
-- [ ] Login/Logout
-- [ ] Browse products
-- [ ] Upload design to customizable product
-- [ ] Manipulate design (move, rotate, scale)
-- [ ] Add to cart
-- [ ] Checkout process
-- [ ] View order history
-- [ ] Admin: View orders with design URLs
-- [ ] Admin: Update order status
-- [ ] Admin: Create/Edit products
+### Danh sách kiểm thử thủ công
+- [ ] Đăng ký người dùng mới
+- [ ] Đăng nhập/Đăng xuất
+- [ ] Duyệt sản phẩm
+- [ ] Tải lên thiết kế cho sản phẩm tùy chỉnh
+- [ ] Thao tác thiết kế (di chuyển, xoay, phóng to/thu nhỏ)
+- [ ] Thêm vào giỏ hàng
+- [ ] Quy trình thanh toán
+- [ ] Xem lịch sử đơn hàng
+- [ ] Admin: Xem đơn hàng với URL thiết kế
+- [ ] Admin: Cập nhật trạng thái đơn hàng
+- [ ] Admin: Tạo/Chỉnh sửa sản phẩm
 
 ## 📝 Environment Variables Reference
 

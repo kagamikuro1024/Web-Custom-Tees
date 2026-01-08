@@ -124,16 +124,16 @@ const AdminProducts = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Manage Products</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Quản lý sản phẩm</h1>
           <p className="text-gray-600 mt-2">
-            Total: {pagination.totalProducts} products
+            Tổng: {pagination.totalProducts} sản phẩm
           </p>
         </div>
         <Link
           to="/admin/products/create"
           className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
         >
-          <FiPlus /> Add New Product
+          <FiPlus /> Thêm sản phẩm mới
         </Link>
       </div>
 
@@ -145,7 +145,7 @@ const AdminProducts = () => {
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Tìm kiếm sản phẩm..."
               value={filters.search}
               onChange={(e) => setFilters({ ...filters, search: e.target.value })}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -158,7 +158,7 @@ const AdminProducts = () => {
             onChange={(e) => setFilters({ ...filters, isCustomizable: e.target.value })}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">All Products</option>
+            <option value="">Tất cả sản phẩm</option>
             <option value="true">Customizable Only</option>
             <option value="false">Non-Customizable</option>
           </select>
@@ -184,11 +184,11 @@ const AdminProducts = () => {
         {loading ? (
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4">Loading products...</p>
+            <p className="text-gray-600 mt-4">Đang tải sản phẩm...</p>
           </div>
         ) : products.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
-            No products found
+            Không tìm thấy sản phẩm
           </div>
         ) : (
           <>
@@ -341,9 +341,9 @@ const AdminProducts = () => {
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Delete Product</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Xóa sản phẩm</h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete <strong>{productToDelete?.name}</strong>? This action cannot be undone.
+              Bạn có chắc chắn muốn xóa <strong>{productToDelete?.name}</strong>? Hành động này không thể hoàn tác.
             </p>
             <div className="flex gap-3 justify-end">
               <button
@@ -353,13 +353,13 @@ const AdminProducts = () => {
                 }}
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
               >
-                Cancel
+                Hủy
               </button>
               <button
                 onClick={handleDeleteConfirm}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
               >
-                Delete
+                Xóa
               </button>
             </div>
           </div>

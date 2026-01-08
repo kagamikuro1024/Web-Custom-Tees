@@ -57,7 +57,7 @@ const ProductDetailPage = () => {
         }
       } catch (error) {
         console.error('Error fetching product:', error);
-        toast.error('Failed to load product');
+        toast.error('Không thể tải sản phẩm');
         navigate('/products');
       } finally {
         setLoading(false);
@@ -74,13 +74,13 @@ const ProductDetailPage = () => {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      toast.error('Please upload an image file');
+      toast.error('Vui lòng tải lên tệp hình ảnh');
       return;
     }
 
     // Validate file size (10MB)
     if (file.size > 10 * 1024 * 1024) {
-      toast.error('File size must be less than 10MB');
+      toast.error('Kích thước tệp phải nhỏ hơn 10MB');
       return;
     }
 
@@ -97,12 +97,12 @@ const ProductDetailPage = () => {
   // Upload design to Cloudinary
   const handleUploadDesign = async () => {
     if (!designFile) {
-      toast.error('Please select a design file first');
+      toast.error('Vui lòng chọn tệp thiết kế trước');
       return;
     }
 
     if (!isAuthenticated) {
-      toast.error('Please login to upload designs');
+      toast.error('Vui lòng đăng nhập để tải lên thiết kế');
       navigate('/login');
       return;
     }
@@ -117,10 +117,10 @@ const ProductDetailPage = () => {
 
       setUploadedDesignUrl(data.data.url);
       setUploadedPublicId(data.data.publicId);
-      toast.success('Design uploaded successfully!');
+      toast.success('Tải lên thiết kế thành công!');
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Failed to upload design');
+      toast.error('Không thể tải lên thiết kế');
     } finally {
       setUploading(false);
     }
@@ -190,19 +190,19 @@ const ProductDetailPage = () => {
   // Add to cart handler
   const handleAddToCart = async () => {
     if (!selectedSize) {
-      toast.error('Please select a size');
+      toast.error('Vui lòng chọn kích thước');
       return;
     }
 
     if (!isAuthenticated) {
-      toast.error('Please login to add items to cart');
+      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
       navigate('/login');
       return;
     }
 
     // Validate custom design for customizable products
     if (product.isCustomizable && !uploadedDesignUrl) {
-      toast.error('Please upload and position your design first');
+      toast.error('Vui lòng tải lên và định vị thiết kế của bạn trước');
       return;
     }
 
@@ -237,7 +237,7 @@ const ProductDetailPage = () => {
     try {
       setAddingToCart(true);
       await addToCart(cartItem);
-      toast.success('Added to cart successfully!');
+      toast.success('Thêm vào giỏ hàng thành công!');
       
       // Optionally navigate to cart
       // navigate('/cart');
@@ -259,7 +259,7 @@ const ProductDetailPage = () => {
   if (!product) {
     return (
       <div className="container-custom py-12">
-        <p className="text-center text-gray-600">Product not found</p>
+        <p className="text-center text-gray-600">Không tìm thấy sản phẩm</p>
       </div>
     );
   }
@@ -310,7 +310,7 @@ const ProductDetailPage = () => {
 
             {designPreview && (
               <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm text-gray-600">
-                💡 Drag design to position
+                💡 Kéo thiết kế để định vị
               </div>
             )}
           </div>
@@ -384,10 +384,10 @@ const ProductDetailPage = () => {
                 {product.totalStock > 0 ? (
                   <>
                     <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    In Stock ({product.totalStock} available)
+                    Còn hàng ({product.totalStock} sản phẩm có sẵn)
                   </>
                 ) : (
-                  'Out of Stock'
+                  'Hết hàng'
                 )}
               </div>
             </div>
@@ -395,11 +395,11 @@ const ProductDetailPage = () => {
 
           {/* Description */}
           <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Product Description</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Mô tả sản phẩm</h3>
             <p className="text-gray-700 leading-relaxed">{product.description}</p>
             {product.material && (
               <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
-                <span className="font-medium">Material:</span>
+                <span className="font-medium">Chất liệu:</span>
                 <span>{product.material}</span>
               </div>
             )}
@@ -409,13 +409,13 @@ const ProductDetailPage = () => {
           {product.isCustomizable && (
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <h3 className="font-semibold mb-3 flex items-center gap-2">
-                🎨 Customize Your Design
+                🎨 Tùy chỉnh thiết kế của bạn
               </h3>
 
               {!designPreview ? (
                 <div>
                   <label className="block mb-2 text-sm text-gray-600">
-                    Upload your design (PNG, JPG, max 10MB)
+                    Tải lên thiết kế của bạn (PNG, JPG, tối đa 10MB)
                   </label>
                   <input
                     type="file"
@@ -428,7 +428,7 @@ const ProductDetailPage = () => {
                     htmlFor="design-upload"
                     className="btn-secondary cursor-pointer inline-flex items-center gap-2"
                   >
-                    <FaUpload /> Choose Design File
+                    <FaUpload /> Chọn tệp thiết kế
                   </label>
                 </div>
               ) : (
@@ -454,12 +454,12 @@ const ProductDetailPage = () => {
                       {uploading ? (
                         <>
                           <FaSpinner className="animate-spin mr-2" />
-                          Uploading...
+                          Đang tải lên...
                         </>
                       ) : (
                         <>
                           <FaUpload className="mr-2" />
-                          Upload Design
+                          Tải lên thiết kế
                         </>
                       )}
                     </button>
@@ -467,14 +467,14 @@ const ProductDetailPage = () => {
 
                   {uploadedDesignUrl && (
                     <div className="bg-green-100 text-green-800 px-3 py-2 rounded text-sm mb-3">
-                      ✓ Design uploaded! Drag it on the product to position.
+                      ✓ Thiết kế đã được tải lên! Kéo nó trên sản phẩm để định vị.
                     </div>
                   )}
 
                   {/* Design Size Control */}
                   <div>
                     <label className="block text-sm text-gray-600 mb-2">
-                      Design Size: {designSize}px
+                      Kích thước thiết kế: {designSize}px
                     </label>
                     <input
                       type="range"
@@ -494,7 +494,7 @@ const ProductDetailPage = () => {
           {product.variantColors && product.variantColors.length > 0 && (
             <div className="border-t pt-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                Color: <span className="text-primary-600">{selectedColor?.name}</span>
+                Màu sắc: <span className="text-primary-600">{selectedColor?.name}</span>
               </h3>
               <div className="flex gap-3 flex-wrap">
                 {product.variantColors.map((color, index) => (
@@ -516,7 +516,7 @@ const ProductDetailPage = () => {
 
           {/* Size Selection */}
           <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Select Size</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Chọn kích thước</h3>
             <div className="grid grid-cols-5 gap-2">
               {product.sizes.map((size, index) => (
                 <button
@@ -534,7 +534,7 @@ const ProductDetailPage = () => {
                   <div className="text-center">
                     <div className="text-sm">{size.name}</div>
                     {size.stock > 0 && size.stock < 10 && (
-                      <div className="text-xs opacity-75">({size.stock} left)</div>
+                      <div className="text-xs opacity-75">({size.stock} còn lại)</div>
                     )}
                   </div>
                 </button>
@@ -544,7 +544,7 @@ const ProductDetailPage = () => {
 
           {/* Quantity */}
           <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Quantity</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Số lượng</h3>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -572,12 +572,12 @@ const ProductDetailPage = () => {
               {addingToCart ? (
                 <>
                   <FaSpinner className="animate-spin" />
-                  Adding to Cart...
+                  Đang thêm vào giỏ hàng...
                 </>
               ) : (
                 <>
                   <FaShoppingCart />
-                  Add to Cart
+                  Thêm vào giỏ hàng
                 </>
               )}
             </button>
@@ -585,14 +585,14 @@ const ProductDetailPage = () => {
 
           {/* Product Details */}
           <div className="mt-8 pt-8 border-t">
-            <h3 className="font-semibold mb-3">Product Details</h3>
+            <h3 className="font-semibold mb-3">Chi tiết sản phẩm</h3>
             <div className="space-y-2 text-sm text-gray-600">
               <div className="flex justify-between">
-                <span>Material:</span>
+                <span>Chất liệu:</span>
                 <span className="font-medium">{product.material || 'Cotton'}</span>
               </div>
               <div className="flex justify-between">
-                <span>Weight:</span>
+                <span>Cân nặng:</span>
                 <span className="font-medium">{product.weight || 0}g</span>
               </div>
               <div className="flex justify-between">
@@ -601,8 +601,8 @@ const ProductDetailPage = () => {
               </div>
               {product.isCustomizable && (
                 <div className="flex justify-between">
-                  <span>Customizable:</span>
-                  <span className="font-medium text-green-600">Yes ✓</span>
+                  <span>Có thể tùy chỉnh:</span>
+                  <span className="font-medium text-green-600">Có ✓</span>
                 </div>
               )}
             </div>

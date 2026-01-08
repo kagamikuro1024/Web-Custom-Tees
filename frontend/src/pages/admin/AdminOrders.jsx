@@ -140,9 +140,9 @@ const AdminOrders = () => {
     <div className="container-custom py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Manage Orders</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Quản lý đơn hàng</h1>
         <p className="text-gray-600 mt-2">
-          Total: {pagination.totalOrders} orders
+          Tổng: {pagination.totalOrders} đơn hàng
         </p>
       </div>
 
@@ -154,7 +154,7 @@ const AdminOrders = () => {
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search by order ID, customer..."
+              placeholder="Tìm kiếm theo ID đơn hàng, khách hàng..."
               value={filters.search}
               onChange={(e) => setFilters({ ...filters, search: e.target.value })}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -167,7 +167,7 @@ const AdminOrders = () => {
             onChange={(e) => setFilters({ ...filters, orderStatus: e.target.value })}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">All Status</option>
+            <option value="">Tất cả trạng thái</option>
             <option value="pending">Pending</option>
             <option value="confirmed">Confirmed</option>
             <option value="processing">Processing</option>
@@ -182,9 +182,9 @@ const AdminOrders = () => {
             onChange={(e) => setFilters({ ...filters, hasCustomDesign: e.target.value })}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">All Orders</option>
-            <option value="true">With Custom Design</option>
-            <option value="false">No Custom Design</option>
+            <option value="">Tất cả đơn hàng</option>
+            <option value="true">Có thiết kế tùy chỉnh</option>
+            <option value="false">Không có thiết kế</option>
           </select>
 
           {/* Sort */}
@@ -193,10 +193,10 @@ const AdminOrders = () => {
             onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="-createdAt">Newest First</option>
-            <option value="createdAt">Oldest First</option>
-            <option value="-totalAmount">Highest Amount</option>
-            <option value="totalAmount">Lowest Amount</option>
+            <option value="-createdAt">Mới nhất</option>
+            <option value="createdAt">Cũ nhất</option>
+            <option value="-totalAmount">Giá trị cao nhất</option>
+            <option value="totalAmount">Giá trị thấp nhất</option>
           </select>
         </div>
       </div>
@@ -206,11 +206,11 @@ const AdminOrders = () => {
         {loading ? (
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4">Loading orders...</p>
+            <p className="text-gray-600 mt-4">Đang tải đơn hàng...</p>
           </div>
         ) : orders.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
-            No orders found
+            Không tìm thấy đơn hàng
           </div>
         ) : (
           <>
@@ -219,28 +219,28 @@ const AdminOrders = () => {
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                      Order ID
+                      Mã đơn
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Customer
+                      Khách hàng
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Items
+                      Sản phẩm
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Total
+                      Tổng tiền
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
+                      Trạng thái
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Custom Design
+                      Thiết kế
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
+                      Ngày
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
+                      Hành động
                     </th>
                   </tr>
                 </thead>
@@ -304,7 +304,7 @@ const AdminOrders = () => {
                               </button>
                             </div>
                           ) : (
-                            <span className="text-gray-400 text-xs">No design</span>
+                            <span className="text-gray-400 text-xs">Không có thiết kế</span>
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -315,7 +315,7 @@ const AdminOrders = () => {
                             to={`/admin/orders/${order._id}`}
                             className="text-blue-600 hover:text-blue-900 font-medium text-sm"
                           >
-                            View Details
+                            Xem chi tiết
                           </Link>
                         </td>
                       </tr>
@@ -328,7 +328,7 @@ const AdminOrders = () => {
             {/* Pagination */}
             <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
               <div className="text-sm text-gray-700">
-                Showing page {pagination.page} of {pagination.totalPages}
+                Hiển thị trang {pagination.page} / {pagination.totalPages}
               </div>
               <div className="flex gap-2">
                 <button
@@ -336,14 +336,14 @@ const AdminOrders = () => {
                   disabled={pagination.page === 1}
                   className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  <FiChevronLeft /> Previous
+                  <FiChevronLeft /> Trước
                 </button>
                 <button
                   onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
                   disabled={pagination.page >= pagination.totalPages}
                   className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Next <FiChevronRight />
+                  Sau <FiChevronRight />
                 </button>
               </div>
             </div>

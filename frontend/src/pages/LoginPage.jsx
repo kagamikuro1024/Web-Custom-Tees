@@ -72,15 +72,15 @@ const LoginPage = () => {
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-gray-600">Sign in to your account</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Chào mừng trở lại</h1>
+          <p className="text-gray-600">Đăng nhập vào tài khoản của bạn</p>
         </div>
 
         <div className="card p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                Địa chỉ Email
               </label>
               <input
                 type="email"
@@ -93,7 +93,7 @@ const LoginPage = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+                Mật khẩu
               </label>
               <input
                 type="password"
@@ -109,17 +109,17 @@ const LoginPage = () => {
               disabled={isLoading}
               className="btn btn-primary w-full"
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
             </button>
 
             {showResendVerification && (
               <div className="mt-4">
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-3">
                   <p className="text-sm text-yellow-800 mb-2">
-                    ⚠️ Your email is not verified yet. Please check your inbox for the verification link.
+                    ⚠️ Email của bạn chưa được xác thực. Vui lòng kiểm tra hòm thư để lấy link xác thực.
                   </p>
                   <p className="text-sm text-gray-700">
-                    Didn't receive the email? Click below to resend:
+                    Chưa nhận được email? Bấm dưới đây để gửi lại:
                   </p>
                 </div>
                 <button
@@ -128,7 +128,7 @@ const LoginPage = () => {
                   disabled={isResending}
                   className="btn btn-outline w-full"
                 >
-                  {isResending ? 'Sending...' : '📧 Resend Verification Email'}
+                  {isResending ? 'Đang gửi...' : '📧 Gửi lại email xác thực'}
                 </button>
               </div>
             )}
@@ -136,9 +136,9 @@ const LoginPage = () => {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Chưa có tài khoản?{' '}
               <Link to="/register" className="text-primary-600 hover:underline font-medium">
-                Register here
+                Đăng ký tại đây
               </Link>
             </p>
           </div>

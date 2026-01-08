@@ -101,12 +101,12 @@ const CheckoutPage = () => {
     e.preventDefault();
     
     if (!deliveryLocation) {
-      toast.error('Please select delivery location on map');
+      toast.error('Vui lòng chọn vị trí giao hàng trên bản đồ');
       return;
     }
 
     if (!formData.fullName || !formData.email || !formData.phone || !formData.address) {
-      toast.error('Please fill in all required fields');
+      toast.error('Vui lòng điền đầy đủ các trường bắt buộc');
       return;
     }
 
@@ -119,7 +119,7 @@ const CheckoutPage = () => {
         if (typeof colorData === 'string') {
           colorData = { name: colorData, hexCode: '' };
         } else if (!colorData || typeof colorData !== 'object') {
-          colorData = { name: 'Default', hexCode: '' };
+          colorData = { name: 'Mặc định', hexCode: '' };
         }
 
         return {
@@ -147,7 +147,7 @@ const CheckoutPage = () => {
           city: 'Hà Nội',
           state: 'Hà Nội',
           postalCode: '100000',
-          country: 'Vietnam'
+          country: 'Việt Nam'
         },
         paymentMethod: formData.paymentMethod,
         notes: formData.notes
@@ -243,11 +243,11 @@ const CheckoutPage = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Customer Information */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-bold mb-4">Customer Information</h2>
+              <h2 className="text-xl font-bold mb-4">Thông tin khách hàng</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Full Name *</label>
+                  <label className="block text-sm font-medium mb-2">Họ và tên *</label>
                   <input
                     type="text"
                     name="fullName"
@@ -271,7 +271,7 @@ const CheckoutPage = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Phone *</label>
+                  <label className="block text-sm font-medium mb-2">Số điện thoại *</label>
                   <input
                     type="tel"
                     name="phone"
@@ -283,28 +283,28 @@ const CheckoutPage = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Address *</label>
+                  <label className="block text-sm font-medium mb-2">Địa chỉ giao hàng *</label>
                   <input
                     type="text"
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
                     className="input-field"
-                    placeholder="Street address, city, district"
+                    placeholder="Địa chỉ, quận, huyện"
                     required
                   />
                 </div>
               </div>
               
               <div className="mt-4">
-                <label className="block text-sm font-medium mb-2">Order Notes (Optional)</label>
+                <label className="block text-sm font-medium mb-2">Ghi chú đơn hàng (Tùy chọn)</label>
                 <textarea
                   name="notes"
                   value={formData.notes}
                   onChange={handleInputChange}
                   className="input-field"
                   rows="3"
-                  placeholder="Special instructions for your order..."
+                  placeholder="Yêu cầu đặc biệt cho đơn hàng của bạn..."
                 ></textarea>
               </div>
             </div>
@@ -313,28 +313,28 @@ const CheckoutPage = () => {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center gap-2 mb-4">
                 <FaMapMarkerAlt className="text-primary-600 text-xl" />
-                <h2 className="text-xl font-bold">Select Delivery Location</h2>
+                <h2 className="text-xl font-bold">Chọn vị trí giao hàng</h2>
               </div>
               
               <p className="text-sm text-gray-600 mb-4">
-                Click on the map to set your delivery location. Distance and shipping cost will be calculated automatically.
+                Nhấn vào bản đồ để đặt vị trí giao hàng. Khoảng cách và phí vận chuyển sẽ được tính toán tự động.
               </p>
 
               {/* Map Legend */}
               <div className="flex gap-6 mb-4 text-sm">
                 <div className="flex items-center gap-2">
                   <FaStore className="text-blue-600" />
-                  <span>Store: Hanoi Center</span>
+                  <span>Cửa hàng: Trung tâm Hà Nội</span>
                 </div>
                 {deliveryLocation && (
                   <>
                     <div className="flex items-center gap-2">
                       <FaShippingFast className="text-green-600" />
-                      <span>Distance: {distance.toFixed(2)} km</span>
+                      <span>Khoảng cách: {distance.toFixed(2)} km</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-primary-600">
-                        Shipping: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingCost)}
+                        Phí giao hàng: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingCost)}
                       </span>
                     </div>
                   </>
@@ -372,7 +372,7 @@ const CheckoutPage = () => {
               </div>
 
               {!deliveryLocation && (
-                <p className="text-red-500 text-sm mt-2">* Please click on the map to select delivery location</p>
+                <p className="text-red-500 text-sm mt-2">* Vui lòng nhấn vào bản đồ để chọn vị trí giao hàng</p>
               )}
             </div>
           </div>
@@ -380,7 +380,7 @@ const CheckoutPage = () => {
           {/* Right Column - Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
-              <h2 className="text-xl font-bold mb-6">Order Summary</h2>
+              <h2 className="text-xl font-bold mb-6">Tóm tắt đơn hàng</h2>
               
               {/* Items */}
               <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
@@ -406,25 +406,25 @@ const CheckoutPage = () => {
 
               <div className="border-t pt-4 space-y-3">
                 <div className="flex justify-between text-gray-600">
-                  <span>Subtotal</span>
+                  <span>Tạm tính</span>
                   <span className="font-medium">
                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(subtotal)}
                   </span>
                 </div>
                 
                 <div className="flex justify-between text-gray-600">
-                  <span>Shipping</span>
+                  <span>Phí giao hàng</span>
                   <span className="font-medium">
                     {deliveryLocation 
                       ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingCost)
-                      : 'Select location'
+                      : 'Chọn vị trí'
                     }
                   </span>
                 </div>
               </div>
 
               <div className="border-t mt-4 pt-4 flex justify-between text-xl font-bold">
-                <span>Total</span>
+                <span>Tổng cộng</span>
                 <span className="text-primary-600">
                   {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total)}
                 </span>
@@ -432,7 +432,7 @@ const CheckoutPage = () => {
 
               {/* Payment Method */}
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm font-medium mb-3">Payment Method</p>
+                <p className="text-sm font-medium mb-3">Phương thức thanh toán</p>
                 
                 <div className="space-y-3">
                   {/* COD Option */}
@@ -446,8 +446,8 @@ const CheckoutPage = () => {
                       className="text-primary-600 focus:ring-primary-500"
                     />
                     <div className="flex-grow">
-                      <span className="text-sm font-medium">💵 Cash on Delivery (COD)</span>
-                      <p className="text-xs text-gray-500">Pay when you receive the order</p>
+                      <span className="text-sm font-medium">💵 Thanh toán khi nhận hàng (COD)</span>
+                      <p className="text-xs text-gray-500">Thanh toán bằng tiền mặt khi nhận hàng</p>
                     </div>
                   </label>
 
@@ -463,7 +463,7 @@ const CheckoutPage = () => {
                     />
                     <div className="flex-grow">
                       <span className="text-sm font-medium">🏦 VNPAY</span>
-                      <p className="text-xs text-gray-500">Pay online via VNPAY gateway</p>
+                      <p className="text-xs text-gray-500">Thanh toán trực tuyến qua cổng VNPAY</p>
                     </div>
                   </label>
 
@@ -478,8 +478,8 @@ const CheckoutPage = () => {
                       className="text-primary-600 focus:ring-primary-500"
                     />
                     <div className="flex-grow">
-                      <span className="text-sm font-medium">💳 Credit/Debit Card</span>
-                      <p className="text-xs text-gray-500">International payment via Stripe</p>
+                      <span className="text-sm font-medium">💳 Thẻ tín dụng/Ghi nợ</span>
+                      <p className="text-xs text-gray-500">Thanh toán quốc tế qua Stripe</p>
                       <div className="flex gap-1 mt-1">
                         <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded">Visa</span>
                         <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded">Mastercard</span>
@@ -495,14 +495,14 @@ const CheckoutPage = () => {
                 disabled={isSubmitting || !deliveryLocation}
                 className="btn btn-primary w-full py-4 text-lg font-bold mt-6 rounded-xl shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Processing...' : 
-                 formData.paymentMethod === 'stripe' ? '💳 Pay with Card' :
-                 formData.paymentMethod === 'vnpay' ? 'Pay with VNPAY' : 
-                 'Place Order'}
+                {isSubmitting ? 'Đang xử lý...' : 
+                 formData.paymentMethod === 'stripe' ? '💳 Thanh toán bằng thẻ' :
+                 formData.paymentMethod === 'vnpay' ? 'Thanh toán bằng VNPAY' : 
+                 'Đặt hàng'}
               </button>
 
               <p className="text-xs text-gray-500 text-center mt-4">
-                By placing this order, you agree to our terms and conditions
+                Bằng việc đặt hàng, bạn đồng ý với các điều khoản và điều kiện của chúng tôi
               </p>
             </div>
           </div>

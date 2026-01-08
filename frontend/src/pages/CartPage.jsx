@@ -55,10 +55,10 @@ const CartPage = () => {
       <div className="container-custom py-16">
         <div className="max-w-2xl mx-auto text-center">
           <FaShoppingCart className="mx-auto text-6xl text-gray-300 mb-4" />
-          <h2 className="text-2xl font-bold mb-4">Please Login</h2>
-          <p className="text-gray-600 mb-6">You need to be logged in to view your cart</p>
+          <h2 className="text-2xl font-bold mb-4">Vui lòng đăng nhập</h2>
+          <p className="text-gray-600 mb-6">Bạn cần đăng nhập để xem giỏ hàng</p>
           <Link to="/login" className="btn btn-primary">
-            Login
+            Đăng nhập
           </Link>
         </div>
       </div>
@@ -80,10 +80,10 @@ const CartPage = () => {
       <div className="container-custom py-16">
         <div className="max-w-2xl mx-auto text-center">
           <FaShoppingCart className="mx-auto text-6xl text-gray-300 mb-4" />
-          <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
-          <p className="text-gray-600 mb-6">Start shopping to add items to your cart</p>
+          <h2 className="text-2xl font-bold mb-4">Giỏ hàng của bạn trống</h2>
+          <p className="text-gray-600 mb-6">Bắt đầu mua sắm để thêm sản phẩm vào giỏ hàng</p>
           <Link to="/shop" className="btn btn-primary">
-            Continue Shopping
+            Tiếp tục mua sắm
           </Link>
         </div>
       </div>
@@ -92,7 +92,7 @@ const CartPage = () => {
 
   return (
     <div className="container-custom py-8">
-      <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
+      <h1 className="text-3xl font-bold mb-8">Giỏ hàng</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
@@ -109,7 +109,7 @@ const CartPage = () => {
                   <div className="flex-shrink-0">
                     <img
                       src={productImage}
-                      alt={item.product?.name || 'Product'}
+                      alt={item.product?.name || 'Sản phẩm'}
                       className="w-24 h-24 object-cover rounded-lg"
                       onError={(e) => {
                         console.error('Image load error for:', productImage);
@@ -124,17 +124,17 @@ const CartPage = () => {
                       <div>
                         <h3 className="font-semibold text-lg">{item.product?.name}</h3>
                         <div className="flex gap-4 mt-2 text-sm text-gray-600">
-                          <span>Size: <span className="font-medium">{item.selectedSize}</span></span>
-                          <span>Color: <span className="font-medium">{item.selectedColor?.name}</span></span>
+                          <span>Kích cỡ: <span className="font-medium">{item.selectedSize}</span></span>
+                          <span>Màu sắc: <span className="font-medium">{item.selectedColor?.name}</span></span>
                         </div>
                         
                         {/* Custom Design Preview */}
                         {item.customDesign?.imageUrl && (
                           <div className="mt-3">
-                            <p className="text-xs text-gray-500 mb-1">Custom Design:</p>
+                            <p className="text-xs text-gray-500 mb-1">Thiết kế tùy chỉnh:</p>
                             <img
                               src={item.customDesign.imageUrl}
-                              alt="Custom design"
+                              alt="Thiết kế tùy chỉnh"
                               className="w-16 h-16 object-contain border rounded"
                             />
                           </div>
@@ -197,24 +197,24 @@ const CartPage = () => {
         {/* Order Summary */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
-            <h2 className="text-xl font-bold mb-6">Order Summary</h2>
+            <h2 className="text-xl font-bold mb-6">Tóm tắt đơn hàng</h2>
             
             <div className="space-y-3 mb-6 pb-6 border-b">
               <div className="flex justify-between text-gray-600">
-                <span>Subtotal ({cart.totalItems} items)</span>
+                <span>Thành tiền ({cart.totalItems} sản phẩm)</span>
                 <span className="font-medium">
                   {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(cart.totalPrice)}
                 </span>
               </div>
               
               <div className="flex justify-between text-gray-600">
-                <span>Shipping</span>
-                <span className="text-sm text-primary-600">Calculated at checkout</span>
+                <span>Vận chuyển</span>
+                <span className="text-sm text-primary-600">Tính tại thanh toán</span>
               </div>
             </div>
 
             <div className="flex justify-between text-xl font-bold mb-6">
-              <span>Total</span>
+              <span>Tổng cộng</span>
               <span className="text-primary-600">
                 {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(cart.totalPrice)}
               </span>
@@ -225,7 +225,7 @@ const CartPage = () => {
               className="btn btn-primary w-full py-4 text-lg font-bold flex items-center justify-center gap-2 rounded-xl shadow-lg hover:shadow-xl"
               disabled={isLoading}
             >
-              Proceed to Checkout
+              Tiến hành thanh toán
               <FaArrowRight />
             </button>
 
@@ -233,7 +233,7 @@ const CartPage = () => {
               to="/shop"
               className="block text-center text-primary-600 hover:text-primary-700 mt-4 font-medium"
             >
-              Continue Shopping
+              Tiếp tục mua sắm
             </Link>
           </div>
         </div>

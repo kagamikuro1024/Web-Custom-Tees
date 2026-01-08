@@ -37,16 +37,16 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-700 hover:text-primary-600 transition">
-              Home
+              Trang chủ
             </Link>
             <div className="relative group">
               <Link to="/products" className="text-gray-700 hover:text-primary-600 transition font-medium">
-                Products
+                Sản phẩm
               </Link>
               {/* Dropdown */}
               <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 <Link to="/shop" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm">
-                  Shop
+                  Cửa hàng
                 </Link>
                 <Link to="/customize" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm">
                   Customize
@@ -54,7 +54,7 @@ const Header = () => {
               </div>
             </div>
             <Link to="/about" className="text-gray-700 hover:text-primary-600 transition">
-              About Us
+              Về chúng tôi
             </Link>
           </nav>
 
@@ -92,7 +92,7 @@ const Header = () => {
                         to="/admin"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                       >
-                        Admin Dashboard
+                        Quản trị
                       </Link>
                       <hr className="my-1" />
                     </>
@@ -101,31 +101,31 @@ const Header = () => {
                     to="/dashboard"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
-                    Dashboard
+                    Tổng quan
                   </Link>
                   <Link
                     to="/orders"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
-                    Orders
+                    Đơn hàng
                   </Link>
                   <Link
                     to="/profile"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
-                    Profile
+                    Hồ sơ
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 flex items-center gap-2"
                   >
-                    <FiLogOut /> Logout
+                    <FiLogOut /> Đăng xuất
                   </button>
                 </div>
               </div>
             ) : (
               <Link to="/login" className="btn btn-primary">
-                Login
+                Đăng nhập
               </Link>
             )}
 
@@ -147,21 +147,21 @@ const Header = () => {
               className="block py-2 text-gray-700 hover:text-primary-600"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Home
+              Trang chủ
             </Link>
             <Link
               to="/products"
               className="block py-2 text-gray-700 hover:text-primary-600 font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Products
+              Sản phẩm
             </Link>
             <Link
               to="/shop"
               className="block py-2 pl-4 text-gray-600 hover:text-primary-600 text-sm"
               onClick={() => setMobileMenuOpen(false)}
             >
-              → Shop
+              → Cửa hàng
             </Link>
             <Link
               to="/customize"
@@ -175,7 +175,7 @@ const Header = () => {
               className="block py-2 text-gray-700 hover:text-primary-600"
               onClick={() => setMobileMenuOpen(false)}
             >
-              About Us
+              Về chúng tôi
             </Link>
           </div>
         )}

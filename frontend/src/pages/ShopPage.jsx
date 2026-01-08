@@ -101,18 +101,18 @@ const ShopPage = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-              <FaFilter /> Filters
+              <FaFilter /> Bộ lọc
             </h3>
 
             {/* Search */}
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Search</label>
+              <label className="block text-sm font-medium mb-2">Tìm kiếm</label>
               <div className="relative">
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search products..."
+                  placeholder="Tìm sản phẩm..."
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   onKeyPress={(e) => e.key === 'Enter' && handleApplyFilters()}
                 />
@@ -122,13 +122,13 @@ const ShopPage = () => {
 
             {/* Price Range */}
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Price Range (₫)</label>
+              <label className="block text-sm font-medium mb-2">Khoảng giá (₫)</label>
               <div className="flex gap-2 items-center">
                 <input
                   type="number"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  placeholder="Min"
+                  placeholder="Tối thiểu"
                   className="w-1/2 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
                 <span className="text-gray-400">-</span>
@@ -136,7 +136,7 @@ const ShopPage = () => {
                   type="number"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  placeholder="Max"
+                  placeholder="Tối đa"
                   className="w-1/2 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
@@ -144,18 +144,18 @@ const ShopPage = () => {
 
             {/* Sort By */}
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Sort By</label>
+              <label className="block text-sm font-medium mb-2">Sắp xếp theo</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
-                <option value="-createdAt">Newest</option>
-                <option value="createdAt">Oldest</option>
-                <option value="price">Price: Low to High</option>
-                <option value="-price">Price: High to Low</option>
-                <option value="-sold">Best Selling</option>
-                <option value="-rating.average">Highest Rated</option>
+                <option value="-createdAt">Mới nhất</option>
+                <option value="createdAt">Cũ nhất</option>
+                <option value="price">Giá: Thấp đến cao</option>
+                <option value="-price">Giá: Cao đến thấp</option>
+                <option value="-sold">Bán chạy nhất</option>
+                <option value="-rating.average">Đánh giá cao nhất</option>
               </select>
             </div>
 
@@ -165,13 +165,13 @@ const ShopPage = () => {
                 onClick={handleApplyFilters}
                 className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 transition text-sm font-medium"
               >
-                Apply Filters
+                Áp dụng bộ lọc
               </button>
               <button
                 onClick={handleResetFilters}
                 className="w-full border border-gray-300 py-2 rounded-md hover:bg-gray-50 transition text-sm font-medium"
               >
-                Reset Filters
+                Đặt lại bộ lọc
               </button>
             </div>
           </div>
@@ -185,9 +185,9 @@ const ShopPage = () => {
             </div>
           ) : products.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-600 text-lg mb-4">No products found</p>
+              <p className="text-gray-600 text-lg mb-4">Không tìm thấy sản phẩm</p>
               <button onClick={handleResetFilters} className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90 transition">
-                Clear Filters
+                Xóa bộ lọc
               </button>
             </div>
           ) : (
@@ -206,7 +206,7 @@ const ShopPage = () => {
                     disabled={pagination.page === 1}
                     className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
                   >
-                    Previous
+                    Trước
                   </button>
 
                   {[...Array(pagination.totalPages)].map((_, index) => {
@@ -244,7 +244,7 @@ const ShopPage = () => {
                     disabled={pagination.page === pagination.totalPages}
                     className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
                   >
-                    Next
+                    Sau
                   </button>
                 </div>
               )}

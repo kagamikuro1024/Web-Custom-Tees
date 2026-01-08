@@ -138,9 +138,9 @@ const ProfilePage = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Cài đặt hồ sơ</h1>
           <p className="text-gray-600 mt-2">
-            Manage your account information and preferences
+            Quản lý thông tin tài khoản và tùy chọn của bạn
           </p>
         </div>
 
@@ -159,7 +159,7 @@ const ProfilePage = () => {
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between py-2 border-b">
-                  <span className="text-gray-600">Member since</span>
+                  <span className="text-gray-600">Thành viên từ</span>
                   <span className="font-medium">
                     {new Date(user?.createdAt).toLocaleDateString('vi-VN', { 
                       month: 'short', 
@@ -168,7 +168,7 @@ const ProfilePage = () => {
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-2">
-                  <span className="text-gray-600">Account type</span>
+                  <span className="text-gray-600">Loại tài khoản</span>
                   <span className="font-medium capitalize">{user?.role}</span>
                 </div>
               </div>
@@ -177,7 +177,7 @@ const ProfilePage = () => {
               <div className="mt-6 pt-6 border-t">
                 <div className="flex items-center gap-2 mb-4">
                   <FiAward className="text-blue-600" size={20} />
-                  <h3 className="text-lg font-semibold text-gray-900">Your Tier</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Hạng thành viên</h3>
                 </div>
                 
                 <div className="flex items-center justify-center mb-4">
@@ -186,19 +186,19 @@ const ProfilePage = () => {
 
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between text-gray-600">
-                    <span>Total Orders</span>
+                    <span>Tổng đơn hàng</span>
                     <span className="font-semibold text-gray-900">{totalOrders}</span>
                   </div>
                   
                   <div className="flex justify-between text-gray-600">
-                    <span>Completed Orders</span>
+                    <span>Đơn hàng hoàn thành</span>
                     <span className="font-semibold text-green-600">{deliveredOrders}</span>
                   </div>
 
                   {getTierProgress().nextTier && (
                     <>
                       <div className="flex justify-between text-gray-600">
-                        <span>Next Tier</span>
+                        <span>Hạng tiếp theo</span>
                         <span className="font-semibold capitalize text-gray-900">
                           {getTierProgress().nextTier}
                         </span>
@@ -206,8 +206,8 @@ const ProfilePage = () => {
 
                       <div>
                         <div className="flex justify-between text-xs text-gray-500 mb-1">
-                          <span>Progress</span>
-                          <span>{getTierProgress().remaining} completed orders to go</span>
+                          <span>Tiến độ</span>
+                          <span>Còn {getTierProgress().remaining} đơn hàng hoàn thành</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <div 
@@ -221,25 +221,25 @@ const ProfilePage = () => {
 
                   {!getTierProgress().nextTier && (
                     <div className="text-center py-2">
-                      <p className="text-blue-600 font-medium">🎉 Maximum tier achieved!</p>
+                      <p className="text-blue-600 font-medium">🎉 Đã đạt hạng cao nhất!</p>
                     </div>
                   )}
                 </div>
 
                 {/* Tier Benefits */}
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <p className="text-xs font-medium text-blue-900 mb-2">Tier Benefits</p>
+                  <p className="text-xs font-medium text-blue-900 mb-2">Quyền lợi hạng thành viên</p>
                   <ul className="text-xs text-blue-700 space-y-1">
-                    <li>• Priority customer support</li>
-                    <li>• Early access to new designs</li>
-                    <li>• Exclusive promotions</li>
+                    <li>• Hỗ trợ khách hàng ưu tiên</li>
+                    <li>• Truy cập sớm các thiết kế mới</li>
+                    <li>• Khuyến mãi độc quyền</li>
                   </ul>
                 </div>
 
                 {/* Info Note */}
                 <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
-                  <p className="font-medium mb-1">💡 How tiers work:</p>
-                  <p>Tiers are calculated based on <strong>completed (delivered)</strong> orders only. Place more orders and wait for delivery to rank up!</p>
+                  <p className="font-medium mb-1">💡 Cách tính hạng thành viên:</p>
+                  <p>Hạng được tính dựa trên số đơn hàng <strong>đã hoàn thành (đã giao)</strong>. Đặt thêm đơn hàng và chờ giao hàng để thăng hạng!</p>
                 </div>
               </div>
             </div>
@@ -250,13 +250,13 @@ const ProfilePage = () => {
             {/* Profile Information */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6">
-                Personal Information
+                Thông tin cá nhân
               </h2>
               <form onSubmit={handleProfileUpdate} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name
+                      Họ
                     </label>
                     <div className="relative">
                       <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -272,7 +272,7 @@ const ProfilePage = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name
+                      Tên
                     </label>
                     <div className="relative">
                       <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -289,7 +289,7 @@ const ProfilePage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                    Địa chỉ email
                   </label>
                   <div className="relative">
                     <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -300,12 +300,12 @@ const ProfilePage = () => {
                       disabled
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+                  <p className="text-xs text-gray-500 mt-1">Không thể thay đổi email</p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
+                    Số điện thoại
                   </label>
                   <div className="relative">
                     <FiPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -325,7 +325,7 @@ const ProfilePage = () => {
                   className="w-full btn btn-primary flex items-center justify-center gap-2"
                 >
                   <FiSave />
-                  {loading ? 'Saving...' : 'Save Changes'}
+                  {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
                 </button>
               </form>
             </div>
@@ -343,10 +343,10 @@ const ProfilePage = () => {
                   </div>
                   <div className="text-left">
                     <h2 className="text-xl font-bold text-gray-900">
-                      Change Password
+                      Đổi mật khẩu
                     </h2>
                     <p className="text-sm text-gray-500">
-                      Update your password to keep your account secure
+                      Cập nhật mật khẩu để bảo mật tài khoản của bạn
                     </p>
                   </div>
                 </div>
@@ -362,7 +362,7 @@ const ProfilePage = () => {
                   <form onSubmit={handlePasswordChange} className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Current Password
+                        Mật khẩu hiện tại
                       </label>
                       <div className="relative">
                         <input
@@ -384,7 +384,7 @@ const ProfilePage = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        New Password
+                        Mật khẩu mới
                       </label>
                       <div className="relative">
                         <input
@@ -407,7 +407,7 @@ const ProfilePage = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Confirm New Password
+                        Xác nhận mật khẩu mới
                       </label>
                       <div className="relative">
                         <input
@@ -434,7 +434,7 @@ const ProfilePage = () => {
                       className="w-full btn btn-secondary flex items-center justify-center gap-2"
                     >
                       <FiSave />
-                      {loading ? 'Changing...' : 'Change Password'}
+                      {loading ? 'Đang đổi...' : 'Đổi mật khẩu'}
                     </button>
                   </form>
                 </div>

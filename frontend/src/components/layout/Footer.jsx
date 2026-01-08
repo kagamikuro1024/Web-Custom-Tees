@@ -12,18 +12,18 @@ const Footer = () => {
               Custom<span className="text-primary-400">Tees</span>
             </h3>
             <p className="text-sm">
-              Create your own custom t-shirts with our easy-to-use design tool.
-              High-quality printing, fast delivery.
+              Tạo áo phông tùy chỉnh của riêng bạn với công cụ thiết kế dễ sử dụng.
+              In ấn chất lượng cao, giao hàng nhanh chóng.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-white font-semibold mb-4">Liên kết nhanh</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/products" className="hover:text-primary-400 transition">
-                  Shop
+                  Cửa hàng
                 </Link>
               </li>
               <li>
@@ -33,7 +33,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/cart" className="hover:text-primary-400 transition">
-                  Cart
+                  Giỏ hàng
                 </Link>
               </li>
             </ul>
@@ -41,26 +41,26 @@ const Footer = () => {
 
           {/* Customer Service */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Customer Service</h4>
+            <h4 className="text-white font-semibold mb-4">Hỗ trợ khách hàng</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#" className="hover:text-primary-400 transition">
-                  FAQ
+                  Câu hỏi thường gặp
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-primary-400 transition">
-                  Shipping Info
+                  Thông tin vận chuyển
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-primary-400 transition">
-                  Returns
+                  Đổi trả hàng
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-primary-400 transition">
-                  Contact Us
+                  Liên hệ
                 </a>
               </li>
             </ul>
@@ -68,7 +68,7 @@ const Footer = () => {
 
           {/* Social */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Follow Us</h4>
+            <h4 className="text-white font-semibold mb-4">Theo dõi chúng tôi</h4>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-primary-400 transition">
                 <FiFacebook size={24} />
@@ -84,7 +84,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} CustomTees. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} CustomTees. Bảo lưu mọi quyền.</p>
         </div>
       </div>
     </footer>

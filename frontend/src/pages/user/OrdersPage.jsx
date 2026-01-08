@@ -110,9 +110,9 @@ const OrdersPage = () => {
     <div className="container-custom py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Đơn hàng của tôi</h1>
         <p className="text-gray-600 mt-2">
-          View and manage all your orders
+          Xem và quản lý tất cả đơn hàng của bạn
         </p>
       </div>
 
@@ -124,7 +124,7 @@ const OrdersPage = () => {
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search by order number..."
+              placeholder="Tìm kiếm theo mã đơn hàng..."
               value={filters.search}
               onChange={(e) => setFilters({ ...filters, search: e.target.value })}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -138,7 +138,7 @@ const OrdersPage = () => {
               onChange={(e) => setFilters({ ...filters, status: e.target.value })}
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">All Status</option>
+              <option value="">Tất cả trạng thái</option>
               <option value="pending">Pending</option>
               <option value="awaiting_payment">Awaiting Payment</option>
               <option value="confirmed">Confirmed</option>
@@ -163,18 +163,18 @@ const OrdersPage = () => {
       {loading ? (
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading orders...</p>
+          <p className="text-gray-600">Đang tải đơn hàng...</p>
         </div>
       ) : orders.length === 0 ? (
         <div className="bg-white rounded-lg shadow-md p-12 text-center">
           <FiPackage className="mx-auto text-6xl text-gray-300 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">No orders found</h3>
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">Không tìm thấy đơn hàng</h3>
           <p className="text-gray-500 mb-6">
-            {filters.search || filters.status ? 'Try adjusting your filters' : 'Start shopping to see your orders here'}
+            {filters.search || filters.status ? 'Thử điều chỉnh bộ lọc của bạn' : 'Bắt đầu mua sắm để xem đơn hàng của bạn tại đây'}
           </p>
           {!filters.search && !filters.status && (
             <Link to="/products" className="btn btn-primary">
-              Browse Products
+              Duyệt sản phẩm
             </Link>
           )}
         </div>
@@ -191,7 +191,7 @@ const OrdersPage = () => {
                 <div className="bg-orange-100 border-b border-orange-200 px-6 py-2 flex items-center gap-2 text-sm">
                   <FiClock className="text-orange-600" />
                   <span className="text-orange-800 font-medium">
-                    ⚠️ Payment pending - Complete within 1 hour
+                    ⚠️ Chờ thanh toán - Vui lòng hoàn tất trong vòng 1 giờ
                   </span>
                 </div>
               )}
@@ -235,7 +235,7 @@ const OrdersPage = () => {
                     </p>
                     {order.items.some(item => item.customDesign?.imageUrl) && (
                       <p className="text-xs text-purple-600 font-medium">
-                        ✨ Includes custom design
+                        ✨ Bao gồm thiết kế tùy chỉnh
                       </p>
                     )}
                   </div>
@@ -244,7 +244,7 @@ const OrdersPage = () => {
                 {/* Order Footer */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Total Amount</p>
+                    <p className="text-sm text-gray-500 mb-1">Tổng tiền</p>
                     <p className="text-xl font-bold text-gray-900">
                       {formatCurrency(order.totalAmount)}
                     </p>
@@ -253,7 +253,7 @@ const OrdersPage = () => {
                     to={`/orders/${order.orderNumber}`}
                     className="btn btn-primary"
                   >
-                    View Details
+                    Xem chi tiết
                   </Link>
                 </div>
               </div>
@@ -264,7 +264,7 @@ const OrdersPage = () => {
           {pagination.totalPages > 1 && (
             <div className="bg-white rounded-lg shadow-md p-4 flex items-center justify-between">
               <div className="text-sm text-gray-700">
-                Page {pagination.page} of {pagination.totalPages}
+                Trang {pagination.page} / {pagination.totalPages}
               </div>
               <div className="flex gap-2">
                 <button
@@ -272,14 +272,14 @@ const OrdersPage = () => {
                   disabled={pagination.page === 1}
                   className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Previous
+                  Trước
                 </button>
                 <button
                   onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
                   disabled={pagination.page >= pagination.totalPages}
                   className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                  Sau
                 </button>
               </div>
             </div>
