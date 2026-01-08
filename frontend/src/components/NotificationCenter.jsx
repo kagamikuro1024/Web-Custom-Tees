@@ -120,13 +120,15 @@ const NotificationCenter = () => {
       return notification.link;
     }
     
-    // Fallback to old logic
+    // Fallback to old logic with validation
     if (notification.relatedOrder?.orderNumber) {
       return `/orders/${notification.relatedOrder.orderNumber}`;
     }
     if (notification.relatedProduct?.slug) {
       return `/products/${notification.relatedProduct.slug}`;
     }
+    
+    // If no valid link, return null to prevent navigation
     return null;
   };
 

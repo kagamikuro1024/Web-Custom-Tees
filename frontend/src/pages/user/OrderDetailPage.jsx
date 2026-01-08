@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../utils/api';
 import { 
@@ -33,9 +33,21 @@ const OrderDetailPage = () => {
   const [uploading, setUploading] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewingProduct, setReviewingProduct] = useState(null);
+  const [retryLoading, setRetryLoading] = useState(false);
+  const hasShownError = useRef(false);
 
   useEffect(() => {
+    if (!orderNumber || orderNumber === 'undefined' || orderNumber === 'null') {
+      if (!hasShownError.current) {
+        hasShownError.current = true;
+        toast.error('Invalid order number');
+        navigate('/orders', { replace: true });
+      }
+      return;
+    }
+    hasShownError.current = false;
     fetchOrderDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderNumber]);
 
   const fetchOrderDetail = async () => {
@@ -92,6 +104,7 @@ const OrderDetailPage = () => {
   const getStatusColor = (status) => {
     const colors = {
       pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      awaiting_payment: 'bg-orange-100 text-orange-800 border-orange-200',
       confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
       processing: 'bg-purple-100 text-purple-800 border-purple-200',
       shipped: 'bg-cyan-100 text-cyan-800 border-cyan-200',
@@ -102,11 +115,69 @@ const OrderDetailPage = () => {
   };
 
   const canCancelOrder = () => {
-    return order && ['pending', 'confirmed'].includes(order.orderStatus);
+    return order && ['pending', 'awaiting_payment', 'confirmed'].includes(order.orderStatus);
   };
 
   const canUpdateDesign = () => {
-    return order && ['pending', 'confirmed'].includes(order.orderStatus);
+    return order && ['pending', 'awaiting_payment', 'confirmed'].includes(order.orderStatus);
+  };
+
+  const handleRetryPayment = async () => {
+    if (!order || !order._id) {
+      console.error('Order not available:', order);
+      toast.error('Order information not available. Please refresh the page.');
+      return;
+    }
+    
+    console.log('Retry payment for order:', order._id, 'orderNumber:', order.orderNumber);
+    
+    try {
+      setRetryLoading(true);
+      
+      // Call retry payment API
+      const { data } = await api.post(`/orders/${order._id}/retry-payment`);
+      console.log('Retry payment response:', data);
+      
+      const { orderNumber, paymentMethod, totalAmount } = data.data;
+
+      // Redirect based on payment method
+      if (paymentMethod === 'vnpay') {
+        // Create new VNPAY payment URL
+        const vnpayResponse = await api.post('/payment/create-payment-url', {
+          orderId: orderNumber,
+          amount: totalAmount,
+          orderInfo: `Thanh toan don hang ${orderNumber}`
+        });
+        
+        if (vnpayResponse.data.success) {
+          window.location.href = vnpayResponse.data.data.paymentUrl;
+        }
+      } 
+      else if (paymentMethod === 'stripe') {
+        // Create new Stripe checkout session
+        const stripeResponse = await api.post('/stripe/create-checkout-session', {
+          orderNumber: orderNumber
+        });
+        
+        console.log('Stripe response:', stripeResponse.data);
+        
+        if (stripeResponse.data.success) {
+          const redirectUrl = stripeResponse.data.data.url || stripeResponse.data.data.checkoutUrl;
+          if (redirectUrl) {
+            console.log('Redirecting to:', redirectUrl);
+            window.location.href = redirectUrl;
+          } else {
+            console.error('No redirect URL found in response:', stripeResponse.data);
+            toast.error('Failed to get payment URL');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Retry payment error:', error);
+      toast.error(error.response?.data?.message || 'Cannot retry payment. Please try again.');
+    } finally {
+      setRetryLoading(false);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -196,6 +267,16 @@ const OrderDetailPage = () => {
             <span className={`px-4 py-2 rounded-lg text-sm font-semibold border-2 ${getStatusColor(order.orderStatus)}`}>
               {order.orderStatus}
             </span>
+            {order.orderStatus === 'awaiting_payment' && (
+              <button
+                onClick={handleRetryPayment}
+                disabled={retryLoading || !order._id}
+                className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FiDollarSign />
+                {retryLoading ? 'Processing...' : 'Continue Payment'}
+              </button>
+            )}
             {canCancelOrder() && (
               <button
                 onClick={() => setShowCancelModal(true)}
@@ -208,6 +289,30 @@ const OrderDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Warning Banner for awaiting_payment */}
+      {order.orderStatus === 'awaiting_payment' && (
+        <div className="mb-6 bg-orange-50 border-2 border-orange-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <FiAlertTriangle className="text-orange-600 text-xl flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-orange-900 mb-1">
+                Payment Pending
+              </h3>
+              <p className="text-sm text-orange-800 mb-3">
+                Your order is waiting for payment. Please complete payment within 1 hour or the order will be automatically cancelled.
+              </p>
+              <button
+                onClick={handleRetryPayment}
+                disabled={retryLoading || !order._id}
+                className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {retryLoading ? 'Processing...' : '💳 Continue Payment Now'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}

@@ -35,7 +35,7 @@ export const verifyPayment = async (req, res) => {
       // Update order if not already paid
       if (order.paymentStatus !== 'paid') {
         order.paymentStatus = 'paid';
-        order.orderStatus = 'processing';
+        order.orderStatus = 'confirmed';  // Changed from 'processing' to 'confirmed'
         order.paymentDetails = {
           ...order.paymentDetails,
           stripeSessionId: sessionId,
@@ -46,19 +46,33 @@ export const verifyPayment = async (req, res) => {
 
         await order.save();
 
-        console.log(`✅ Order ${orderNumber} marked as PAID`);
+        console.log(`✅ Order ${orderNumber} marked as PAID (status: confirmed)`);
 
-        // Send confirmation email
+        // Send payment success email via queue
         try {
-          await mailService.sendOrderSuccessEmail(
-            order.user?.email || order.shippingAddress.email,
-            {
+          const queueManager = (await import('../config/queue.js')).default;
+          await queueManager.addEmailJob('send-payment-success-email', {
+            email: order.user?.email || order.shippingAddress.email,
+            orderData: {
               orderNumber: order.orderNumber,
               totalAmount: order.totalAmount,
               items: order.items,
-              shippingAddress: order.shippingAddress
+              shippingAddress: order.shippingAddress,
+              paymentMethod: order.paymentMethod
             }
-          );
+          }).catch(() => {
+            // Fallback to direct send if queue fails
+            return mailService.sendPaymentSuccessEmail(
+              order.user?.email || order.shippingAddress.email,
+              {
+                orderNumber: order.orderNumber,
+                totalAmount: order.totalAmount,
+                items: order.items,
+                shippingAddress: order.shippingAddress,
+                paymentMethod: order.paymentMethod
+              }
+            );
+          });
           console.log(`📧 Order confirmation email sent for: ${order.orderNumber}`);
         } catch (emailError) {
           console.error('❌ Failed to send confirmation email:', emailError);

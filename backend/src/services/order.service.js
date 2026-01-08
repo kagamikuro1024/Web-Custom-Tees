@@ -512,6 +512,40 @@ class OrderService {
       totalSpent: totalSpent[0]?.total || 0
     };
   }
+
+  // Retry payment for awaiting_payment orders
+  async retryPayment(orderId, userId) {
+    const order = await Order.findOne({ 
+      _id: orderId,
+      user: userId 
+    });
+
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    // Only allow retry for awaiting_payment status
+    if (order.orderStatus !== 'awaiting_payment') {
+      throw new Error(`Cannot retry payment. Order status is ${order.orderStatus}`);
+    }
+
+    // Check if order expired (>1 hour old)
+    const hoursSinceCreation = (Date.now() - order.createdAt.getTime()) / (1000 * 60 * 60);
+    if (hoursSinceCreation > 1) {
+      // Auto-cancel expired order
+      order.orderStatus = 'cancelled';
+      await order.save();
+      throw new Error('Order has expired and been cancelled. Please create a new order.');
+    }
+
+    // Return payment method for frontend to regenerate payment URL
+    return {
+      orderId: order._id,
+      orderNumber: order.orderNumber,
+      paymentMethod: order.paymentMethod,
+      totalAmount: order.totalAmount
+    };
+  }
 }
 
 export default new OrderService();

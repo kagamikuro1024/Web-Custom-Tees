@@ -80,6 +80,7 @@ const OrdersPage = () => {
   const getStatusColor = (status) => {
     const colors = {
       pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      awaiting_payment: 'bg-orange-100 text-orange-800 border-orange-200',
       confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
       processing: 'bg-purple-100 text-purple-800 border-purple-200',
       shipped: 'bg-cyan-100 text-cyan-800 border-cyan-200',
@@ -139,6 +140,7 @@ const OrdersPage = () => {
             >
               <option value="">All Status</option>
               <option value="pending">Pending</option>
+              <option value="awaiting_payment">Awaiting Payment</option>
               <option value="confirmed">Confirmed</option>
               <option value="processing">Processing</option>
               <option value="shipped">Shipped</option>
@@ -179,7 +181,20 @@ const OrdersPage = () => {
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div key={order._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+            <div 
+              key={order._id} 
+              className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition ${
+                order.orderStatus === 'awaiting_payment' ? 'border-2 border-orange-300' : ''
+              }`}
+            >
+              {order.orderStatus === 'awaiting_payment' && (
+                <div className="bg-orange-100 border-b border-orange-200 px-6 py-2 flex items-center gap-2 text-sm">
+                  <FiClock className="text-orange-600" />
+                  <span className="text-orange-800 font-medium">
+                    ⚠️ Payment pending - Complete within 1 hour
+                  </span>
+                </div>
+              )}
               <div className="p-6">
                 {/* Order Header */}
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">

@@ -23,10 +23,12 @@ class NotificationService {
       recipient: admin._id,
       type: 'order_created',
       title: 'Đơn hàng mới',
-      message: `Đơn hàng #${order._id.toString().slice(-6)} vừa được tạo`,
+      message: `Đơn hàng #${order.orderNumber} vừa được tạo`,
       relatedOrder: order._id,
+      link: `/admin/orders/${order._id}`,
       data: {
         orderId: order._id,
+        orderNumber: order.orderNumber,
         total: order.totalPrice,
         customerName: `${order.shippingAddress.fullName}`
       }
@@ -39,6 +41,7 @@ class NotificationService {
   async notifyUserOrderStatusUpdate(order, oldStatus, newStatus) {
     const statusMessages = {
       pending: 'đang chờ xác nhận',
+      awaiting_payment: 'đang chờ thanh toán',
       confirmed: 'đã được xác nhận',
       processing: 'đang được xử lý',
       shipped: 'đang được giao',
@@ -49,7 +52,7 @@ class NotificationService {
     await this.createNotification(order.user, {
       type: 'order_status_updated',
       title: 'Cập nhật đơn hàng',
-      message: `Đơn hàng #${order._id.toString().slice(-6)} ${statusMessages[newStatus]}`,
+      message: `Đơn hàng #${order.orderNumber} ${statusMessages[newStatus]}`,
       relatedOrder: order._id,
       link: `/orders/${order.orderNumber}`,
       data: {
@@ -67,10 +70,12 @@ class NotificationService {
     await this.createNotification(order.user, {
       type: 'order_cancelled',
       title: 'Đơn hàng đã hủy',
-      message: `Đơn hàng #${order._id.toString().slice(-6)} đã bị hủy. ${reason ? `Lý do: ${reason}` : ''}`,
+      message: `Đơn hàng #${order.orderNumber} đã bị hủy. ${reason ? `Lý do: ${reason}` : ''}`,
       relatedOrder: order._id,
+      link: `/orders/${order.orderNumber}`,
       data: {
         orderId: order._id,
+        orderNumber: order.orderNumber,
         reason,
         total: order.totalPrice
       }
@@ -116,7 +121,7 @@ class NotificationService {
         .sort('-createdAt')
         .skip(skip)
         .limit(limit)
-        .populate('relatedOrder', '_id totalPrice orderStatus')
+        .populate('relatedOrder', '_id orderNumber totalPrice orderStatus')
         .populate('relatedProduct', 'name images'),
       Notification.countDocuments(query),
       Notification.countDocuments({ recipient: userId, isRead: false })

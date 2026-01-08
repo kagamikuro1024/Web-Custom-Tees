@@ -34,6 +34,14 @@ class OrderController {
   async getOrderById(req, res, next) {
     try {
       const { orderId } = req.params;
+      
+      if (!orderId || orderId === 'undefined' || orderId === 'null') {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid order ID'
+        });
+      }
+      
       const order = await orderService.getOrderById(orderId, req.user.id);
 
       res.json({
@@ -49,6 +57,14 @@ class OrderController {
   async getOrderByNumber(req, res, next) {
     try {
       const { orderNumber } = req.params;
+      
+      if (!orderNumber || orderNumber === 'undefined' || orderNumber === 'null') {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid order number'
+        });
+      }
+      
       const order = await orderService.getOrderByNumber(orderNumber, req.user.id);
 
       res.json({
@@ -120,6 +136,22 @@ class OrderController {
         success: true,
         message: 'Order marked as delivered successfully',
         data: order
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Retry payment for awaiting_payment orders
+  async retryPayment(req, res, next) {
+    try {
+      const { orderId } = req.params;
+      const paymentInfo = await orderService.retryPayment(orderId, req.user.id);
+
+      res.json({
+        success: true,
+        message: 'Payment information retrieved. Please proceed to payment.',
+        data: paymentInfo
       });
     } catch (error) {
       next(error);

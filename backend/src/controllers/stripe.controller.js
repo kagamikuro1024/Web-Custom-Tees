@@ -102,7 +102,7 @@ export const handleWebhook = async (req, res) => {
 
         if (order) {
           order.paymentStatus = 'paid';
-          order.orderStatus = 'processing';
+          order.orderStatus = 'confirmed';  // Changed from 'processing' to 'confirmed'
           order.paymentDetails = {
             ...order.paymentDetails,
             stripePaymentIntentId: session.payment_intent,
@@ -112,20 +112,34 @@ export const handleWebhook = async (req, res) => {
 
           await order.save();
 
-          // Send confirmation email
+          console.log(`✅ Order ${order.orderNumber} marked as PAID (status: confirmed)`);
+
+          // Send payment success email via queue
           try {
-            await mailService.sendOrderConfirmation(
-              order.user?.email || order.shippingAddress.email,
-              {
+            const queueManager = (await import('../config/queue.js')).default;
+            await queueManager.addEmailJob('send-payment-success-email', {
+              email: order.user?.email || order.shippingAddress.email,
+              orderData: {
                 orderNumber: order.orderNumber,
-                customerName: order.shippingAddress.fullName,
                 totalAmount: order.totalAmount,
-                paymentMethod: 'Stripe - Credit Card',
-                orderDate: order.createdAt,
-                items: order.items
+                items: order.items,
+                shippingAddress: order.shippingAddress,
+                paymentMethod: order.paymentMethod
               }
-            );
-            console.log(`📧 Order confirmation email sent for: ${order.orderNumber}`);
+            }).catch(() => {
+              // Fallback to direct send if queue fails
+              return mailService.sendPaymentSuccessEmail(
+                order.user?.email || order.shippingAddress.email,
+                {
+                  orderNumber: order.orderNumber,
+                  totalAmount: order.totalAmount,
+                  items: order.items,
+                  shippingAddress: order.shippingAddress,
+                  paymentMethod: order.paymentMethod
+                }
+              );
+            });
+            console.log(`📧 Payment success email queued for: ${order.orderNumber}`);
           } catch (emailError) {
             console.error('❌ Failed to send confirmation email:', emailError);
           }
