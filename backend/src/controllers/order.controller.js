@@ -110,6 +110,22 @@ class OrderController {
     }
   }
 
+  // User confirms delivery
+  async confirmDelivery(req, res, next) {
+    try {
+      const { orderId } = req.params;
+      const order = await orderService.confirmDelivery(orderId, req.user.id);
+
+      res.json({
+        success: true,
+        message: 'Order marked as delivered successfully',
+        data: order
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // Get user order stats
   async getUserOrderStats(req, res, next) {
     try {

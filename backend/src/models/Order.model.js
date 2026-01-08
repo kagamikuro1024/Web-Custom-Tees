@@ -161,7 +161,15 @@ const orderSchema = new mongoose.Schema({
   // Order Status
   orderStatus: {
     type: String,
-    enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
+    enum: [
+      'pending',           // Đơn hàng mới tạo (COD) hoặc chờ xử lý
+      'awaiting_payment',  // Đơn hàng đang chờ thanh toán online (chưa thanh toán)
+      'confirmed',         // Đã thanh toán/xác nhận, User vẫn có thể sửa ảnh custom
+      'processing',        // Admin đang xử lý, User không được sửa ảnh
+      'shipped',           // Đơn hàng đã gửi đi
+      'delivered',         // Đã giao hàng (User xác nhận)
+      'cancelled'          // Đơn hàng bị hủy
+    ],
     default: 'pending'
   },
   

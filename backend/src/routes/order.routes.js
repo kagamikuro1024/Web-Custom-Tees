@@ -15,6 +15,7 @@ router.get('/', orderController.getUserOrders);
 router.get('/:orderId', orderController.getOrderById);
 router.get('/number/:orderNumber', orderController.getOrderByNumber);
 router.put('/:orderId/cancel', orderController.cancelOrder);
+router.patch('/:orderId/confirm-delivery', orderController.confirmDelivery);
 router.put('/:orderId/items/:itemIndex/design', uploadDesign.single('image'), orderController.updateCustomDesign);
 
 export default router;

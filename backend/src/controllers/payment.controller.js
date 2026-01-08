@@ -1,8 +1,10 @@
 import paymentService from '../services/payment.service.js';
 import orderService from '../services/order.service.js';
 import mailService from '../services/mail.service.js';
+import queueManager from '../config/queue.js';
 import Order from '../models/Order.model.js';
 import Product from '../models/Product.model.js';
+import logger from '../config/logger.js';
 
 class PaymentController {
   /**
@@ -86,7 +88,7 @@ class PaymentController {
           if (order && order.paymentStatus !== 'paid') {
             // Cập nhật trạng thái đơn hàng
             order.paymentStatus = 'paid';
-            order.orderStatus = 'confirmed';
+            order.orderStatus = 'confirmed';  // Changed from 'processing' to 'confirmed'
             order.paidAt = new Date();
             
             // Lưu thông tin giao dịch VNPAY
@@ -104,27 +106,38 @@ class PaymentController {
             for (const item of order.items) {
               const product = await Product.findById(item.product._id || item.product);
               if (product) {
-                const sizeItem = product.sizes.find(s => s.name === item.size);
+                const sizeItem = product.sizes.find(s => s.name === item.selectedSize);
                 if (sizeItem && sizeItem.stock >= item.quantity) {
                   sizeItem.stock -= item.quantity;
                   await product.save();
-                  console.log(`Stock updated for ${product.name} - Size ${item.size}`);
+                  console.log(`Stock updated for ${product.name} - Size ${item.selectedSize}`);
                 }
               }
             }
 
-            // Gửi email xác nhận
+            // Gửi email thanh toán thành công sử dụng queue
             try {
-              await mailService.sendOrderSuccessEmail(order.user.email, {
+              await queueManager.addEmailJob('send-payment-success-email', {
+                email: order.user.email,
+                orderData: {
+                  orderNumber: order.orderNumber,
+                  totalAmount: order.totalAmount,
+                  items: order.items,
+                  shippingAddress: order.shippingAddress,
+                  paymentMethod: order.paymentMethod
+                }
+              });
+              console.log('📧 Payment success email job queued for:', order.user.email);
+            } catch (emailError) {
+              // Fallback to direct send if queue fails
+              logger.warn('Queue failed, sending email directly');
+              mailService.sendPaymentSuccessEmail(order.user.email, {
                 orderNumber: order.orderNumber,
                 totalAmount: order.totalAmount,
                 items: order.items,
                 shippingAddress: order.shippingAddress,
                 paymentMethod: order.paymentMethod
-              });
-              console.log('📧 Confirmation email sent to:', order.user.email);
-            } catch (emailError) {
-              console.error('Email error:', emailError);
+              }).catch(err => console.error('Email error:', err));
             }
           }
         } catch (updateError) {
@@ -199,7 +212,7 @@ class PaymentController {
 
         // 1. Cập nhật trạng thái đơn hàng
         order.paymentStatus = 'paid';
-        order.orderStatus = 'confirmed';
+        order.orderStatus = 'confirmed';  // Changed from 'processing' to 'confirmed'
         order.paymentMethod = 'vnpay';
         order.paidAt = new Date();
         
@@ -218,8 +231,8 @@ class PaymentController {
           for (const item of order.items) {
             const product = await Product.findById(item.product._id || item.product);
             if (product) {
-              // Tìm size tương ứng
-              const sizeItem = product.sizes.find(s => s.name === item.size);
+              // Tìm size tương ứng - FIX: Use selectedSize instead of size
+              const sizeItem = product.sizes.find(s => s.name === item.selectedSize);
               if (sizeItem) {
                 sizeItem.stock -= item.quantity;
               }
@@ -231,7 +244,7 @@ class PaymentController {
               product.totalStock = product.sizes.reduce((sum, s) => sum + s.stock, 0);
               
               await product.save();
-              console.log(`📦 Updated stock for product ${product.name}, size ${item.size}`);
+              console.log(`📦 Updated stock for product ${product.name}, size ${item.selectedSize}`);
             }
           }
         } catch (stockError) {
@@ -239,20 +252,35 @@ class PaymentController {
           // Không throw error để không ảnh hưởng đến flow thanh toán
         }
 
-        // 3. Gửi email xác nhận
+        // 3. Gửi email thanh toán thành công sử dụng queue
         try {
           if (order.user && order.user.email) {
-            await mailService.sendOrderSuccessEmail(order.user.email, {
+            await queueManager.addEmailJob('send-payment-success-email', {
+              email: order.user.email,
+              orderData: {
+                orderNumber: order.orderNumber,
+                totalAmount: order.totalAmount,
+                items: order.items,
+                shippingAddress: order.shippingAddress,
+                paymentMethod: order.paymentMethod
+              }
+            });
+            console.log('📧 Payment success email job queued for:', order.user.email);
+          }
+        } catch (emailError) {
+          console.error('Error queueing email:', emailError);
+          // Fallback: send directly
+          try {
+            await mailService.sendPaymentSuccessEmail(order.user.email, {
               orderNumber: order.orderNumber,
               totalAmount: order.totalAmount,
               items: order.items,
-              shippingAddress: order.shippingAddress
+              shippingAddress: order.shippingAddress,
+              paymentMethod: order.paymentMethod
             });
-            console.log('📧 Sent confirmation email to:', order.user.email);
+          } catch (directEmailError) {
+            console.error('Error sending email directly:', directEmailError);
           }
-        } catch (emailError) {
-          console.error('Error sending email:', emailError);
-          // Không throw error để không ảnh hưởng đến flow thanh toán
         }
 
         // Trả về success cho VNPAY

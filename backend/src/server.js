@@ -9,8 +9,13 @@ import cookieParser from 'cookie-parser';
 dotenv.config();
 
 import connectDB from './config/database.js';
+import redisClient from './config/redis.js';
+import queueManager from './config/queue.js';
 import logger from './config/logger.js';
 import errorHandler from './middlewares/errorHandler.js';
+import CronJobs from './services/cron.service.js';
+import emailProcessor from './workers/email.worker.js';
+import imageProcessor from './workers/image.worker.js';
 
 // Import Routes
 import authRoutes from './routes/auth.routes.js';
@@ -29,8 +34,36 @@ import mailService from './services/mail.service.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to Database
-connectDB();
+// Initialize infrastructure
+async function initializeInfrastructure() {
+  try {
+    // Connect to Database
+    await connectDB();
+
+    // Connect to Redis (optional, app continues if Redis fails)
+    await redisClient.connect();
+
+    // Initialize Queue Manager (depends on Redis)
+    await queueManager.initialize();
+
+    // Register queue workers if queues are available
+    if (queueManager.queues.emailQueue) {
+      queueManager.registerEmailWorker(emailProcessor);
+      queueManager.registerImageWorker(imageProcessor);
+    }
+
+    // Initialize Cron Jobs
+    CronJobs.initialize();
+
+    logger.info('✅ All infrastructure initialized successfully');
+  } catch (error) {
+    logger.error('Failed to initialize infrastructure:', error);
+    // Don't exit, allow app to continue with reduced functionality
+  }
+}
+
+// Call initialization
+initializeInfrastructure();
 
 // Middlewares
 app.use(helmet({
@@ -82,6 +115,21 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   logger.info(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
   console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  logger.info('SIGTERM signal received: closing HTTP server');
+  await queueManager.closeAll();
+  await redisClient.disconnect();
+  process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  logger.info('SIGINT signal received: closing HTTP server');
+  await queueManager.closeAll();
+  await redisClient.disconnect();
+  process.exit(0);
 });
 
 export default app;

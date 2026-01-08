@@ -4,6 +4,8 @@ import productService from './product.service.js';
 import cartService from './cart.service.js';
 import notificationService from './notification.service.js';
 import mailService from './mail.service.js';
+import queueManager from '../config/queue.js';
+import logger from '../config/logger.js';
 
 class OrderService {
   // Generate unique order number
@@ -26,22 +28,29 @@ class OrderService {
   async createOrder(userId, orderData) {
     const { items, subtotal, shippingFee, totalAmount, shippingAddress, paymentMethod, notes } = orderData;
 
-    // Clean up pending VNPAY orders before creating new one
-    // (User might have cancelled previous payment attempt)
-    if (paymentMethod === 'vnpay') {
+    // Clean up old pending/awaiting_payment orders for online payment methods
+    if (['vnpay', 'stripe', 'momo', 'zalopay'].includes(paymentMethod)) {
       const deletedCount = await Order.deleteMany({
         user: userId,
-        paymentMethod: 'vnpay',
+        paymentMethod: { $in: ['vnpay', 'stripe', 'momo', 'zalopay'] },
         paymentStatus: 'pending',
+        orderStatus: { $in: ['pending', 'awaiting_payment'] },
         createdAt: { $gte: new Date(Date.now() - 30 * 60 * 1000) } // Only delete recent ones (< 30 mins)
       });
       if (deletedCount.deletedCount > 0) {
-        console.log(`🗑️ Cleaned up ${deletedCount.deletedCount} pending VNPAY order(s) for user ${userId}`);
+        logger.info(`🗑️ Cleaned up ${deletedCount.deletedCount} pending order(s) for user ${userId}`);
       }
     }
 
     // Generate unique order number
     const orderNumber = await this.generateOrderNumber();
+
+    // Determine initial order status based on payment method
+    let initialStatus = 'pending';
+    if (['vnpay', 'stripe', 'momo', 'zalopay'].includes(paymentMethod)) {
+      // Online payment - set to awaiting_payment until payment is confirmed
+      initialStatus = 'awaiting_payment';
+    }
 
     // Create order
     const order = await Order.create({
@@ -55,35 +64,51 @@ class OrderService {
       shippingAddress,
       paymentMethod,
       paymentStatus: paymentMethod === 'cod' ? 'pending' : 'pending',
+      orderStatus: initialStatus,
       customerNote: notes,
       statusHistory: [{
-        status: 'pending',
+        status: initialStatus,
         timestamp: new Date(),
-        note: 'Order placed'
+        note: paymentMethod === 'cod' ? 'Order placed' : 'Waiting for payment'
       }]
     });
 
     // Clear cart
     await cartService.clearCart(userId);
 
-    // Notify admins about new order
-    await notificationService.notifyAdminNewOrder(order);
+    // Notify admins about new order (only for COD, online payment will notify after payment)
+    if (paymentMethod === 'cod') {
+      await notificationService.notifyAdminNewOrder(order);
+    }
 
-    // Send order confirmation email ONLY for COD orders
-    // VNPAY orders will send email after successful payment callback
-    // Send email async to not block order creation
+    // Send order confirmation email ONLY for COD orders using queue
+    // Online payment orders will send email after successful payment callback
     if (paymentMethod === 'cod') {
       Order.findById(order._id).populate('user', 'firstName lastName email').then(populatedOrder => {
         if (populatedOrder?.user?.email) {
-          mailService.sendOrderSuccessEmail(populatedOrder.user.email, {
-            orderNumber: populatedOrder.orderNumber,
-            totalAmount: populatedOrder.totalAmount,
-            items: populatedOrder.items,
-            shippingAddress: populatedOrder.shippingAddress,
-            paymentMethod: populatedOrder.paymentMethod
-          }).catch(err => console.error('Failed to send COD email (non-blocking):', err.message));
+          // Use queue if available, otherwise send directly
+          queueManager.addEmailJob('send-order-confirmation-email', {
+            email: populatedOrder.user.email,
+            orderData: {
+              orderNumber: populatedOrder.orderNumber,
+              totalAmount: populatedOrder.totalAmount,
+              items: populatedOrder.items,
+              shippingAddress: populatedOrder.shippingAddress,
+              paymentMethod: populatedOrder.paymentMethod
+            }
+          }).catch(err => {
+            // Fallback to direct send if queue fails
+            logger.warn('Queue failed, sending email directly:', err);
+            mailService.sendOrderConfirmationEmail(populatedOrder.user.email, {
+              orderNumber: populatedOrder.orderNumber,
+              totalAmount: populatedOrder.totalAmount,
+              items: populatedOrder.items,
+              shippingAddress: populatedOrder.shippingAddress,
+              paymentMethod: populatedOrder.paymentMethod
+            }).catch(err => logger.error('Failed to send COD email (non-blocking):', err.message));
+          });
         }
-      }).catch(err => console.error('Failed to populate order for email:', err.message));
+      }).catch(err => logger.error('Failed to populate order for email:', err.message));
     }
 
     return order;
@@ -383,9 +408,10 @@ class OrderService {
       throw new Error('Order not found');
     }
 
-    // Only allow updating pending or confirmed orders
-    if (!['pending', 'confirmed'].includes(order.orderStatus)) {
-      throw new Error('Cannot update design at this stage');
+    // Allow updating for pending, awaiting_payment, and confirmed orders
+    // Once in "processing", admin has started working on it, so lock it
+    if (!['pending', 'awaiting_payment', 'confirmed'].includes(order.orderStatus)) {
+      throw new Error('Cannot update design - order is already being processed');
     }
 
     if (!order.items[itemIndex]) {
@@ -398,19 +424,61 @@ class OrderService {
     }
     
     order.items[itemIndex].customDesign.imageUrl = designData.imageUrl;
+    order.items[itemIndex].customDesign.isCustomized = true;
 
-    // If order was confirmed, reset to pending for re-confirmation
-    if (order.orderStatus === 'confirmed') {
-      order.orderStatus = 'pending';
-      order.statusHistory.push({
-        status: 'pending',
-        timestamp: new Date(),
-        note: 'Design updated - awaiting re-confirmation',
-        updatedBy: userId
-      });
+    await order.save();
+    
+    // Queue image processing job if available
+    queueManager.addImageJob({
+      orderId: order._id,
+      itemIndex,
+      imageUrl: designData.imageUrl
+    }).catch(err => logger.warn('Failed to queue image processing:', err));
+
+    return order;
+  }
+
+  // User: Confirm delivery (User marks order as delivered)
+  async confirmDelivery(orderId, userId) {
+    const order = await Order.findOne({ _id: orderId, user: userId });
+    
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    // Only allow confirming delivery for shipped orders
+    if (order.orderStatus !== 'shipped') {
+      throw new Error('Order must be in shipped status to confirm delivery');
+    }
+
+    order.orderStatus = 'delivered';
+    order.actualDelivery = new Date();
+    order.statusHistory.push({
+      status: 'delivered',
+      timestamp: new Date(),
+      note: 'Confirmed by customer',
+      updatedBy: userId
+    });
+
+    // Update payment status for COD
+    if (order.paymentMethod === 'cod' && order.paymentStatus !== 'paid') {
+      order.paymentStatus = 'paid';
+      order.paidAt = new Date();
     }
 
     await order.save();
+
+    // Update user tier
+    try {
+      const User = (await import('../models/User.model.js')).default;
+      await User.calculateUserTier(userId);
+    } catch (error) {
+      logger.error('Error updating user tier:', error);
+    }
+
+    // Notify user
+    await notificationService.notifyUserOrderStatusUpdate(order, 'shipped', 'delivered');
+
     return order;
   }
 
