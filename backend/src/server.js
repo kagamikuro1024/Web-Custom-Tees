@@ -8,6 +8,13 @@ import cookieParser from 'cookie-parser';
 // Load environment variables (Railway injects directly, fallback to .env for local dev)
 dotenv.config();
 
+// Debug: Check NODE_ENV
+console.log('🔍 DEBUG NODE_ENV:', {
+  NODE_ENV: process.env.NODE_ENV,
+  type: typeof process.env.NODE_ENV,
+  allKeys: Object.keys(process.env).filter(k => k.includes('NODE'))
+});
+
 import connectDB from './config/database.js';
 import redisClient from './config/redis.js';
 import queueManager from './config/queue.js';
